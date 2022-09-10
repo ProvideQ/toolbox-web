@@ -5,6 +5,7 @@ export const ProblemChooser = (props: GridProps) => (
   <Grid templateColumns="repeat(2, 1fr)" gap={6} {...props}>
     <GridItem>
       <ProblemCard
+        href="SAT_Solver"
         new={true}
         qubits={23}
         speedup="superpolynomial"
@@ -14,6 +15,7 @@ export const ProblemChooser = (props: GridProps) => (
     </GridItem>
     <GridItem>
       <ProblemCard
+        href="MaxCut_Solver"
         new={false}
         qubits={12}
         speedup="polynomial"
@@ -23,6 +25,7 @@ export const ProblemChooser = (props: GridProps) => (
     </GridItem>
     <GridItem>
       <ProblemCard
+        href="#"
         new={false}
         qubits={2}
         speedup="superpolynomial"
