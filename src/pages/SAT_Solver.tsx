@@ -7,8 +7,11 @@ import { ProblemSolverTitle } from "../components/ProblemSolverTitle";
 import { Main } from "../components/Main";
 import { GoButton } from "../components/GoButton";
 import { Text, Textarea, Divider} from "@chakra-ui/react";
+import { ProblemTextArea } from "../components/ProblemTextArea";
+import React from "react";
 
 const SAT_Solver: NextPage = () => {
+  let problemTextAreaRef: React.MutableRefObject<ProblemTextArea | null> = React.createRef();
   return (
     <Container minHeight="100vh">
       <Head>
@@ -19,10 +22,10 @@ const SAT_Solver: NextPage = () => {
       </Head>
       <ProblemSolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
       <Main mb="20vh">
-        <Textarea placeholder="(p∨u∨t)∧(y∨o∨u∨¬r)∧(p∨r∨¬o∨b∨l∨e∨¬m)∧(h∨¬e∨r∨e)"></Textarea>
+        <ProblemTextArea ref={problemTextAreaRef}/>
         <ProblemInputButtonPanel helpBody={
-          <Text>there is no help where you are going</Text>
-        }/>
+          <Text>there is no help where you are going</Text>  
+        } problemText={() => problemTextAreaRef.current?.state.problemString}/>
         <Divider />
         <GoButton />
       </Main>
