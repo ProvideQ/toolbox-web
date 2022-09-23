@@ -1,17 +1,20 @@
 import React from "react";
-import Editor from "react-simple-problemString-editor";
-import { highlight, languages } from 'prismjs/components/prism-core'
+import Editor from "react-simple-code-editor";
+import { highlight, languages } from 'prismjs/components/prism-core';
+import "prismjs/components/prism-clike";
+import "prismjs/components/prism-javascript";
+import 'prismjs/themes/prism.css'
 
-interface IProps {
+interface ISATTextAreaProps {
 
 }
 
-interface IState {
+interface ISATTextAreaState {
     problemString: string;
 }
 
-class SATTextArea extends React.Component<IProps, IState> {
-    constructor(props : { value: string }) {
+export class SATTextArea extends React.Component<ISATTextAreaProps, ISATTextAreaState> {
+    constructor(props: ISATTextAreaProps) {
         super(props);
         this.state = { problemString: "" };
     }
@@ -19,11 +22,12 @@ class SATTextArea extends React.Component<IProps, IState> {
     render() {
         return <Editor
             value={this.state.problemString}
-            highlight={(problemString : string) => highlight(problemString, languages.js)} // todo replace languages.js with custom language
+            onValueChange={code => this.setState({problemString: code})}
+            highlight={code => highlight(code, languages.js)} // todo replace languages.js with custom language
             padding={10}
             style={{
                 fontFamily: '"Fira code", "Fira Mono", monospace',
-                fontSize: 12,
+                fontSize: 12
             }}
         />;
     }
