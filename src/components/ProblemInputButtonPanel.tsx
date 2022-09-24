@@ -1,6 +1,6 @@
-import { Stack, Spacer } from "@chakra-ui/react";
+import { Spacer, Flex } from "@chakra-ui/react";
 import React from "react";
-import { TbRotate, TbDownload, TbUpload } from 'react-icons/tb'
+import { TbDownload, TbUpload } from 'react-icons/tb'
 import { FileInput } from "./FileInput";
 import { ProblemInputButton } from "./ProblemInputButton";
 import { ProblemInputButton_HelpButton } from "./ProblemInputButton_HelpButton";
@@ -36,7 +36,7 @@ export class ProblemInputButtonPanel extends React.Component<IProblemInputProps,
 
     render() {
         return (
-            <Stack spacing='24px' direction='row'>
+            <Flex >
                 <FileInput ref={this.state.fileRef} onFileChanged={this.onFileUploaded}/>
                 <Spacer/>
                 <ProblemInputButton icon={<TbRotate/>} text="New problem" onClick={function () {
@@ -55,14 +55,16 @@ export class ProblemInputButtonPanel extends React.Component<IProblemInputProps,
                                             element.click();
                                         }
                                     }/>
+                <Spacer />
                 <ProblemInputButton icon={<TbUpload/>} text="Upload problem"
                                     toolTipText="Upload problem from local file"
                                     onClick={() => {
                                         this.state.fileRef.current?.openInput();
                                     }}/>
+                <Spacer/>
                 <ProblemInputButton_HelpButton helpBody={this.props.helpBody}/>
                 <Spacer/>
-            </Stack>
+            </Flex>
         )
     }
 }

@@ -1,15 +1,12 @@
-import React, { JSXElementConstructor, MouseEventHandler, ReactElement } from "react";
-import { Tooltip, Button, HStack, Text } from "@chakra-ui/react";
+import React, { MouseEventHandler, ReactElement } from "react";
+import { Tooltip, Button } from "@chakra-ui/react";
 
 
-
-export const ProblemInputButton = (props: {icon: ReactElement<any, string | JSXElementConstructor<any>>, text: string, toolTipText: string, onClick?: MouseEventHandler<HTMLButtonElement> | undefined}) => (
+export const ProblemInputButton = (props: { icon: ReactElement, text: string, toolTipText: string, onClick?: MouseEventHandler<HTMLButtonElement> | undefined }) => (
     <Tooltip label={props.toolTipText} color='white'>
-        <Button colorScheme='teal' onClick={props.onClick}>
-            <HStack>
-                <Text color="text" align="justify">{props.text}</Text>
-                {props.icon}
-            </HStack>
+        <Button colorScheme='teal' onClick={props.onClick} rightIcon={props.icon}
+                width="200px" size="lg" >
+            {props.text}
         </Button>
     </Tooltip>
 );
