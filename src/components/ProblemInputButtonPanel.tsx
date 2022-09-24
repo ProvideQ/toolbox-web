@@ -39,9 +39,6 @@ export class ProblemInputButtonPanel extends React.Component<IProblemInputProps,
             <Flex >
                 <FileInput ref={this.state.fileRef} onFileChanged={this.onFileUploaded}/>
                 <Spacer/>
-                <ProblemInputButton icon={<TbRotate/>} text="New problem" onClick={function () {
-
-                }} toolTipText="Clear textfield"/>
                 <ProblemInputButton icon={<TbDownload/>} text="Download problem"
                                     toolTipText="Download problem as local file"
                                     onClick={
