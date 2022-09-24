@@ -1,9 +1,15 @@
-import {Center, Button, CenterProps, Tooltip} from "@chakra-ui/react";
+import {Center, Button, Tooltip} from "@chakra-ui/react";
+import { MouseEventHandler } from "react";
 
-export const GoButton = (props: CenterProps) => (
+interface IGoButtonProps {
+    clicked: MouseEventHandler<HTMLButtonElement>;
+}
+
+export const GoButton = (props: IGoButtonProps) => (
     <Center>
         <Tooltip label="Unleash the Qubits!" color="white">
-            <Button colorScheme='teal' size='lg'>
+            <Button colorScheme='teal' size='lg'
+                    onClick={props.clicked} >
                 GO!
             </Button>
         </Tooltip>

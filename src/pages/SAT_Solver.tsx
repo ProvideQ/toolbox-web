@@ -4,7 +4,7 @@ import { Container } from "../components/Container";
 import { ProblemInputButtonPanel } from "../components/ProblemInputButtonPanel";
 import { ProblemSolverTitle } from "../components/ProblemSolverTitle";
 import { Main } from "../components/Main";
-import { GoButton } from "../components/GoButton";
+import { ProgressHandler } from "../components/ProgressHandler";
 import { SATTextArea } from "../components/SATTextArea";
 import { Text, Divider} from "@chakra-ui/react";
 import React from "react";
@@ -29,7 +29,7 @@ const SAT_Solver: NextPage = () => {
         setProblemText={((code: string) => problemTextAreaRef.current?.setProblemString(code))}
         />
         <Divider />
-        <GoButton />
+        <ProgressHandler />
       </Main>
     </Container>
   );
