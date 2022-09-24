@@ -24,7 +24,10 @@ const SAT_Solver: NextPage = () => {
         <SATTextArea ref={problemTextAreaRef} />
         <ProblemInputButtonPanel helpBody={
           <Text>there is no help where you are going</Text>
-        } problemText={() => problemTextAreaRef.current?.state.problemString}/>
+        }
+        problemText={() => problemTextAreaRef.current?.state.problemString}
+        setProblemText={((code: string) => problemTextAreaRef.current?.setProblemString(code))}
+        />
         <Divider />
         <GoButton />
       </Main>
