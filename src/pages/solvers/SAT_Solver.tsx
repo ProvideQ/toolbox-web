@@ -7,6 +7,8 @@ import { SolverTitle } from "../../components/solverComponents/SolverTitle";
 import { SAT_TextArea } from "../../components/solverComponents/SATComponents/SAT_TextArea";
 import { SAT_Help } from "../../components/solverComponents/SATComponents/SAT_Help";
 import { InputButtonPanel } from "../../components/solverComponents/InputButtonPanel";
+import { ProgressHandler } from "../../components/solverComponents/ProgressHandler";
+import { Divider } from "@chakra-ui/react";
 
 const SAT_Solver: NextPage = () => {
   let SAT_TextAreaRef: React.MutableRefObject<SAT_TextArea | null> = React.createRef();
@@ -26,6 +28,8 @@ const SAT_Solver: NextPage = () => {
         problemText={() => SAT_TextAreaRef.current?.state.problemString}
         setProblemText={((code: string) => SAT_TextAreaRef.current?.setProblemString(code))}
         />
+      <Divider />
+      <ProgressHandler />
       </Main>
     </Container>
   );
