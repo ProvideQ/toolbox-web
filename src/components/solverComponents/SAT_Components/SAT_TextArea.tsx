@@ -1,7 +1,7 @@
+import 'prismjs/themes/prism-solarizedlight.css'
 import React from "react";
 import Editor from "react-simple-code-editor";
 import { highlight } from 'prismjs/components/prism-core';
-import 'prismjs/themes/prism-solarizedlight.css'
 import { Container } from "@chakra-ui/react";
 import { SAT_language } from "./prism-SAT.js"
 

@@ -1,5 +1,5 @@
-import { Spinner } from "@chakra-ui/react";
 import React from "react";
+import { Spinner } from "@chakra-ui/react";
 import { Container } from "../Container";
 import { GoButton } from "./GoButton";
 

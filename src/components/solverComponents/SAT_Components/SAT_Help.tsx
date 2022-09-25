@@ -1,4 +1,4 @@
-import { Text, Divider} from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 
 export const SAT_Help = () => {
     return (

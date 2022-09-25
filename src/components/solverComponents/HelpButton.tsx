@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     Modal,
     ModalOverlay,
@@ -9,7 +10,6 @@ import {
     Button,
     useDisclosure
   } from '@chakra-ui/react'
-import React from 'react';
 import { JSXElementConstructor, ReactElement } from 'react';
 import { BiHelpCircle } from 'react-icons/bi'
 import { InputButton } from './InputButton'

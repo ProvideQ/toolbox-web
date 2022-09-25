@@ -1,11 +1,11 @@
-import type { NextPage } from "next";
 import Head from "next/head";
+import React from "react";
+import type { NextPage } from "next";
 import { Container } from "../../components/Container";
 import { Main } from "../../components/Main";
-import React from "react";
 import { SolverTitle } from "../../components/solverComponents/SolverTitle";
-import { SAT_TextArea } from "../../components/solverComponents/SATComponents/SAT_TextArea";
-import { SAT_Help } from "../../components/solverComponents/SATComponents/SAT_Help";
+import { SAT_TextArea } from "../../components/solverComponents/SAT_Components/SAT_TextArea";
+import { SAT_Help } from "../../components/solverComponents/SAT_Components/SAT_Help";
 import { InputButtonPanel } from "../../components/solverComponents/InputButtonPanel";
 import { ProgressHandler } from "../../components/solverComponents/ProgressHandler";
 import { Divider } from "@chakra-ui/react";

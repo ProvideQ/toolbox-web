@@ -1,5 +1,5 @@
-import { Spacer, Flex } from "@chakra-ui/react";
 import React from "react";
+import { Spacer, Flex } from "@chakra-ui/react";
 import { TbDownload, TbUpload } from 'react-icons/tb'
 import { FileInput } from "./FileInput";
 import { InputButton } from "./InputButton";
