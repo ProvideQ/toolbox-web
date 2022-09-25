@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Container } from "../../components/Container";
 import { Main } from "../../components/Main";
 import React from "react";
-import { SolverTitle } from "../../components/solverComponents/solverTitle";
+import { SolverTitle } from "../../components/solverComponents/SolverTitle";
 
 const SAT_Solver: NextPage = () => {
   return (
