@@ -25,19 +25,17 @@ export class FileInput extends React.Component<FileInputProps, FileInputState> {
 
     render() {
         return (
-            <label>
-                <input
-                    hidden
-                    ref={this.state.inputRef}
-                    style={{display: "none"}}
-                    type="file"
-                    accept={this.props.accept}
-                    multiple={this.props.multiple || false}
-                    onChange={e => {
-                        this.props.onFileChanged?.(e.target.files);
-                    }}
-                />
-            </label>
+            <input
+                hidden
+                ref={this.state.inputRef}
+                style={{display: "none"}}
+                type="file"
+                accept={this.props.accept}
+                multiple={this.props.multiple || false}
+                onChange={e => {
+                    this.props.onFileChanged?.(e.target.files);
+                }}
+            />
         );
     }
 }

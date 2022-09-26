@@ -22,22 +22,22 @@ export const HelpButton = (props: {helpBody: ReactElement<any, string | JSXEleme
     return (
       <>
         <InputButton icon={<Icon as={BiHelpCircle}/>} onClick={onOpen} text="Get help" toolTipText="Get helpful explanations" />
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Need some help?</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                {props.helpBody}
-              </ModalBody>
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Need some help?</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {props.helpBody}
+            </ModalBody>
     
-              <ModalFooter>
-                <Button colorScheme='teal' mr={3} onClick={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
+            <ModalFooter>
+              <Button colorScheme='teal' mr={3} onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </>
     )
 }
