@@ -8,7 +8,8 @@ import {
     ModalBody,
     ModalCloseButton,
     Button,
-    useDisclosure
+    useDisclosure,
+    Icon
   } from '@chakra-ui/react'
 import { JSXElementConstructor, ReactElement } from 'react';
 import { BiHelpCircle } from 'react-icons/bi'
@@ -20,7 +21,7 @@ export const HelpButton = (props: {helpBody: ReactElement<any, string | JSXEleme
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
       <>
-        <InputButton icon={<BiHelpCircle />} onClick={onOpen} text="Get help" toolTipText="Get helpful explanations" />
+        <InputButton icon={<Icon as={BiHelpCircle}/>} onClick={onOpen} text="Get help" toolTipText="Get helpful explanations" />
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>

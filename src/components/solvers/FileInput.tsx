@@ -1,17 +1,17 @@
 import React from "react";
 
-interface IFileInputProps {
+interface FileInputProps {
     multiple?: boolean;
     accept?: string;
     onFileChanged?: (files: FileList | null) => void;
 }
 
-interface IFileInputState {
+interface FileInputState {
     inputRef: React.MutableRefObject<HTMLInputElement | null>;
 }
 
-export class FileInput extends React.Component<IFileInputProps, IFileInputState> {
-    constructor(props: IFileInputProps) {
+export class FileInput extends React.Component<FileInputProps, FileInputState> {
+    constructor(props: FileInputProps) {
         super(props);
 
         this.state = {

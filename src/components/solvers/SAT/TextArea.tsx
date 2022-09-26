@@ -1,9 +1,9 @@
 import 'prismjs/themes/prism-solarizedlight.css'
 import React from "react";
 import Editor from "react-simple-code-editor";
-import { highlight } from 'prismjs/components/prism-core';
+import { highlight } from 'prismjs';
 import { Container } from "@chakra-ui/react";
-import { SAT_language } from "./prism-SAT.js"
+import { SAT_language } from "./prism-SAT"
 
 interface ISAT_TextAreaProps {
 
@@ -13,7 +13,7 @@ interface ISAT_TextAreaState {
     problemString: string;
 }
 
-export class SAT_TextArea extends React.Component<ISAT_TextAreaProps, ISAT_TextAreaState> {
+export class TextArea extends React.Component<ISAT_TextAreaProps, ISAT_TextAreaState> {
     constructor(props: ISAT_TextAreaProps) {
         super(props);
         this.state = { problemString: "" };
@@ -29,7 +29,7 @@ export class SAT_TextArea extends React.Component<ISAT_TextAreaProps, ISAT_TextA
             <Editor
                 value={this.state.problemString}
                 onValueChange={code => this.setProblemString(code)}
-                highlight={code => highlight(code, SAT_language)}
+                highlight={code => highlight(code, SAT_language, "SAT_language")}
                 padding={10}
                 style={{
                     fontFamily: '"Fira code", "Fira Mono", monospace',

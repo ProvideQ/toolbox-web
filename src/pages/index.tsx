@@ -2,11 +2,11 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { Container } from "../components/Container";
-import { Hero } from "../components/landingPageComponents/Hero";
+import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { ProblemCard } from "../components/landingPageComponents/ProblemCard";
+import { ProblemCard } from "../components/landing-page/ProblemCard";
 import { Text, Heading, Grid, GridItem } from "@chakra-ui/react";
-import { ProblemChooser } from "../components/landingPageComponents/ProblemChooser";
+import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
   return (

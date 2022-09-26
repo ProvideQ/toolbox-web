@@ -1,18 +1,18 @@
 import React from "react";
 import { Spinner } from "@chakra-ui/react";
 import { Container } from "../Container";
-import { GoButton } from "./GoButton";
+import { GoButton } from "./buttons/GoButton";
 
-interface IProgressHandlerProps {
+interface ProgressHandlerProps {
 
 }
 
-interface IProgressHandlerState {
+interface ProgressHandlerState {
     wasClicked: boolean;
 }
 
-export class ProgressHandler extends React.Component<IProgressHandlerProps, IProgressHandlerState> {
-    constructor(props: IProgressHandlerProps) {
+export class ProgressHandler extends React.Component<ProgressHandlerProps, ProgressHandlerState> {
+    constructor(props: ProgressHandlerProps) {
         super(props);
 
         this.state = {
