@@ -6,7 +6,7 @@ export const SolverTitle = (props: { title: string , text: string}) => (
     alignItems="center"
     height="60vh"
   >
-    <Heading fontSize="3vw">{props.title}</Heading>
-    <Heading lineHeight='tall' fontSize='1vw'>{props.text}</Heading>
+    <Heading size='2xl'>{props.title}</Heading>
+    <Heading lineHeight='tall' size='md'>{props.text}</Heading>
   </VStack>
 );

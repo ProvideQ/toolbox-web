@@ -3,17 +3,13 @@ import { Spinner } from "@chakra-ui/react";
 import { Container } from "../Container";
 import { GoButton } from "./buttons/GoButton";
 
-interface ProgressHandlerProps {
-
-}
-
 interface ProgressHandlerState {
     wasClicked: boolean;
 }
 
-export class ProgressHandler extends React.Component<ProgressHandlerProps, ProgressHandlerState> {
-    constructor(props: ProgressHandlerProps) {
-        super(props);
+export class ProgressHandler extends React.Component<{}, ProgressHandlerState> {
+    constructor() {
+        super({});
 
         this.state = {
             wasClicked: false,
@@ -30,12 +26,12 @@ export class ProgressHandler extends React.Component<ProgressHandlerProps, Progr
 
     render() {
         if (this.state.wasClicked) {
-            return (<Container><Spinner 
-                                    thickness='4px'
-                                    speed='0.65s'
-                                    emptyColor='gray.200'
-                                    color='teal.500'
-                                    size='xl'/></Container>); //TODO: replace with progress view
+            return (<Container><Spinner
+                thickness='4px'
+                speed='0.65s'
+                emptyColor='gray.200'
+                color='teal.500'
+                size='xl'/></Container>); //TODO: replace with progress view
         } else {
             return <GoButton clicked={this.onGoClicked}/>
         }

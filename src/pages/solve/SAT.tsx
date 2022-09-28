@@ -22,14 +22,14 @@ const SAT: NextPage = () => {
       </Head>
       <SolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
       <Main mb="20vh">
-      <TextArea ref={TextAreaRef} />
-      <InputButtonPanel 
-        helpBody={<Help/>}
-        problemText={() => TextAreaRef.current?.state.problemString}
-        setProblemText={((code: string) => TextAreaRef.current?.setProblemString(code))}
+        <TextArea ref={TextAreaRef} />
+        <InputButtonPanel
+            helpBody={<Help/>}
+            problemText={() => TextAreaRef.current?.state.problemString}
+            setProblemText={((code: string) => TextAreaRef.current?.setProblemString(code))}
         />
-      <Divider />
-      <ProgressHandler />
+        <Divider />
+        <ProgressHandler />
       </Main>
     </Container>
   );

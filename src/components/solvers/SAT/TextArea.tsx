@@ -1,21 +1,17 @@
-import 'prismjs/themes/prism-solarizedlight.css'
+import 'prismjs/themes/prism-solarizedlight.css' //TODO: use custom styling
 import React from "react";
 import Editor from "react-simple-code-editor";
 import { highlight } from 'prismjs';
 import { Container } from "@chakra-ui/react";
 import { SAT_language } from "./prism-SAT"
 
-interface ISAT_TextAreaProps {
-
-}
-
 interface ISAT_TextAreaState {
     problemString: string;
 }
 
-export class TextArea extends React.Component<ISAT_TextAreaProps, ISAT_TextAreaState> {
-    constructor(props: ISAT_TextAreaProps) {
-        super(props);
+export class TextArea extends React.Component<{}, ISAT_TextAreaState> {
+    constructor() {
+        super({});
         this.state = { problemString: "" };
     }
 
