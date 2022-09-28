@@ -5,26 +5,18 @@ import { highlight } from 'prismjs';
 import { Container } from "@chakra-ui/react";
 import { SAT_language } from "./prism-SAT"
 
-interface ISAT_TextAreaState {
+
+interface TextAreaProps {
     problemString: string;
+    setProblemString: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export class TextArea extends React.Component<{}, ISAT_TextAreaState> {
-    constructor() {
-        super({});
-        this.state = { problemString: "" };
-    }
-
-    setProblemString(code: string): void {
-        this.setState({problemString: code});
-    }
-
-    render() {
+export const TextArea = (props: TextAreaProps) => {
         return (
         <Container border="1px" borderColor="#AAAAAA" borderRadius="10px">
             <Editor
-                value={this.state.problemString}
-                onValueChange={code => this.setProblemString(code)}
+                value={props.problemString}
+                onValueChange={code => props.setProblemString(code)}
                 highlight={code => highlight(code, SAT_language, "SAT_language")}
                 padding={10}
                 style={{
@@ -34,5 +26,4 @@ export class TextArea extends React.Component<{}, ISAT_TextAreaState> {
             />
         </Container>
         );
-    }
 }

@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React from "react";
+import React, {useState} from "react";
 import type { NextPage } from "next";
 import { Container } from "../../components/Container";
 import { Main } from "../../components/Main";
@@ -11,7 +11,7 @@ import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { Divider } from "@chakra-ui/react";
 
 const SAT: NextPage = () => {
-  let TextAreaRef: React.MutableRefObject<TextArea | null> = React.createRef();
+  const [problemString, setProblemString] = useState("");
   return (
     <Container minHeight="100vh">
       <Head>
@@ -22,11 +22,11 @@ const SAT: NextPage = () => {
       </Head>
       <SolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
       <Main mb="20vh">
-        <TextArea ref={TextAreaRef} />
+        <TextArea problemString={problemString} setProblemString={setProblemString} />
         <InputButtonPanel
             helpBody={<Help/>}
-            problemText={() => TextAreaRef.current?.state.problemString}
-            setProblemText={((code: string) => TextAreaRef.current?.setProblemString(code))}
+            problemString={problemString}
+            setProblemString={setProblemString}
         />
         <Divider />
         <ProgressHandler />
