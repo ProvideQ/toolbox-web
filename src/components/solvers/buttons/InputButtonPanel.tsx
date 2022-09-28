@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import { Icon, SimpleGrid } from "@chakra-ui/react";
 import { TbDownload, TbUpload } from 'react-icons/tb'
-import { FileInput } from "../FileInput";
 import { InputButton } from "./InputButton";
 import { HelpButton } from "./HelpButton";
+import {chooseFile} from "../FileInput";
 
 interface InputProps {
     helpBody: React.ReactElement;
@@ -12,11 +12,8 @@ interface InputProps {
 }
 
 export const InputButtonPanel = (props : InputProps) => {
-
-    const fileRef: React.MutableRefObject<FileInput | null> = useState(React.createRef())[0] as React.MutableRefObject<FileInput | null>;
     return (
         <>
-            <FileInput ref={fileRef} onFileChanged={(files: FileList|null) => onFileUploaded(files, props.setProblemString)}/>
             <SimpleGrid columns={3} gap={6} >
                 <InputButton icon={<Icon as={TbDownload}/>} text="Download problem"
                              toolTipText="Download problem as local file"
@@ -26,7 +23,7 @@ export const InputButtonPanel = (props : InputProps) => {
                 <InputButton icon={<Icon as={TbUpload}/>} text="Upload problem"
                              toolTipText="Upload problem from local file"
                              onClick={() => {
-                                 fileRef.current?.openInput();
+                                 chooseFile().then((files: FileList|null) => onFileUploaded(files, props.setProblemString));
                              }}/>
                 <HelpButton helpBody={props.helpBody}/>
             </SimpleGrid>
