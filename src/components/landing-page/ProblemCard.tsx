@@ -1,6 +1,8 @@
 import { LinkBox, LinkOverlay, Box, Image, Badge } from "@chakra-ui/react";
+import NextLink from 'next/link';
 
 interface ProblemCardProps {
+  href: string;
   new: boolean;
   qubits: number;
   speedup: "polynomial" | "superpolynomial";
@@ -37,7 +39,9 @@ export const ProblemCard = (props: ProblemCardProps) => {
           lineHeight="tight"
           noOfLines={1}
         >
-          <LinkOverlay href="#">{props.problemName}</LinkOverlay>
+          <NextLink href={props.href} passHref>
+            <LinkOverlay>{props.problemName}</LinkOverlay>
+          </NextLink>
         </Box>
 
         <Box>{props.description}</Box>
