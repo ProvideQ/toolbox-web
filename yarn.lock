@@ -951,6 +951,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@jlguenego/lexer@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@jlguenego/lexer/-/lexer-1.5.0.tgz#1bb1b80d537a3a9ab63858bbd985f96027fb0084"
+  integrity sha512-N748XhjsS6vZQBzMZHrZzI5s2we2NBIJiqYXUtXTkeTP4IYinRaA0T5BHlHa8XPF6b0+rxexu5cDUzTpfB5Ajw==
+
 "@motionone/animation@^10.12.0":
   version "10.14.0"
   resolved "https://registry.yarnpkg.com/@motionone/animation/-/animation-10.14.0.tgz#2f2a3517183bb58d82e389aac777fe0850079de6"
