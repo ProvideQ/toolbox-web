@@ -1,5 +1,5 @@
 import { Rule } from "@jlguenego/lexer";
-import { and, negate, negatedVariable, or, variableRegexPart } from "./CommonSyntax";
+import { TokenName, variableRegexPart } from "./CommonSyntax";
 
 export const negateRegexPart = '(?:(?:not|NOT)\\s+|(?:!\\s*))';
 
@@ -9,21 +9,21 @@ export const regexNOT = new RegExp(negateRegexPart, 'g');
 export const regexNOTVariable = new RegExp(`${negateRegexPart}\\s*${variableRegexPart}`);
 
 export const negateRule = new Rule({
-    name: negate,
+    name: TokenName.negate,
     pattern: regexNOT,
 });
 
 export const negatedVariableRule = new Rule({
-    name: negatedVariable,
+    name: TokenName.negatedVariable,
     pattern: regexNOTVariable,
 });
 
 export const andRule = new Rule({
-    name: and,
+    name: TokenName.and,
     pattern: regexAND,
 })
 
 export const orRule = new Rule({
-    name: or,
+    name: TokenName.or,
     pattern: regexOR,
 })

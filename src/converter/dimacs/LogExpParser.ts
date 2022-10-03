@@ -1,5 +1,5 @@
 import { Lexer, Token } from "@jlguenego/lexer";
-import { and, or, open, close, negatedVariable, parenthesesRule, variableRule, blankRule, variable, variableAssignment } from "./Syntax/CommonSyntax";
+import { TokenName, parenthesesRule, variableRule, blankRule } from "./Syntax/CommonSyntax";
 import { andRule, negatedVariableRule, negateRule, orRule } from "./Syntax/LogExpSyntax";
 
 // the order is important - tokens are applied from first to last
@@ -34,7 +34,7 @@ export class LogExpParser {
         //Handle variable comments and program start
         let variables = this.convertVariables(tokens);
         variables.forEach((num, str, _) => {
-            this.output += `c ${num} ${variableAssignment} ${str}\n`;
+            this.output += `c ${num} ${TokenName.variableAssignment} ${str}\n`;
         })
         this.output += `p sat ${variables.size}\n`;
 
@@ -51,15 +51,15 @@ export class LogExpParser {
 
         if (tokens.length > 0) {
             switch (tokens[0].name) {
-                case or:
-                case and:
+                case TokenName.or:
+                case TokenName.and:
                     errors.push("Formula can't start with operator (AND/OR)")
                     break;
             }
 
             switch (tokens[tokens.length - 1].name) {
-                case or:
-                case and:
+                case TokenName.or:
+                case TokenName.and:
                     errors.push("Formula can't end with operator (AND/OR)")
                     break;
             }
@@ -67,23 +67,23 @@ export class LogExpParser {
 
         for (let token of tokens) {
             switch (token.name) {
-                case or:
-                case and:
+                case TokenName.or:
+                case TokenName.and:
                     if (wasOperator) errors.push("Two operators (AND/OR) can't be next to each other");
                     break;
-                case negatedVariable:
-                case variable:
+                case TokenName.negatedVariable:
+                case TokenName.variable:
                     if (wasVariable) errors.push(`Variable '${token.lexeme}' is next to another variable`);
                     if (wasClose) errors.push(`Variable '${token.lexeme}' is after a closing parenthesis`);
                     break;
-                case open:
+                case TokenName.open:
                     if (wasVariable) errors.push("Parenthesis can't be opened after a variable")
                     break;
             }
 
-            wasOperator = token.name == and || token.name == or;
-            wasVariable = token.name == variable || token.name == negatedVariable;
-            wasClose = token.name == close;
+            wasOperator = token.name == TokenName.and || token.name == TokenName.or;
+            wasVariable = token.name == TokenName.variable || token.name == TokenName.negatedVariable;
+            wasClose = token.name == TokenName.close;
         }
 
         return errors;
@@ -108,10 +108,10 @@ export class LogExpParser {
 
         for (let i = 0; i < tokens.length; i++) {
             switch (tokens[i].name) {
-                case variable:
+                case TokenName.variable:
                     tokens[i].lexeme = addToMap(tokens[i].lexeme).toString();
                     break;
-                case negatedVariable:
+                case TokenName.negatedVariable:
                     let negTokens = this.lexNegation.tokenize(tokens[i].lexeme);
                     if (negTokens.length != 2) throw new Error("Can't parse negated variables that don't have two tokens")
 
@@ -134,10 +134,10 @@ export class LogExpParser {
 
         for (let token of tokens) {
             switch (token.name) {
-                case open:
+                case TokenName.open:
                     curLevel++;
                     break;
-                case close:
+                case TokenName.close:
                     curLevel--;
                     break;
                 default:
@@ -194,7 +194,7 @@ export class LogExpParser {
         }
 
         let level = this.getMinLevel(tokens);
-        let operatorPositions = this.getOperatorPositions(tokens, and, level);
+        let operatorPositions = this.getOperatorPositions(tokens, TokenName.and, level);
         if (operatorPositions.length == 1) return this.processOR(tokens);
 
         let returnTokens: LeveledToken[] = [];
@@ -220,7 +220,7 @@ export class LogExpParser {
         }
 
         let level = this.getMinLevel(tokens);
-        let operatorPositions = this.getOperatorPositions(tokens, or, level);
+        let operatorPositions = this.getOperatorPositions(tokens, TokenName.or, level);
         if (operatorPositions.length == 1) return this.processAND(tokens);
 
         let returnTokens: LeveledToken[] = [];

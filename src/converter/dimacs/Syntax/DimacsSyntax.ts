@@ -1,5 +1,5 @@
 import { Rule } from "@jlguenego/lexer";
-import { and, negate, or } from "./CommonSyntax";
+import { TokenName } from "./CommonSyntax";
 
 export const problem = 'p';
 export const sat = 'sat';
@@ -13,17 +13,17 @@ export const startKeywords = Rule.createKeywords([problem]);
 export const problemTypeKeywords = Rule.createKeywords([sat]);
 
 export const negateRule = new Rule({
-    name: negate,
+    name: TokenName.negate,
     pattern:regexNegate,
 });
 
 export const andRule = new Rule({
-    name: and,
+    name: TokenName.and,
     pattern: regexAND,
 });
 
 export const orRule = new Rule({
-    name: or,
+    name: TokenName.or,
     pattern: regexOR,
 });
 

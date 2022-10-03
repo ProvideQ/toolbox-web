@@ -1,6 +1,6 @@
 import { Lexer, Token } from "@jlguenego/lexer";
 import { andRule, commentRule, negateRule, orRule, problem, problemTypeKeywords, regexComment, sat, startKeywords } from "./Syntax/DimacsSyntax";
-import { and, or, negate, open, close, variable, parenthesesRule, variableRule, blankRule, regexBlank, variableAssignment } from "./Syntax/CommonSyntax";
+import { TokenName, parenthesesRule, variableRule, blankRule, regexBlank } from "./Syntax/CommonSyntax";
 
 // the order is important - tokens are applied from first to last
 const rules = [commentRule, ...startKeywords, ...problemTypeKeywords, ...parenthesesRule, andRule, orRule, negateRule, variableRule, blankRule];
@@ -64,7 +64,7 @@ export class DimacsParser {
             trimmed = trimmed.substring(1);
 
             //Comments must be of type "Number variableAssignment AliasStr"
-            let vars = trimmed.split(variableAssignment);
+            let vars = trimmed.split(TokenName.variableAssignment);
             if (vars.length != 2) continue;
             if (!/\d/.test(vars[0])) continue;
 
@@ -95,25 +95,25 @@ export class DimacsParser {
 
     private parseFormula(token: Token) {
         switch (token.name) {
-            case variable:
+            case TokenName.variable:
                 this.variables.add(+token.lexeme);
                 this.output += token.lexeme;
                 break;
-            case negate:
-                this.output += `${negate} `;
+            case TokenName.negate:
+                this.output += `${TokenName.negate} `;
                 break;
-            case open:
+            case TokenName.open:
                 token = this.nextToken();
-                while (token.name != close) {
+                while (token.name != TokenName.close) {
                     this.parseFormula(token);
                     token = this.nextToken();
                 }
                 break;
-            case and:
-                this.parseFormulaParams(and);
+            case TokenName.and:
+                this.parseFormulaParams(TokenName.and);
                 break;
-            case or:
-                this.parseFormulaParams(or);
+            case TokenName.or:
+                this.parseFormulaParams(TokenName.or);
                 break;
             default:
                 throw new Error(`Unexpected token ${token.name} in formula at line ${token.position.line} column ${token.position.col}`);
@@ -121,7 +121,7 @@ export class DimacsParser {
     }
 
     private parseFormulaParams(operator: string) {
-        this.expectNextToken(open);
+        this.expectNextToken(TokenName.open);
         this.output += '(';
 
         let token = this.nextToken();
@@ -129,12 +129,12 @@ export class DimacsParser {
 
         // Parse all formulas inside the parentheses
         // Properly format them with log exp operators
-        while (token.name != close) {
+        while (token.name != TokenName.close) {
             this.parseFormula(token);
 
             lastTokenType = token.name;
             token = this.nextToken();
-            if (token.name != close && lastTokenType != negate) {
+            if (token.name != TokenName.close && lastTokenType != TokenName.negate) {
                 this.output += ` ${operator} `;
             }
         }

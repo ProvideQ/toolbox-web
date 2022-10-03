@@ -1,31 +1,32 @@
 import { Group, Rule } from "@jlguenego/lexer";
 
-export const and = 'and';
-export const or = 'or';
-export const negate = 'not';
-export const open = 'open';
-export const close = 'close';
-export const variable = 'variable';
-export const negatedVariable = 'negatedVariable';
-
-export const variableAssignment = '=>';
+export enum TokenName {
+    and = 'and',
+    or = 'or',
+    negate = 'not',
+    open = 'open',
+    close = 'close',
+    variable = 'variable',
+    negatedVariable = 'negatedVariable',
+    variableAssignment = '=>'
+}
 
 export const variableRegexPart = '(?:[A-z]|\\d)+';
 export const regexVariable = new RegExp(variableRegexPart);
 export const regexBlank = /\s+/g;
 
 export const variableRule = new Rule({
-    name: variable,
+    name: TokenName.variable,
     pattern: regexVariable,
 });
 
 export const parenthesesRule = Rule.createGroup(Group.SEPARATORS, [
     {
-        name: open,
+        name: TokenName.open,
         pattern: /\(/,
     },
     {
-        name: close,
+        name: TokenName.close,
         pattern: /\)/,
     },
 ]);
