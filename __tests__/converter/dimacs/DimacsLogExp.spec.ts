@@ -45,8 +45,8 @@ describe("Parsing", () => {
             'p sat 3\n+(*(1 2) -3)'
         ]
     ]).test("parsing bi-directional", (logExpr: string, dimacs: string) => {
-        isEquivalentDimacs(logExprParser.parse(logExpr), dimacs);
-        isEquivalentLogExpr(dimacsParser.parse(dimacs), logExpr);
+        isEquivalentDimacs(logExprParser.parseDimacs(logExpr), dimacs);
+        isEquivalentLogExpr(dimacsParser.parseLogicalExpression(dimacs), logExpr);
     });
 
     each([
@@ -92,6 +92,6 @@ describe("Parsing", () => {
             '+(*(1  -2) 3)'
         ]
     ]).test("parsing dimacs with variable aliases", (logExpr: string, dimacs: string) => {
-        isEquivalentLogExpr(dimacsParser.parse(dimacs), logExpr);
+        isEquivalentLogExpr(dimacsParser.parseLogicalExpression(dimacs), logExpr);
     });
 });

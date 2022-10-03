@@ -16,10 +16,16 @@ export class LogExpParser {
     private lexNegation: Lexer = new Lexer(rulesNegation);
     private output: string = '';
 
-    public parse(text: string): string {
+    /**
+     * Converts a logical expression to an expression in dimacs sat format
+     * dimacs sat format: https://www.domagoj-babic.com/uploads/ResearchProjects/Spear/dimacs-cnf.pdf
+     * @param logicalExpression {string} logical expression
+     * @returns {string} formula in dimacs sat format of the input
+     */
+    public parseDimacs(logicalExpression: string): string {
         this.output = '';
 
-        let tokens = this.lex.tokenize(text);
+        let tokens = this.lex.tokenize(logicalExpression);
         if (tokens.length == 0) return this.output;
 
         //Verify formula integrity

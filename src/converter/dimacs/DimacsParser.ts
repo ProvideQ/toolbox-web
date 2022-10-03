@@ -12,13 +12,19 @@ export class DimacsParser {
     private output: string = '';
     private variables: Set<number> = new Set<number>();
 
-    public parse(text: string): string {
+    /**
+     * Converts a formula in dimacs sat format to a common logical expression
+     * dimacs sat format: https://www.domagoj-babic.com/uploads/ResearchProjects/Spear/dimacs-cnf.pdf
+     * @param dimacs {string} formula in dimacs sat format
+     * @returns {string} logical expression of the input
+     */
+    public parseLogicalExpression(dimacs: string): string {
         this.output = '';
         this.variables = new Set<number>();
 
         let tokens: Token[];
         try {
-            tokens = this.lex.tokenize(text);
+            tokens = this.lex.tokenize(dimacs);
             this.tokenIterator = tokens[Symbol.iterator]()
         } catch (e: any) {
             throw new Error(
@@ -42,7 +48,7 @@ export class DimacsParser {
         }
 
         //Replace with variable names from comments if possible
-        let aliases = this.getVariableAliases(text);
+        let aliases = this.getVariableAliases(dimacs);
         aliases.forEach((alias, num, _) => {
             //Workaround split, join to replace all
             this.output = this.output.split(num.toString()).join(alias);

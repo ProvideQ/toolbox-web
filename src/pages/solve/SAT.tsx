@@ -34,7 +34,7 @@ const SAT: NextPage = () => {
                         setLogExpString(value);
 
                         try {
-                            logExpParser.parse(value.toString());
+                            logExpParser.parseDimacs(value.toString());
                             setErrorString('');
                         } catch (e: any) {
                             setErrorString(e.message);
@@ -47,7 +47,7 @@ const SAT: NextPage = () => {
             setProblemString={setLogExpString}
             uploadString={(str: string) => {
                 try {
-                    return dimacsParser.parse(str);
+                    return dimacsParser.parseLogicalExpression(str);
                 } catch (e: any) {
                     return e.message;
                 }
@@ -55,7 +55,7 @@ const SAT: NextPage = () => {
             downloadString={(str: string) => {
                 let ret = '';
                 try {
-                    ret = logExpParser.parse(str);
+                    ret = logExpParser.parseDimacs(str);
                     setErrorString('');
                 } catch (e: any) {
                     setErrorString(e.message);
