@@ -1,7 +1,6 @@
 import { Rule } from "@jlguenego/lexer";
 import { and, negate, negatedVariable, or, variableRegexPart } from "./CommonSyntax";
 
-// export const negateRegexPart = '(?:\\b(?:not|NOT)\\s+|(?:\\b!\\s*))';
 export const negateRegexPart = '(?:(?:not|NOT)\\s+|(?:!\\s*))';
 
 export const regexAND = /(?:&|and|AND) /;
