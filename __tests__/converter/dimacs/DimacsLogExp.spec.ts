@@ -1,9 +1,9 @@
 import each from "jest-each";
-import { regexBlank } from "./Syntax/CommonSyntax";
-import { DimacsParser } from "./DimacsParser";
-import { regexComment } from "./Syntax/DimacsSyntax";
-import { LogExpParser } from "./LogExpParser";
-import { regexNOT } from "./Syntax/LogExpSyntax";
+import { regexBlank } from "../../../src/converter/dimacs/Syntax/CommonSyntax";
+import { DimacsParser } from "../../../src/converter/dimacs/DimacsParser";
+import { regexComment } from "../../../src/converter/dimacs/Syntax/DimacsSyntax";
+import { LogExpParser } from "../../../src/converter/dimacs/LogExpParser";
+import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogExpSyntax";
 
 function isEquivalentLogExpr(f1: string, f2: string) {
     expect(f1.replace(regexNOT, '!')
