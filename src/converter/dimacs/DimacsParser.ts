@@ -14,6 +14,7 @@ export class DimacsParser {
 
     public parse(text: string): string {
         this.output = '';
+        this.variables = new Set<number>();
 
         let tokens: Token[];
         try {
