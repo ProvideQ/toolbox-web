@@ -2,10 +2,10 @@ import each from "jest-each";
 import { regexBlank } from "../../../src/converter/dimacs/Syntax/CommonSyntax";
 import { DimacsParser } from "../../../src/converter/dimacs/DimacsParser";
 import { regexComment } from "../../../src/converter/dimacs/Syntax/DimacsSyntax";
-import { LogExpParser } from "../../../src/converter/dimacs/LogExpParser";
-import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogExpSyntax";
+import { LogicalExpressionParser } from "../../../src/converter/dimacs/LogicalExpressionParser";
+import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogicalExpressionSyntax";
 
-function isEquivalentLogExpr(f1: string, f2: string) {
+function isEquivalentLogicalExpression(f1: string, f2: string) {
     expect(f1.replace(regexNOT, '!')
             .replace(regexBlank, ''))
         .toBe(f2.replace(regexNOT, '!')
@@ -21,7 +21,7 @@ function isEquivalentDimacs(f1: string, f2: string) {
 
 describe("Parsing", () => {
     let dimacsParser = new DimacsParser();
-    let logExprParser = new LogExpParser();
+    let logicalExpressionParser = new LogicalExpressionParser();
 
     each([
         [
@@ -44,9 +44,9 @@ describe("Parsing", () => {
             '((1 and 2) or not 3)',
             'p sat 3\n+(*(1 2) -3)'
         ]
-    ]).test("parsing bi-directional", (logExpr: string, dimacs: string) => {
-        isEquivalentDimacs(logExprParser.parseDimacs(logExpr), dimacs);
-        isEquivalentLogExpr(dimacsParser.parseLogicalExpression(dimacs), logExpr);
+    ]).test("parsing bi-directional", (logicalExpression: string, dimacs: string) => {
+        isEquivalentDimacs(logicalExpressionParser.parseDimacs(logicalExpression), dimacs);
+        isEquivalentLogicalExpression(dimacsParser.parseLogicalExpression(dimacs), logicalExpression);
     });
 
     each([
@@ -91,7 +91,7 @@ describe("Parsing", () => {
             'p sat 3\n' +
             '+(*(1  -2) 3)'
         ]
-    ]).test("parsing dimacs with variable aliases", (logExpr: string, dimacs: string) => {
-        isEquivalentLogExpr(dimacsParser.parseLogicalExpression(dimacs), logExpr);
+    ]).test("parsing dimacs with variable aliases", (logicalExpression: string, dimacs: string) => {
+        isEquivalentLogicalExpression(dimacsParser.parseLogicalExpression(dimacs), logicalExpression);
     });
 });

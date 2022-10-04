@@ -1,5 +1,5 @@
 import { regexVariable } from "../../../converter/dimacs/Syntax/CommonSyntax";
-import { regexAND, regexNOTVariable, regexOR } from "../../../converter/dimacs/Syntax/LogExpSyntax";
+import { regexAND, regexNOTVariable, regexOR } from "../../../converter/dimacs/Syntax/LogicalExpressionSyntax";
 
 export const SAT_language = {
     'and': {

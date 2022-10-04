@@ -10,13 +10,13 @@ import { InputButtonPanel } from "../../components/solvers/buttons/InputButtonPa
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { Text, Divider } from "@chakra-ui/react";
 import { DimacsParser } from "../../converter/dimacs/DimacsParser";
-import { LogExpParser } from "../../converter/dimacs/LogExpParser";
+import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 
 const SAT: NextPage = () => {
-  const logExpParser = new LogExpParser();
+  const logicalExpressionParser = new LogicalExpressionParser();
   const dimacsParser = new DimacsParser();
 
-  const [logExpString, setLogExpString] = useState("");
+  const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
 
   return (
@@ -29,12 +29,12 @@ const SAT: NextPage = () => {
       </Head>
       <SolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
       <Main mb="20vh">
-          <TextArea problemString={logExpString}
+          <TextArea problemString={logicalExpressionString}
                     setProblemString={(value) => {
-                        setLogExpString(value);
+                        setLogicalExpressionString(value);
 
                         try {
-                            logExpParser.parseDimacs(value.toString());
+                            logicalExpressionParser.parseDimacs(value.toString());
                             setErrorString('');
                         } catch (e: any) {
                             setErrorString(e.message);
@@ -43,8 +43,8 @@ const SAT: NextPage = () => {
           <Text backgroundColor="tomato" >{errorString}</Text>
         <InputButtonPanel
             helpBody={<Help/>}
-            problemString={logExpString}
-            setProblemString={setLogExpString}
+            problemString={logicalExpressionString}
+            setProblemString={setLogicalExpressionString}
             uploadString={(str: string) => {
                 try {
                     return dimacsParser.parseLogicalExpression(str);
@@ -55,7 +55,7 @@ const SAT: NextPage = () => {
             downloadString={(str: string) => {
                 let ret = '';
                 try {
-                    ret = logExpParser.parseDimacs(str);
+                    ret = logicalExpressionParser.parseDimacs(str);
                     setErrorString('');
                 } catch (e: any) {
                     setErrorString(e.message);

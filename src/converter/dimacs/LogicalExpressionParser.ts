@@ -1,6 +1,6 @@
 import { Lexer, Token } from "@jlguenego/lexer";
 import { TokenName, parenthesesRule, variableRule, blankRule } from "./Syntax/CommonSyntax";
-import { andRule, negatedVariableRule, negateRule, orRule } from "./Syntax/LogExpSyntax";
+import { andRule, negatedVariableRule, negateRule, orRule } from "./Syntax/LogicalExpressionSyntax";
 
 // the order is important - tokens are applied from first to last
 const rules = [...parenthesesRule, orRule, andRule, negatedVariableRule, variableRule, blankRule];
@@ -11,7 +11,7 @@ interface LeveledToken {
     token: Token
 }
 
-export class LogExpParser {
+export class LogicalExpressionParser {
     private lex: Lexer = new Lexer(rules);
     private lexNegation: Lexer = new Lexer(rulesNegation);
     private output: string = '';
