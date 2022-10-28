@@ -8,10 +8,17 @@ import { TextArea } from "../../components/solvers/SAT/TextArea";
 import { Help } from "../../components/solvers/SAT/Help";
 import { InputButtonPanel } from "../../components/solvers/buttons/InputButtonPanel";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { Divider } from "@chakra-ui/react";
+import { Text, Divider } from "@chakra-ui/react";
+import { DimacsParser } from "../../converter/dimacs/DimacsParser";
+import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 
 const SAT: NextPage = () => {
-  const [problemString, setProblemString] = useState("");
+  const logicalExpressionParser = new LogicalExpressionParser();
+  const dimacsParser = new DimacsParser();
+
+  const [logicalExpressionString, setLogicalExpressionString] = useState("");
+  const [errorString, setErrorString] = useState("");
+
   return (
     <Container minHeight="100vh">
       <Head>
@@ -22,11 +29,39 @@ const SAT: NextPage = () => {
       </Head>
       <SolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
       <Main mb="20vh">
-        <TextArea problemString={problemString} setProblemString={setProblemString} />
+          <TextArea problemString={logicalExpressionString}
+                    setProblemString={(value) => {
+                        setLogicalExpressionString(value);
+
+                        try {
+                            logicalExpressionParser.parseDimacs(value.toString());
+                            setErrorString('');
+                        } catch (e: any) {
+                            setErrorString(e.message);
+                        }
+                    }}/>
+          <Text backgroundColor="tomato" >{errorString}</Text>
         <InputButtonPanel
             helpBody={<Help/>}
-            problemString={problemString}
-            setProblemString={setProblemString}
+            problemString={logicalExpressionString}
+            setProblemString={setLogicalExpressionString}
+            uploadString={(str: string) => {
+                try {
+                    return dimacsParser.parseLogicalExpression(str);
+                } catch (e: any) {
+                    return e.message;
+                }
+            }}
+            downloadString={(str: string) => {
+                let ret = '';
+                try {
+                    ret = logicalExpressionParser.parseDimacs(str);
+                    setErrorString('');
+                } catch (e: any) {
+                    setErrorString(e.message);
+                }
+                return ret;
+            }}
         />
         <Divider />
         <ProgressHandler />
