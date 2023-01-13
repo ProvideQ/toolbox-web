@@ -1,7 +1,7 @@
 import { Center, Divider, Text, Textarea } from "@chakra-ui/react";
 import { NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Container } from "../../components/Container";
 import { Main } from "../../components/Main";
 import { GraphArea } from "../../components/solvers/Graph/GraphArea";
@@ -14,6 +14,20 @@ const MaxCut: NextPage = () => {
 
     const [graphString, setGraphString] = useState("");
     const [errorString, setErrorString] = useState("");
+
+    function onTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+        const newGraphString = event.target.value;
+        setGraphString(newGraphString);
+
+        try {
+            let data = parseGML(newGraphString);
+            setGraphData(data);
+
+            setErrorString('');
+        } catch (e: any) {
+            setErrorString(e.message);
+        }
+    }
 
     return (
         <Container minHeight="100vh">
@@ -30,18 +44,7 @@ const MaxCut: NextPage = () => {
                           value={graphString}
                           minHeight="10rem"
                           isInvalid={errorString != ""}
-                          onChange={e => {
-                    setGraphString(e.target.value);
-
-                    try {
-                        let data = parseGML(e.target.value);
-                        setGraphData(data);
-
-                        setErrorString('');
-                    } catch (e: any) {
-                        setErrorString(e.message);
-                    }
-                }} />
+                          onChange={onTextAreaChange} />
 
                 <Text backgroundColor="tomato">{errorString}</Text>
 

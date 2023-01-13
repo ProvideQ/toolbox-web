@@ -1,9 +1,9 @@
 import { Box, Center, Container, Select, Spacer } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import G6, { Graph } from '@antv/g6';
+import G6, { Graph, GraphData } from '@antv/g6';
 
 interface GraphAreaProps {
-    graphData: any;
+    graphData: GraphData;
 
     graphHeight: number;
     graphWidth: number;
