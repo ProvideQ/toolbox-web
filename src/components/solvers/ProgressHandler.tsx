@@ -1,19 +1,36 @@
-import React, {useState} from "react";
-import { Spinner } from "@chakra-ui/react";
-import { Container } from "../Container";
+import React, { useState } from "react";
 import { GoButton } from "./buttons/GoButton";
+import { postProblem } from "../../api/ToolboxAPI";
+import {ProgressView} from "./ProgressView";
+import { Container } from "../Container";
+import {Solution} from "./Solution";
 
-export const ProgressHandler = () => {
+export interface ProgressHandlerProps {
+    problemType: string;
+    problemInput: any;
+}
+
+export const ProgressHandler = (props: ProgressHandlerProps) => {
     const [wasClicked, setClicked] = useState(false);
+    const [finished, setFinished] = useState(false);
+    const [solution, setSolution] = useState<Solution>();
 
-    if (wasClicked) {
-        return (<Container><Spinner
-            thickness='4px'
-            speed='0.65s'
-            emptyColor='gray.200'
-            color='teal.500'
-            size='xl'/></Container>); //TODO: replace with progress view
-    } else {
-        return <GoButton clicked={() => setClicked(true)}/>
+    async function onGoClicked() {
+        setClicked(true);
+        setFinished(false);
+        let solution = await postProblem(props.problemType, props.problemInput);
+        setSolution(solution);
+        setFinished(true);
     }
+
+    return (
+        <Container>
+            {wasClicked
+                ? <ProgressView solution={solution} finished={finished}/>
+                : null}
+            {!wasClicked || finished
+                ? <GoButton clicked={onGoClicked}/>
+                : null}
+        </Container>
+    );
 }
