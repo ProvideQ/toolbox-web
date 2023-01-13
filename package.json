@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@antv/g6": "^4.7.16",
     "@chakra-ui/react": "^2.3.1",
     "@emotion/react": "11",
     "@emotion/styled": "11",
