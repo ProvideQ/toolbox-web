@@ -21,7 +21,7 @@ export const GraphArea = (props: GraphAreaProps) => {
         "grid",
     ]
 
-    const graphRef = useRef<HTMLElement>(null);
+    const graphRef = useRef<HTMLDivElement>(null);
     const [graph, setGraph] = useState<Graph | null>(null);
     const [graphDirected, setGraphDirected] = useState<boolean>(false);
 
