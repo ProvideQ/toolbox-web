@@ -25,11 +25,11 @@ export const ProgressHandler = (props: ProgressHandlerProps) => {
 
     return (
         <Container>
-            {wasClicked
-                ? <ProgressView solution={solution} finished={finished}/>
-                : null}
             {!wasClicked || finished
                 ? <GoButton clicked={onGoClicked}/>
+                : null}
+            {wasClicked
+                ? <ProgressView solution={solution} finished={finished}/>
                 : null}
         </Container>
     );

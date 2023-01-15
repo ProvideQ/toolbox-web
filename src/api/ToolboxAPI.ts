@@ -18,7 +18,7 @@ export async function postProblem(problemType: string, content: any): Promise<So
             solutionData: "",
             debugData: "",
             metaData: "",
-            error: reason
+            error: `${reason}`,
         }
     });
 

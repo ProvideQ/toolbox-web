@@ -1,5 +1,5 @@
-import React from "react";
-import {Spinner, Text} from "@chakra-ui/react";
+import React, { FunctionComponent, ReactElement, ReactNode } from "react";
+import {Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Code, Spinner, Text} from "@chakra-ui/react";
 import {Container} from "../Container";
 import {Solution} from "./Solution";
 
@@ -8,15 +8,32 @@ export interface ProgressViewProps {
     solution: Solution | undefined;
 }
 
+const OutputSection = (props: { title: string, content: string }) => (
+    <AccordionItem>
+        <h2>
+            <AccordionButton>
+                <Box as="span" flex="1" textAlign="left">{ props.title }</Box>
+                <AccordionIcon/>
+            </AccordionButton>
+        </h2>
+        <AccordionPanel pb="4">
+            { (props.content !== null && props.content !== undefined && props.content.trim() !== "")
+                ? <Code width="100%" padding="1rem">{ props.content }</Code>
+                : <i>No { props.title } output!</i>
+            }
+        </AccordionPanel>
+    </AccordionItem>
+)
+
 export const ProgressView = (props: ProgressViewProps) => {
     if (props.finished && props.solution) {
         return (
-            <Container>
-                {(props.solution.solutionData) && <Text>Solution: {props.solution.solutionData}</Text>}
-                {(props.solution.metaData) && <Text>Meta Data: {props.solution.metaData}</Text>}
-                {(props.solution.debugData) && <Text>Debug: {props.solution.debugData}</Text>}
-                {(props.solution.error) && <Text>Error: {props.solution.error}</Text>}
-            </Container>
+            <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
+                <OutputSection title="Solution" content={props.solution.solutionData} />
+                <OutputSection title="Meta Data" content={props.solution.metaData} />
+                <OutputSection title="Debugging Info" content={props.solution.debugData} />
+                <OutputSection title="Error" content={props.solution.error} />
+            </Accordion>
         );
     } else {
         return (
