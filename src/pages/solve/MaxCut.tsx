@@ -53,7 +53,9 @@ const MaxCut: NextPage = () => {
                 </Center>
 
                 <Divider />
-                <ProgressHandler />
+                <ProgressHandler
+                    problemType="maxCut"
+                    problemInput={graphString} />
             </Main>
         </Container>
     );
