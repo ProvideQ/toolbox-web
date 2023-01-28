@@ -1,7 +1,7 @@
 import {Solution} from "../components/solvers/Solution";
 import {ProblemSolver} from "../components/solvers/ProblemSolver";
 
-export async function postProblem(problemType: string, content: any, solver: ProblemSolver | null): Promise<Solution> {
+export async function postProblem(problemType: string, content: any, solver: ProblemSolver | undefined): Promise<Solution> {
     let returnData: Solution = { debugData: "", error: "", metaData: "", solutionData: "" };
 
     await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemType}`, {

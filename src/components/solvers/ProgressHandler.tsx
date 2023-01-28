@@ -24,7 +24,7 @@ export const ProgressHandler = (props: ProgressHandlerProps) => {
         setFinished(false);
     }
 
-    async function startSolving(solver: ProblemSolver | null) {
+    async function startSolving(solver: ProblemSolver | undefined) {
         setSolverPicked(true);
 
         postProblem(props.problemType, props.problemInput, solver)
