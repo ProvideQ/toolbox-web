@@ -38,7 +38,8 @@ export async function fetchSolvers(problemType: string): Promise<ProblemSolver[]
         .then(response => response.json())
         .then(json => json as ProblemSolver[])
         .catch(reason => {
-            console.log(reason)
+            console.error(reason)
+            alert(`Could not retrieve solvers of type ${problemType}.`)
             return []
         });
 }
