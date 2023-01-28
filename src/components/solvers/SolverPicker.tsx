@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Container, Icon, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import {Container, Icon, Select, Text} from "@chakra-ui/react";
 import {fetchSolvers} from "../../api/ToolboxAPI";
 import {ProblemSolver} from "./ProblemSolver";
 import {InputButton} from "./buttons/InputButton";
@@ -31,11 +31,14 @@ export const SolverPicker = (props: SolverPickerProps) => {
     };
 
     const getSolvers = () => {
-        return solvers.map((s: ProblemSolver) => (
-            <ListItem key={s.id}>
-                <Button key={s.id} onClick={() => solverClicked(s)}>{s.name}</Button>
-            </ListItem>)
-        );
+        return (
+            <Select placeholder={`Select Solver for ${props.problemType}`}
+                    onChange={e => solverClicked(solvers[e.target.selectedIndex - 1])} >
+                {solvers.map((s: ProblemSolver) => (
+                    <option key={s.id}>{s.name}</option>
+                ))}
+            </Select>
+        )
     }
 
     return (
@@ -46,12 +49,10 @@ export const SolverPicker = (props: SolverPickerProps) => {
                          toolTipText="MetaSolver automatically picks the best possible solver for your input"
                          icon={<Icon as={TbBulb}/>}/>
 
-            <UnorderedList>
-                {loadingSolvers
-                    ? <ListItem>Loading solvers...</ListItem>
-                    : getSolvers()
-                }
-            </UnorderedList>
+            {loadingSolvers
+                ? <Text>Loading solvers...</Text>
+                : getSolvers()
+            }
         </Container>
     );
 }
