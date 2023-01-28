@@ -7,7 +7,7 @@ import {TbBulb} from "react-icons/tb";
 
 export interface SolverPickerProps {
     problemType: string;
-    onSolverPicked?: (solver: ProblemSolver | null) => void;
+    onSolverPicked?: (solver: ProblemSolver | undefined) => void;
 }
 
 export const SolverPicker = (props: SolverPickerProps) => {
@@ -24,7 +24,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
     }, [props.problemType]);
 
 
-    const solverClicked = (solver: ProblemSolver | null) => {
+    const solverClicked = (solver: ProblemSolver | undefined) => {
         if (props.onSolverPicked) {
             props.onSolverPicked(solver);
         }
@@ -41,7 +41,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
     return (
         <Container>
             <Text>Which solver should be used?</Text>
-            <InputButton onClick={() => solverClicked(null)}
+            <InputButton onClick={() => solverClicked(undefined)}
                          text="Use MetaSolver strategy"
                          toolTipText="MetaSolver automatically picks the best possible solver for your input"
                          icon={<Icon as={TbBulb}/>}/>
