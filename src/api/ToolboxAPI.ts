@@ -18,6 +18,7 @@ export async function postProblem(problemType: string, content: any, solver: Pro
         .then(json => json as Solution)
         .catch(reason => {
             return {
+                solverName: "",
                 solutionData: "",
                 debugData: "",
                 metaData: "",

@@ -29,7 +29,7 @@ export const ProgressView = (props: ProgressViewProps) => {
     if (props.finished && props.solution) {
         return (
             <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
-                <OutputSection title="Solution" content={props.solution.solutionData} />
+                <OutputSection title={`Solution by ${props.solution.solverName}`} content={props.solution.solutionData} />
                 <OutputSection title="Meta Data" content={props.solution.metaData} />
                 <OutputSection title="Debugging Info" content={props.solution.debugData} />
                 <OutputSection title="Error" content={props.solution.error} />
