@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {GoButton} from "./buttons/GoButton";
 import {postProblem} from "../../api/ToolboxAPI";
-import {ProgressView} from "./ProgressView";
+import {SolutionView} from "./SolutionView";
 import {Container} from "../Container";
 import {Solution} from "./Solution";
 import {SolverPicker} from "./SolverPicker";
@@ -43,7 +43,7 @@ export const ProgressHandler = (props: ProgressHandlerProps) => {
                 ? <SolverPicker problemType={props.problemType} onSolverPicked={startSolving}/>
                 : null}
             {wasClicked && solverPicked
-                ? <ProgressView solution={solution} finished={finished}/>
+                ? <SolutionView solution={solution} finished={finished}/>
                 : null}
         </Container>
     );
