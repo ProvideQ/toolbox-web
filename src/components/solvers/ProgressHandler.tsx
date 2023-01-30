@@ -1,3 +1,4 @@
+import {HStack} from "@chakra-ui/react";
 import React, {useState} from "react";
 import {GoButton} from "./buttons/GoButton";
 import {postProblem} from "../../api/ToolboxAPI";
@@ -14,35 +15,34 @@ export interface ProgressHandlerProps {
 
 export const ProgressHandler = (props: ProgressHandlerProps) => {
     const [wasClicked, setClicked] = useState<boolean>(false);
-    const [solverPicked, setSolverPicked] = useState<boolean>(false);
     const [finished, setFinished] = useState<boolean>(false);
     const [solution, setSolution] = useState<Solution>();
+    const [solver, setSolver] = useState<ProblemSolver | undefined>(undefined);
 
-    async function onGoClicked() {
+    async function startSolving() {
         setClicked(true);
-        setSolverPicked(false);
         setFinished(false);
-    }
-
-    async function startSolving(solver: ProblemSolver | undefined) {
-        setSolverPicked(true);
 
         postProblem(props.problemType, props.problemInput, solver)
             .then(solution => {
                 setSolution(solution);
                 setFinished(true);
+                setSolver(undefined);
             });
     }
 
     return (
         <Container>
             {!wasClicked || finished
-                ? <GoButton clicked={onGoClicked}/>
+                ? (
+                    <HStack>
+                        <GoButton clicked={startSolving}/>
+                        <SolverPicker problemType={props.problemType} setSolver={solver => setSolver(solver)}/>
+                    </HStack>
+                )
+
                 : null}
-            {wasClicked && !solverPicked
-                ? <SolverPicker problemType={props.problemType} onSolverPicked={startSolving}/>
-                : null}
-            {wasClicked && solverPicked
+            {wasClicked
                 ? <SolutionView solution={solution} finished={finished}/>
                 : null}
         </Container>
