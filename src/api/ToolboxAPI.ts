@@ -3,7 +3,7 @@ import {Solution} from "../components/solvers/Solution";
 export async function postProblem(problemType: string, content: any): Promise<Solution> {
     let returnData: Solution = { debugData: "", error: "", metaData: "", solutionData: "" };
 
-    await fetch(`${process.env.API_BASE_URL}/solve/${problemType}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemType}`, {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
