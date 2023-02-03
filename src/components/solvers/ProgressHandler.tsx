@@ -36,8 +36,8 @@ export const ProgressHandler = (props: ProgressHandlerProps) => {
             {!wasClicked || finished
                 ? (
                     <HStack>
-                        <GoButton clicked={startSolving}/>
                         <SolverPicker problemType={props.problemType} setSolver={solver => setSolver(solver)}/>
+                        <GoButton clicked={startSolving}/>
                     </HStack>
                 )
 
