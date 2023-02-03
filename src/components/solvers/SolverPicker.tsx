@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Container, Select, Text} from "@chakra-ui/react";
+import {Select, Text, Tooltip} from "@chakra-ui/react";
 import {fetchSolvers} from "../../api/ToolboxAPI";
 import {ProblemSolver} from "./ProblemSolver";
 
@@ -28,8 +28,8 @@ export const SolverPicker = (props: SolverPickerProps) => {
                     ? undefined
                     : solvers[e.target.selectedIndex - 1])
             }>
-                <option>Use MetaSolver strategy</option>
-                <optgroup label="Specific Solvers">
+                <option>Automated Solver Selection</option>
+                <optgroup label="Use Specific Solvers">
                     {solvers.map((s: ProblemSolver) => (
                         <option key={s.id}>{s.name}</option>
                     ))}
@@ -39,12 +39,11 @@ export const SolverPicker = (props: SolverPickerProps) => {
     }
 
     return (
-        <Container>
-            <Text>Which solver should be used?</Text>
+        <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
             {loadingSolvers
                 ? <Text>Loading solvers...</Text>
                 : getSolvers()
             }
-        </Container>
+        </Tooltip>
     );
 }
