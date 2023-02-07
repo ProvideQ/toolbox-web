@@ -1,5 +1,6 @@
-import {Solution} from "../components/solvers/Solution";
+import { Solution } from "../components/solvers/Solution";
 import {ProblemSolver} from "../components/solvers/ProblemSolver";
+import { SolutionStatus } from "../components/solvers/SolutionStatus";
 
 export async function postProblem(problemType: string, content: any, solver: ProblemSolver | undefined): Promise<Solution> {
     return fetch(
@@ -18,7 +19,10 @@ export async function postProblem(problemType: string, content: any, solver: Pro
         .then(json => json as Solution)
         .catch(reason => {
             return {
+                id: -1,
+                status: SolutionStatus.INVALID,
                 solverName: "",
+                executionMilliseconds: 0,
                 solutionData: "",
                 debugData: "",
                 metaData: "",
