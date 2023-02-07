@@ -34,7 +34,11 @@ export const SolutionView = (props: SolutionViewProps) => {
         return (
             <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
                 <OutputSection title={`Solution by ${props.solution.solverName}`} content={[props.solution.solutionData]} />
-                <OutputSection title="Meta Data" content={[props.solution.metaData]} />
+                <OutputSection title="Meta Data" content={[
+                    `Problem ID: ${props.solution.id}`,
+                    `Solver: ${props.solution.solverName}`,
+                    `Execution time: ${props.solution.executionMilliseconds / 1000}s`,
+                    `Additional meta data: ${props.solution.metaData}`]} />
                 <OutputSection title="Debugging Info" content={[props.solution.debugData]} />
                 <OutputSection title="Error" content={[props.solution.error]} />
             </Accordion>
