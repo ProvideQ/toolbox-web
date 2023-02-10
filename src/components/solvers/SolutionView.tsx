@@ -8,7 +8,7 @@ export interface SolutionViewProps {
     solution: Solution | undefined;
 }
 
-const OutputSection = (props: { title: string, content: string }) => (
+const OutputSection = (props: { title: string, content: string[] }) => (
     <AccordionItem>
         <h2>
             <AccordionButton>
@@ -16,12 +16,16 @@ const OutputSection = (props: { title: string, content: string }) => (
                 <AccordionIcon/>
             </AccordionButton>
         </h2>
-        <AccordionPanel pb="4">
-            { (props.content !== null && props.content !== undefined && props.content.trim() !== "")
-                ? <Code width="100%" padding="1rem">{ props.content }</Code>
-                : <i>No { props.title } output!</i>
-            }
-        </AccordionPanel>
+        {props.content.map(c => {
+            return (
+                <AccordionPanel pb="4" key={c}>
+                    {(c !== null && c !== undefined && c.trim() !== "")
+                        ? <Code width="100%" padding="1rem">{c}</Code>
+                        : <i>No {props.title} output!</i>
+                    }
+                </AccordionPanel>
+            );
+        })}
     </AccordionItem>
 )
 
@@ -29,10 +33,14 @@ export const SolutionView = (props: SolutionViewProps) => {
     if (props.finished && props.solution) {
         return (
             <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
-                <OutputSection title={`Solution by ${props.solution.solverName}`} content={props.solution.solutionData} />
-                <OutputSection title="Meta Data" content={props.solution.metaData} />
-                <OutputSection title="Debugging Info" content={props.solution.debugData} />
-                <OutputSection title="Error" content={props.solution.error} />
+                <OutputSection title={`Solution by ${props.solution.solverName}`} content={[props.solution.solutionData]} />
+                <OutputSection title="Meta Data" content={[
+                    `Problem ID: ${props.solution.id}`,
+                    `Solver: ${props.solution.solverName}`,
+                    `Execution time: ${props.solution.executionMilliseconds / 1000}s`,
+                    `Additional meta data: ${props.solution.metaData}`]} />
+                <OutputSection title="Debugging Info" content={[props.solution.debugData]} />
+                <OutputSection title="Error" content={[props.solution.error]} />
             </Accordion>
         );
     } else {
