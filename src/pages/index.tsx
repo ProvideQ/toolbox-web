@@ -1,11 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
 import { ProblemCard } from "../components/landing-page/ProblemCard";
-import { Text, Heading, Grid, GridItem } from "@chakra-ui/react";
+import { Text, Heading, Grid, GridItem, Link, HStack, Image, VStack } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
@@ -20,19 +19,21 @@ const Home: NextPage = () => {
 
       <Hero title="ProvideQ" />
       <Main mb="20vh">
+        <Text color="text" align="justify" as="b">
+          Welcome to the ProvideQ Toolbox!
+        </Text>
         <Text color="text" align="justify">
-          Welcome to the ProvideQ frontend! Lorem ipsum dolor sit amet
-          consectetur adipisicing elit. In, earum voluptas aspernatur itaque
-          culpa modi a at explicabo assumenda praesentium quos quisquam expedita
-          possimus unde sit iure illum architecto. Maiores voluptatum culpa odio
-          quos exercitationem nemo laborum earum dolores expedita inventore odit
-          delectus vel autem ipsa quam tenetur ab, illo enim reiciendis debitis
-          quasi minima. Voluptatum fugit consequatur aspernatur neque. Id
-          ducimus debitis animi veritatis, alias deleniti voluptates repudiandae
-          officia aliquam qui accusantium. Ullam a, animi quos excepturi nemo
-          iste, expedita placeat qui ipsam error nostrum dolores tempore eaque
-          nobis ipsa consequuntur tenetur, cupiditate repellendus illum hic!
-          Debitis, repellat totam.
+          ProvideQ aims to enable the Enablers by providing Quantum Readiness for Optimization Providers.
+          We collect quantum and classical algorithms for well-known optimization problems and implement solution strategies to decide which algorithms can provide the best solutions for a specific problem instance. 
+          This website represents the current prototype of our toolbox. It is currently in active development.
+        </Text>
+        <Text color="text" align="justify" >
+          Feel free to try it out!
+        </Text>
+        <Text color="text" align="justify">
+          Our GitHub: <Link href="https://github.com/ProvideQ">@ProvideQ</Link>
+          <br/>
+          Contact: <Link href="mailto:provideq@lists.kit.edu">provideq@lists.kit.edu</Link>
         </Text>
 
         <Heading as="h2" size="xl" pt="10">
@@ -40,6 +41,23 @@ const Home: NextPage = () => {
         </Heading>
 
         <ProblemChooser />
+
+        <HStack
+          borderTopWidth={1}
+          width={"100%"}
+          paddingTop={"1rem"}
+          textAlign={"left"}
+          justifyContent={"space-between"}
+        >
+          <VStack>
+            {/*<Text>Proudly developed at </Text>*/}
+            <Image src="/KIT.svg" height={"5rem"}/>
+          </VStack>
+          <VStack alignItems={"end"} paddingTop={"-1rem"}>
+            <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
+            <Link href="https://www.kit.edu/privacypolicy.php" color={"blue.400"}>Privacy Policy</Link>
+          </VStack>
+        </HStack>
       </Main>
     </Container>
   );

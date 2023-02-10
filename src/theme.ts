@@ -4,7 +4,7 @@ const theme = extendTheme({
   semanticTokens: {
     colors: {
       heroGradientStart: {
-        default: "#7928CA",
+        default: "#00876C",
         _dark: "#e3a7f9",
       },
       heroGradientEnd: {
