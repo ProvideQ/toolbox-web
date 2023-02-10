@@ -20,7 +20,7 @@ const OutputSection = (props: { title: string, content: string[] }) => (
             return (
                 <AccordionPanel pb="4" key={c}>
                     {(c !== null && c !== undefined && c.trim() !== "")
-                        ? <Code width="100%" padding="1rem">{c}</Code>
+                        ? <Code width="100%" padding="1rem"><pre>{c}</pre></Code>
                         : <i>No {props.title} output!</i>
                     }
                 </AccordionPanel>
