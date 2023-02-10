@@ -1,9 +1,9 @@
-import React, { FunctionComponent, ReactElement, ReactNode } from "react";
-import {Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Code, Spinner, Text} from "@chakra-ui/react";
+import React from "react";
+import {Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Code, Spinner} from "@chakra-ui/react";
 import {Container} from "../Container";
 import {Solution} from "./Solution";
 
-export interface ProgressViewProps {
+export interface SolutionViewProps {
     finished: boolean;
     solution: Solution | undefined;
 }
@@ -25,11 +25,11 @@ const OutputSection = (props: { title: string, content: string }) => (
     </AccordionItem>
 )
 
-export const ProgressView = (props: ProgressViewProps) => {
+export const SolutionView = (props: SolutionViewProps) => {
     if (props.finished && props.solution) {
         return (
             <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
-                <OutputSection title="Solution" content={props.solution.solutionData} />
+                <OutputSection title={`Solution by ${props.solution.solverName}`} content={props.solution.solutionData} />
                 <OutputSection title="Meta Data" content={props.solution.metaData} />
                 <OutputSection title="Debugging Info" content={props.solution.debugData} />
                 <OutputSection title="Error" content={props.solution.error} />
