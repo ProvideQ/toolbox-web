@@ -3,8 +3,7 @@ import Head from "next/head";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { ProblemCard } from "../components/landing-page/ProblemCard";
-import { Text, Heading, Grid, GridItem, Link, HStack, Image, VStack } from "@chakra-ui/react";
+import { Text, Heading, Link, HStack, Image, VStack } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
@@ -24,7 +23,7 @@ const Home: NextPage = () => {
         </Text>
         <Text color="text" align="justify">
           ProvideQ aims to enable the Enablers by providing Quantum Readiness for Optimization Providers.
-          We collect quantum and classical algorithms for well-known optimization problems and implement solution strategies to decide which algorithms can provide the best solutions for a specific problem instance. 
+          We collect quantum and classical algorithms for well-known optimization problems and implement solution strategies to decide which algorithms can provide the best solutions for a specific problem instance.
           This website represents the current prototype of our toolbox. It is currently in active development.
         </Text>
         <Text color="text" align="justify" >
@@ -50,8 +49,11 @@ const Home: NextPage = () => {
           justifyContent={"space-between"}
         >
           <VStack>
-            {/*<Text>Proudly developed at </Text>*/}
             <Image src="/KIT.svg" height={"5rem"}/>
+          </VStack>
+          <VStack>
+            {/*<Text>Proudly developed at </Text>*/}
+            <Image src="/gams.svg" height={"5rem"}/>
           </VStack>
           <VStack alignItems={"end"} paddingTop={"-1rem"}>
             <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
