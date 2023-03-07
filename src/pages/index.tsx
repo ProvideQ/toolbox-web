@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
+import { URL } from "next/dist/compiled/@edge-runtime/primitives/url";
 import Head from "next/head";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { Text, Heading, Link, HStack, Image, VStack } from "@chakra-ui/react";
+import { Text, Heading, Link, HStack, Image, VStack, Grid, SimpleGrid } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
@@ -41,25 +42,49 @@ const Home: NextPage = () => {
 
         <ProblemChooser />
 
-        <HStack
-          borderTopWidth={1}
-          width={"100%"}
-          paddingTop={"1rem"}
-          textAlign={"left"}
-          justifyContent={"space-between"}
+        <SimpleGrid
+            columns={3}
+            borderTopWidth={1}
+            width={"100%"}
+            paddingTop={"1rem"}
+            textAlign={"left"}
+            justifyContent={"space-between"}
         >
           <VStack>
-            <Image src="/KIT.svg" height={"5rem"}/>
+            <Link href="https://www.kit.edu/">
+              <Image src="/KIT.svg" height={"5rem"}/>
+            </Link>
           </VStack>
           <VStack>
-            {/*<Text>Proudly developed at </Text>*/}
-            <Image src="/gams.svg" height={"5rem"}/>
+            <Link href="https://www.tu-braunschweig.de/">
+              <Image src="/Braunschweig.svg" height={"5rem"}/>
+            </Link>
+          </VStack>
+          <VStack>
+            <Link href="https://www.uni-koeln.de/">
+              <Image src="/Köln.svg" height={"5rem"}/>
+            </Link>
+          </VStack>
+          <VStack>
+            <Link href="https://www.uni-hannover.de/de/">
+              <Image src="/Hannover.svg" height={"5rem"}/>
+            </Link>
+          </VStack>
+          <VStack>
+            <Link href="https://www.gams.com/">
+              <Image src="/gams.svg" height={"5rem"}/>
+            </Link>
+          </VStack>
+          <VStack>
+            <Link href="https://www.4flow.com/">
+              <Image src="/4flow.svg" height={"5rem"}/>
+            </Link>
           </VStack>
           <VStack alignItems={"end"} paddingTop={"-1rem"}>
             <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
             <Link href="https://www.kit.edu/privacypolicy.php" color={"blue.400"}>Privacy Policy</Link>
           </VStack>
-        </HStack>
+        </SimpleGrid>
       </Main>
     </Container>
   );

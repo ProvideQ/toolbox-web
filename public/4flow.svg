@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480" height="260" viewBox="0 0 480 260">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_16750" data-name="Rectangle 16750" width="314.964" height="42" transform="translate(0 -0.05)" fill="none"/>
+    </clipPath>
+    <clipPath id="clip-Logo_-_4flow">
+      <rect width="480" height="260"/>
+    </clipPath>
+  </defs>
+  <g id="Logo_-_4flow" data-name="Logo - 4flow" clip-path="url(#clip-Logo_-_4flow)">
+    <rect width="480" height="260" fill="#fff"/>
+    <g id="_4flow" data-name="4flow" transform="translate(83 109.05)" clip-path="url(#clip-path)">
+      <path id="Path_11468" data-name="Path 11468" d="M43.467.089h6.622V40.934H43.467V25.363H0V0H6.622V18.7H43.467Zm73.289,6.622H73.26V18.889h43.5v6.593H73.26V40.963H66.667V.089h50.1V6.711Zm65.467,27.556H138.741V.089h-6.593V40.934h50.074ZM245.438.089H195.364V40.934h50.089V.089ZM202.016,6.7h36.815V34.311H201.986V6.7ZM314.964,40.771V0h-6.622V34.252H291.557V.089h-6.622V34.341H267.483V0H260.86V40.83Z" transform="translate(0 0.024)" fill="#ee7203"/>
+    </g>
+  </g>
+</svg>
