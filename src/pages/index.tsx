@@ -4,7 +4,7 @@ import Head from "next/head";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { Text, Heading, Link, HStack, Image, VStack, Grid, SimpleGrid } from "@chakra-ui/react";
+import { Text, Heading, Link, HStack, Image, VStack, Grid, SimpleGrid, Spacer, color } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Hero title="ProvideQ" />
-      <Main mb="20vh">
+      <Main>
         <Text color="text" align="justify" as="b">
           Welcome to the ProvideQ Toolbox!
         </Text>
@@ -42,49 +42,45 @@ const Home: NextPage = () => {
 
         <ProblemChooser />
 
-        <SimpleGrid
-            columns={3}
+        <Spacer
+            paddingTop={"10rem"}
+        />
+
+        <VStack
             borderTopWidth={1}
-            width={"100%"}
             paddingTop={"1rem"}
-            textAlign={"left"}
-            justifyContent={"space-between"}
         >
-          <VStack>
+          <HStack justifyContent={"space-between"} width={"100%"}>
+            <Text color={"gray.500"} paddingY={"3"}>ProvideQ is made possible by these partners:</Text>
+            <HStack>
+              <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
+              <Link href="https://www.kit.edu/privacypolicy.php" color={"blue.400"}>Privacy Policy</Link>
+            </HStack>
+          </HStack>
+          <HStack
+              width={"100%"}
+              justifyContent={"space-between"}
+          >
             <Link href="https://www.kit.edu/">
-              <Image src="/KIT.svg" height={"5rem"}/>
+              <Image src="/KIT.svg" height={"2.5rem"}/>
             </Link>
-          </VStack>
-          <VStack>
             <Link href="https://www.tu-braunschweig.de/">
-              <Image src="/Braunschweig.svg" height={"5rem"}/>
+              <Image src="/Braunschweig.svg" height={"2.5rem"}/>
             </Link>
-          </VStack>
-          <VStack>
             <Link href="https://www.uni-koeln.de/">
-              <Image src="/Köln.svg" height={"5rem"}/>
+              <Image src="/Köln.svg" height={"2.5rem"}/>
             </Link>
-          </VStack>
-          <VStack>
             <Link href="https://www.uni-hannover.de/de/">
-              <Image src="/Hannover.svg" height={"5rem"}/>
+              <Image src="/Hannover.svg" height={"2.5rem"}/>
             </Link>
-          </VStack>
-          <VStack>
             <Link href="https://www.gams.com/">
-              <Image src="/gams.svg" height={"5rem"}/>
+              <Image src="/gams.svg" height={"2.5rem"}/>
             </Link>
-          </VStack>
-          <VStack>
             <Link href="https://www.4flow.com/">
-              <Image src="/4flow.svg" height={"5rem"}/>
+              <Image src="/4flow.svg" height={"2.5rem"} style={{transform: "scale(1.75)", paddingRight: "10px"}}/>
             </Link>
-          </VStack>
-          <VStack alignItems={"end"} paddingTop={"-1rem"}>
-            <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
-            <Link href="https://www.kit.edu/privacypolicy.php" color={"blue.400"}>Privacy Policy</Link>
-          </VStack>
-        </SimpleGrid>
+          </HStack>
+        </VStack>
       </Main>
     </Container>
   );
