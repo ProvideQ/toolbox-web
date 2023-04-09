@@ -1,10 +1,9 @@
 import type { NextPage } from "next";
-import { URL } from "next/dist/compiled/@edge-runtime/primitives/url";
 import Head from "next/head";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { Text, Heading, Link, HStack, Image, VStack, Grid, SimpleGrid, Spacer, color } from "@chakra-ui/react";
+import { Text, Heading, Link, HStack, Image, VStack, Spacer } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
