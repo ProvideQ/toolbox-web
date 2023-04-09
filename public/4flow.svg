@@ -1,16 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="480" height="260" viewBox="0 0 480 260">
-  <defs>
-    <clipPath id="clip-path">
-      <rect id="Rectangle_16750" data-name="Rectangle 16750" width="314.964" height="42" transform="translate(0 -0.05)" fill="none"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="480"
+   height="260"
+   viewBox="0 0 480 260"
+   version="1.1"
+   id="svg21"
+   sodipodi:docname="4flow.svg"
+   inkscape:export-filename="4flow.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview23"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="2.7291667"
+     inkscape:cx="240"
+     inkscape:cy="100.76336"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Logo_-_4flow" />
+  <defs
+     id="defs14">
+    <clipPath
+       id="clip-path">
+      <rect
+         id="Rectangle_16750"
+         data-name="Rectangle 16750"
+         width="314.96399"
+         height="42"
+         transform="translate(0,-0.05)"
+         fill="none"
+         x="0"
+         y="0" />
     </clipPath>
-    <clipPath id="clip-Logo_-_4flow">
-      <rect width="480" height="260"/>
+    <clipPath
+       id="clip-Logo_-_4flow">
+      <rect
+         width="480"
+         height="260"
+         id="rect11"
+         x="0"
+         y="0" />
     </clipPath>
   </defs>
-  <g id="Logo_-_4flow" data-name="Logo - 4flow" clip-path="url(#clip-Logo_-_4flow)">
-    <rect width="480" height="260" fill="#fff"/>
-    <g id="_4flow" data-name="4flow" transform="translate(83 109.05)" clip-path="url(#clip-path)">
-      <path id="Path_11468" data-name="Path 11468" d="M43.467.089h6.622V40.934H43.467V25.363H0V0H6.622V18.7H43.467Zm73.289,6.622H73.26V18.889h43.5v6.593H73.26V40.963H66.667V.089h50.1V6.711Zm65.467,27.556H138.741V.089h-6.593V40.934h50.074ZM245.438.089H195.364V40.934h50.089V.089ZM202.016,6.7h36.815V34.311H201.986V6.7ZM314.964,40.771V0h-6.622V34.252H291.557V.089h-6.622V34.341H267.483V0H260.86V40.83Z" transform="translate(0 0.024)" fill="#ee7203"/>
+  <g
+     id="Logo_-_4flow"
+     data-name="Logo - 4flow"
+     clip-path="url(#clip-Logo_-_4flow)">
+    <g
+       id="_4flow"
+       data-name="4flow"
+       transform="translate(83,109.05)"
+       clip-path="url(#clip-path)">
+      <path
+         id="Path_11468"
+         data-name="Path 11468"
+         d="m 43.467,0.089 h 6.622 V 40.934 H 43.467 V 25.363 H 0 V 0 h 6.622 v 18.7 h 36.845 z m 73.289,6.622 H 73.26 v 12.178 h 43.5 v 6.593 H 73.26 V 40.963 H 66.667 V 0.089 h 50.1 v 6.622 z m 65.467,27.556 H 138.741 V 0.089 h -6.593 v 40.845 h 50.074 z M 245.438,0.089 h -50.074 v 40.845 h 50.089 V 0.089 Z M 202.016,6.7 h 36.815 V 34.311 H 201.986 V 6.7 Z M 314.964,40.771 V 0 h -6.622 V 34.252 H 291.557 V 0.089 h -6.622 V 34.341 H 267.483 V 0 h -6.623 v 40.83 z"
+         transform="translate(0,0.024)"
+         fill="#ee7203" />
     </g>
   </g>
 </svg>
