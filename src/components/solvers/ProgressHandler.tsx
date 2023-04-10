@@ -1,4 +1,4 @@
-import { Box, Center, LinkBox, VStack } from "@chakra-ui/react";
+import { Box, Center, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { GoButton } from "./buttons/GoButton";
 import { postProblem } from "../../api/ToolboxAPI";

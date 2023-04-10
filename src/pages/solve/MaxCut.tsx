@@ -1,12 +1,9 @@
-import { Center, Divider, Text, Textarea } from "@chakra-ui/react";
+import { Center, Divider } from "@chakra-ui/react";
 import { NextPage } from "next";
-import Head from "next/head";
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Container } from "../../components/Container";
-import { Main } from "../../components/Main";
 import { GraphArea } from "../../components/solvers/Graph/GraphArea";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { SolverTitle } from "../../components/solvers/SolverTitle";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 import { parseGML } from '../../converter/graph/gml/GmlParser';
 

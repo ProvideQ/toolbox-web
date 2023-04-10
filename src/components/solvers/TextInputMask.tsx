@@ -4,7 +4,6 @@ import React, { ChangeEvent, ReactElement, useState } from "react";
 import { Container } from "../Container";
 import { Main } from "../Main";
 import { InputButtonPanel } from "./buttons/InputButtonPanel";
-import { ProgressHandler } from "./ProgressHandler";
 import { Help } from "./SAT/Help";
 import { SolverTitle } from "./SolverTitle";
 
