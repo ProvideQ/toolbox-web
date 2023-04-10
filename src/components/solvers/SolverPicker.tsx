@@ -1,33 +1,49 @@
-import React, {useEffect, useState} from "react";
-import {Select, Text, Tooltip} from "@chakra-ui/react";
-import {fetchSolvers} from "../../api/ToolboxAPI";
-import {ProblemSolver} from "./ProblemSolver";
+import { Box, HStack, Select, Text, Tooltip } from "@chakra-ui/react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
+import { ProblemDefinition } from "./ProblemDefinition";
+import { ProblemSolver } from "./ProblemSolver";
+import { SolveRequest } from "./SolveRequest";
 
 export interface SolverPickerProps {
-    problemType: string;
-    setSolver?: (solver: ProblemSolver | undefined) => void;
+    problemUrl: string;
+    setSolveRequest: (subRoutines: SolveRequest) => void;
 }
 
 export const SolverPicker = (props: SolverPickerProps) => {
     const [loadingSolvers, setLoadingSolvers] = useState<boolean>(true);
     const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
+    const [subRoutines, setSubRoutines] = useState<ProblemDefinition[] | undefined>(undefined);
+    const [solveRequest, setSolveRequest] = useState<SolveRequest>({
+        requestedSubSolveRequests: {}
+    });
 
     useEffect(() => {
+        setSubRoutines(undefined);
         setLoadingSolvers(true);
-        fetchSolvers(props.problemType)
-            .then(solvers => {
+        fetchSolvers(props.problemUrl)
+            .then((solvers: ProblemSolver[]) => {
                 setSolvers(solvers);
                 setLoadingSolvers(false);
             })
-    }, [props.problemType]);
+    }, [props.problemUrl]);
+
+    function onSolverChanged(e: ChangeEvent<HTMLSelectElement>) {
+        if (e.target.selectedIndex == 0 || e.target.selectedIndex > solvers.length) {
+            setSubRoutines(undefined);
+            props.setSolveRequest?.(solveRequest)
+        } else {
+            let solver = solvers[e.target.selectedIndex - 1];
+            solveRequest.requestedSolverId = solver.id;
+            fetchSubRoutines(props.problemUrl, solver.id)
+                .then(subRoutines => setSubRoutines(subRoutines));
+            props.setSolveRequest?.(solveRequest)
+        }
+    }
 
     const getSolvers = () => {
         return (
-            <Select onChange={e =>
-                props.setSolver?.(e.target.selectedIndex == 0 || e.target.selectedIndex > solvers.length
-                    ? undefined
-                    : solvers[e.target.selectedIndex - 1])
-            }>
+            <Select onChange={onSolverChanged}>
                 <option>Automated Solver Selection</option>
                 <optgroup label="Use Specific Solvers">
                     {solvers.map((s: ProblemSolver) => (
@@ -39,11 +55,24 @@ export const SolverPicker = (props: SolverPickerProps) => {
     }
 
     return (
-        <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
-            {loadingSolvers
-                ? <Text>Loading solvers...</Text>
-                : getSolvers()
-            }
-        </Tooltip>
+        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
+            <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
+                {loadingSolvers
+                    ? <Text>Loading solvers...</Text>
+                    : getSolvers()
+                }
+            </Tooltip>
+
+            <HStack>
+                {subRoutines == undefined
+                    ? null
+                    : subRoutines.map(def => <SolverPicker
+                        key={def.type}
+                        problemUrl={def.url}
+                        setSolveRequest={subSolveRequest => {
+                            solveRequest.requestedSubSolveRequests[def.type] = subSolveRequest;
+                        }}/>)}
+            </HStack>
+        </Box>
     );
 }
