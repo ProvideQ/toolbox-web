@@ -33,15 +33,5 @@ export const ProblemChooser = (props: GridProps) => (
         description="For a given undirected, weighted graph, this algorithm finds a cut that is a maximum in some way or another."
       />
     </GridItem>
-    <GridItem>
-      <ProblemCard
-        href="solve/#"
-        new={false}
-        qubits={2}
-        speedup="superpolynomial"
-        problemName="DemoAlgorithm"
-        description="I'm running out of ideas for descriptive texts, please help me!"
-      />
-    </GridItem>
   </Grid>
 );
