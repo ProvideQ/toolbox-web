@@ -1,4 +1,4 @@
-import { Center, Divider, VStack } from "@chakra-ui/react";
+import { Box, Divider, VStack } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React, { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
@@ -31,14 +31,13 @@ const FeatureModelAnomaly: NextPage = () => {
             onTextChanged={setUvl}
             body={
                 <VStack>
-                    <Center width="100px" >
+                    <Box width="300px">
                         <MultiSelect
-
                             options={anomalies}
                             value={selectedAnomalies}
                             onChange={setSelectedAnomalies}
                             labelledBy="Select anomalies"/>
-                    </Center>
+                    </Box>
 
                     <Divider/>
 
