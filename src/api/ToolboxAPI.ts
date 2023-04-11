@@ -1,4 +1,4 @@
-import { ProblemDefinition } from "../components/solvers/ProblemDefinition";
+import { SubRoutineDefinition } from "../components/solvers/SubRoutineDefinition";
 import { ProblemSolver } from "../components/solvers/ProblemSolver";
 import { Solution } from "../components/solvers/Solution";
 import { SolutionStatus } from "../components/solvers/SolutionStatus";
@@ -48,7 +48,7 @@ export async function fetchSolvers(problemUrl: string): Promise<ProblemSolver[]>
         });
 }
 
-export async function fetchSubRoutines(problemUrl: string, solverId: string): Promise<ProblemDefinition[]> {
+export async function fetchSubRoutines(problemUrl: string, solverId: string): Promise<SubRoutineDefinition[]> {
     return fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/sub-routines/${problemUrl}?${new URLSearchParams({ id: solverId })}`,
         {

@@ -1,19 +1,20 @@
-import { Box, HStack, Select, Text, Tooltip } from "@chakra-ui/react";
+import {Box, Container, HStack, Select, Text, Tooltip} from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
-import { ProblemDefinition } from "./ProblemDefinition";
+import { SubRoutineDefinition } from "./SubRoutineDefinition";
 import { ProblemSolver } from "./ProblemSolver";
 import { SolveRequest } from "./SolveRequest";
 
 export interface SolverPickerProps {
     problemUrl: string;
+    problemDescription?: string;
     setSolveRequest: (subRoutines: SolveRequest) => void;
 }
 
 export const SolverPicker = (props: SolverPickerProps) => {
     const [loadingSolvers, setLoadingSolvers] = useState<boolean>(true);
     const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
-    const [subRoutines, setSubRoutines] = useState<ProblemDefinition[] | undefined>(undefined);
+    const [subRoutines, setSubRoutines] = useState<SubRoutineDefinition[] | undefined>(undefined);
     const [solveRequest, setSolveRequest] = useState<SolveRequest>({
         requestedSubSolveRequests: {}
     });
@@ -43,14 +44,17 @@ export const SolverPicker = (props: SolverPickerProps) => {
 
     const getSolvers = () => {
         return (
-            <Select onChange={onSolverChanged}>
-                <option>Automated Solver Selection</option>
-                <optgroup label="Use Specific Solvers">
-                    {solvers.map((s: ProblemSolver) => (
-                        <option key={s.id}>{s.name}</option>
-                    ))}
-                </optgroup>
-            </Select>
+            <Container>
+                <Text>{props.problemDescription}</Text>
+                <Select onChange={onSolverChanged}>
+                    <option>Automated Solver Selection</option>
+                    <optgroup label="Use Specific Solvers">
+                        {solvers.map((s: ProblemSolver) => (
+                            <option key={s.id}>{s.name}</option>
+                        ))}
+                    </optgroup>
+                </Select>
+            </Container>
         )
     }
 
@@ -69,6 +73,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
                     : subRoutines.map(def => <SolverPicker
                         key={def.type}
                         problemUrl={def.url}
+                        problemDescription={def.description}
                         setSolveRequest={subSolveRequest => {
                             solveRequest.requestedSubSolveRequests[def.type] = subSolveRequest;
                         }}/>)}
