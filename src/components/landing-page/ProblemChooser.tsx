@@ -30,7 +30,7 @@ export const ProblemChooser = (props: GridProps) => (
         qubits={12}
         speedup="polynomial"
         problemName="Feature Model Anomaly"
-        description="For a given undirected, weighted graph, this algorithm finds a cut that is a maximum in some way or another."
+        description="For a given feature model, check for Void Feature Model, Dead Features, False-Optional Features, Redundant Constraints.."
       />
     </GridItem>
   </Grid>
