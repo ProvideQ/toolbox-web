@@ -59,7 +59,7 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
 
             {wasClicked
                 ? solutions?.map(s => (
-                    <Box w="50pc"  m={2} borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
+                    <Box key={s.id} w="50pc"  m={2} borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
                         <SolutionView key={s.id} solution={s} finished={finished}/>
                     </Box>)
                 )
