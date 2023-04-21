@@ -4,7 +4,7 @@ import { Solution } from "../components/solvers/Solution";
 import { SolutionStatus } from "../components/solvers/SolutionStatus";
 import { SolveRequest } from "../components/solvers/SolveRequest";
 
-export async function postProblem(problemUrl: string, solveRequest?: SolveRequest): Promise<Solution> {
+export async function postProblem(problemUrl: string, solveRequest: SolveRequest): Promise<Solution> {
     return fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemUrl}`,
         {
