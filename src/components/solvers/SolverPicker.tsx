@@ -3,20 +3,20 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SubRoutineDefinition } from "./SubRoutineDefinition";
 import { ProblemSolver } from "./ProblemSolver";
-import { SolveRequest } from "./SolveRequest";
+ import { SolveRequest, SubSolveRequest } from "./SolveRequest";
 
 export interface SolverPickerProps {
     problemUrl: string;
     problemDescription?: string;
-    setSolveRequest: (subRoutines: SolveRequest) => void;
+    setSolveRequest: (subRoutines: SubSolveRequest) => void;
 }
 
 export const SolverPicker = (props: SolverPickerProps) => {
     const [loadingSolvers, setLoadingSolvers] = useState<boolean>(true);
     const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
     const [subRoutines, setSubRoutines] = useState<SubRoutineDefinition[] | undefined>(undefined);
-    const [solveRequest, setSolveRequest] = useState<SolveRequest>({
-        requestedSubSolveRequests: new Map<string, SolveRequest>()
+    const [solveRequest, setSolveRequest] = useState<SubSolveRequest>({
+        requestedSubSolveRequests: new Map<string, SubSolveRequest>()
     });
 
     useEffect(() => {
