@@ -9,7 +9,15 @@ import { SolveRequest, SubSolveRequest } from "./SolveRequest";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {
+    /**
+     * List of url fragments that are used for problem solve request to the toolbox.
+     */
     explicitSolvers?: string[];
+    /**
+     * Url to retrieve solver candidates.
+     * Also used for sending the problem solve request to the toolbox unless explicitSolvers is set,
+     * in which case this is used to send problem solve request.
+     */
     problemUrl: string;
     problemInput: T;
 }
