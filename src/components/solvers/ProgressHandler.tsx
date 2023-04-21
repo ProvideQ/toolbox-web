@@ -19,7 +19,7 @@ export const ProgressHandler = (props: ProgressHandlerProps) => {
     const [finished, setFinished] = useState<boolean>(false);
     const [solutions, setSolutions] = useState<Solution[]>();
     const [solveRequest, setSolveRequest] = useState<SolveRequest>({
-        requestedSubSolveRequests: {}
+        requestedSubSolveRequests: new Map<string, SolveRequest>()
     });
 
     async function startSolving() {
