@@ -1,11 +1,11 @@
 import { Box, Divider, VStack } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React, { useState } from "react";
-import { MultiSelect } from "react-multi-select-component";
+import { MultiSelect, Option } from "react-multi-select-component";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
-const anomalies = [{
+const anomalies : Option[] = [{
     label: "Void Feature Model",
     value: "feature-model/anomaly/void",
 }, {
@@ -21,7 +21,7 @@ const anomalies = [{
 
 const FeatureModelAnomaly: NextPage = () => {
     const [uvl, setUvl] = useState<string>("");
-    const [selectedAnomalies, setSelectedAnomalies] = useState<any[]>(anomalies);
+    const [selectedAnomalies, setSelectedAnomalies] = useState<Option[]>(anomalies);
 
     return (
         <TextInputMask
