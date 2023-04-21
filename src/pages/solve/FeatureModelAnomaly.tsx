@@ -43,7 +43,7 @@ const FeatureModelAnomaly: NextPage = () => {
 
                     <ProgressHandler
                         explicitSolvers={selectedAnomalies.map(a => a.value)}
-                        problemUrl={`feature-model/anomaly`}
+                        problemUrl="feature-model/anomaly"
                         problemInput={uvl}/>
                 </VStack>
             }/>
