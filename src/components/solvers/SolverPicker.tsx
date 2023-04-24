@@ -1,12 +1,20 @@
-import { Box, Container, HStack, Select, Text, Tooltip } from "@chakra-ui/react";
+import { Box, Container, Select, Text, Tooltip } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SubRoutineDefinition } from "./SubRoutineDefinition";
 import { ProblemSolver } from "./ProblemSolver";
 import { SolverChoice } from "./SolveRequest";
+import { SettingsView } from "./SettingsView";
 
 export interface SolverPickerProps {
     problemUrlFragment: string;
+    /**
+     * Only needed internally - shows problem type
+     */
+    problemType?: string;
+    /**
+     * Only needed internally - shows problem description
+     */
     problemDescription?: string;
     setSolveRequest: (subRoutines: SolverChoice) => void;
 }
@@ -31,6 +39,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
 
     function onSolverChanged(e: ChangeEvent<HTMLSelectElement>) {
         if (e.target.selectedIndex == 0 || e.target.selectedIndex > solvers.length) {
+            solveRequest.requestedSolverId = undefined;
             setSubRoutines(undefined);
             props.setSolveRequest?.(solveRequest)
         } else {
@@ -45,40 +54,51 @@ export const SolverPicker = (props: SolverPickerProps) => {
     const SolverSelection = () => {
         return (
             <Container>
+                {props.problemType == undefined
+                    ? null
+                    : <Text>{props.problemType} Subroutine:</Text>}
                 <Text>{props.problemDescription}</Text>
-                <Select onChange={onSolverChanged}>
-                    <option>Automated Solver Selection</option>
-                    <optgroup label="Use Specific Solvers">
-                        {solvers.map((s: ProblemSolver) => (
-                            <option key={s.id}>{s.name}</option>
-                        ))}
-                    </optgroup>
-                </Select>
+                <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
+                    <Select margin="2" onChange={onSolverChanged}>
+                        <option>Automated Solver Selection</option>
+                        <optgroup label="Use Specific Solvers">
+                            {solvers.map((s: ProblemSolver) => (
+                                <option key={s.id}>{s.name}</option>
+                            ))}
+                        </optgroup>
+                    </Select>
+                </Tooltip>
             </Container>
         )
     }
 
     return (
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
-            <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
-                {loadingSolvers
-                    ? <Text>Loading solvers...</Text>
-                    : <SolverSelection/>
-                }
-            </Tooltip>
+        <Container>
+            {loadingSolvers
+                ? <Text>Loading solvers...</Text>
+                : <SolverSelection/>}
 
-            <HStack>
-                {subRoutines == undefined
-                    ? null
-                    : subRoutines.map(def =>
+            {solveRequest.requestedSolverId == undefined
+                 ? <SettingsView problemUrl={props.problemUrlFragment}
+                                settingChanged={settings => {
+                                    solveRequest.requestedMetaSolverSettings = settings;
+                                    props.setSolveRequest(solveRequest);
+                                }}/>
+                : null}
+
+            {subRoutines == undefined || subRoutines.length == 0
+                ? null
+                : <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
+                    {subRoutines.map(def =>
                         <SolverPicker
                             key={def.type}
                             problemUrlFragment={def.url}
+                            problemType={def.type}
                             problemDescription={def.description}
                             setSolveRequest={subSolveRequest => {
                                 solveRequest.requestedSubSolveRequests[def.type] = subSolveRequest;
                             }}/>)}
-            </HStack>
-        </Box>
+                </Box>}
+        </Container>
     );
 }
