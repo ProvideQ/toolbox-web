@@ -5,7 +5,7 @@ import { postProblem } from "../../api/ToolboxAPI";
 import { SolutionView } from "./SolutionView";
 import { Container } from "../Container";
 import { Solution } from "./Solution";
-import { SolveRequest, SubSolveRequest } from "./SolveRequest";
+import { SolveRequest, SolverChoice } from "./SolveRequest";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {
@@ -28,7 +28,7 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
     const [solutions, setSolutions] = useState<Solution[]>();
     const [solveRequest, setSolveRequest] = useState<SolveRequest<T>>({
         requestContent: props.problemInput,
-        requestedSubSolveRequests: new Map<string, SubSolveRequest>()
+        requestedSubSolveRequests: new Map<string, SolverChoice>()
     });
 
     async function startSolving() {
