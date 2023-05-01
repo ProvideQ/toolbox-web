@@ -60,14 +60,17 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
                             <GoButton clicked={startSolving}/>
                         </Center>
                         <SolverPicker problemUrlFragment={props.problemUrlFragment}
-                                      setSolveRequest={solveRequest => setSolveRequest(solveRequest)}/>
+                                      setSolveRequest={solverChoice => {
+                                          solveRequest.requestedSolverId = solverChoice.requestedSolverId;
+                                          solveRequest.requestedSubSolveRequests = solverChoice.requestedSubSolveRequests;
+                                      }}/>
                     </VStack>
                 )
                 : null}
 
             {wasClicked
                 ? solutions?.map(s => (
-                    <Box key={s.id} w="50pc"  m={2} borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
+                    <Box key={s.id} w="50pc" m={2} borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
                         <SolutionView key={s.id} solution={s} finished={finished}/>
                     </Box>)
                 )

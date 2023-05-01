@@ -1,9 +1,9 @@
-import {Box, Container, HStack, Select, Text, Tooltip} from "@chakra-ui/react";
+import { Box, Container, HStack, Select, Text, Tooltip } from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SubRoutineDefinition } from "./SubRoutineDefinition";
 import { ProblemSolver } from "./ProblemSolver";
- import { SolveRequest, SolverChoice } from "./SolveRequest";
+import { SolverChoice } from "./SolveRequest";
 
 export interface SolverPickerProps {
     problemUrlFragment: string;
@@ -70,13 +70,14 @@ export const SolverPicker = (props: SolverPickerProps) => {
             <HStack>
                 {subRoutines == undefined
                     ? null
-                    : subRoutines.map(def => <SolverPicker
-                        key={def.type}
-                        problemUrlFragment={def.url}
-                        problemDescription={def.description}
-                        setSolveRequest={subSolveRequest => {
-                            solveRequest.requestedSubSolveRequests.set(def.type, subSolveRequest);
-                        }}/>)}
+                    : subRoutines.map(def =>
+                        <SolverPicker
+                            key={def.type}
+                            problemUrlFragment={def.url}
+                            problemDescription={def.description}
+                            setSolveRequest={subSolveRequest => {
+                                solveRequest.requestedSubSolveRequests.set(def.type, subSolveRequest);
+                            }}/>)}
             </HStack>
         </Box>
     );
