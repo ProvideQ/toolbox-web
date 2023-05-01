@@ -6,7 +6,7 @@ import { ProblemSolver } from "./ProblemSolver";
  import { SolveRequest, SubSolveRequest } from "./SolveRequest";
 
 export interface SolverPickerProps {
-    problemUrl: string;
+    problemUrlFragment: string;
     problemDescription?: string;
     setSolveRequest: (subRoutines: SubSolveRequest) => void;
 }
@@ -22,12 +22,12 @@ export const SolverPicker = (props: SolverPickerProps) => {
     useEffect(() => {
         setSubRoutines(undefined);
         setLoadingSolvers(true);
-        fetchSolvers(props.problemUrl)
+        fetchSolvers(props.problemUrlFragment)
             .then((solvers: ProblemSolver[]) => {
                 setSolvers(solvers);
                 setLoadingSolvers(false);
             })
-    }, [props.problemUrl]);
+    }, [props.problemUrlFragment]);
 
     function onSolverChanged(e: ChangeEvent<HTMLSelectElement>) {
         if (e.target.selectedIndex == 0 || e.target.selectedIndex > solvers.length) {
@@ -36,7 +36,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
         } else {
             let solver = solvers[e.target.selectedIndex - 1];
             solveRequest.requestedSolverId = solver.id;
-            fetchSubRoutines(props.problemUrl, solver.id)
+            fetchSubRoutines(props.problemUrlFragment, solver.id)
                 .then(subRoutines => setSubRoutines(subRoutines));
             props.setSolveRequest?.(solveRequest)
         }
@@ -72,7 +72,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
                     ? null
                     : subRoutines.map(def => <SolverPicker
                         key={def.type}
-                        problemUrl={def.url}
+                        problemUrlFragment={def.url}
                         problemDescription={def.description}
                         setSolveRequest={subSolveRequest => {
                             solveRequest.requestedSubSolveRequests.set(def.type, subSolveRequest);

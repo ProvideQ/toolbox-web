@@ -18,7 +18,7 @@ export interface ProgressHandlerProps<T> {
      * Also used for sending the problem solve request to the toolbox unless explicitSolvers is set,
      * in which case this is used to send problem solve request.
      */
-    problemUrl: string;
+    problemUrlFragment: string;
     problemInput: T;
 }
 
@@ -37,7 +37,7 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
 
         solveRequest.requestContent = props.problemInput;
         if (props.explicitSolvers == undefined) {
-            postProblem(props.problemUrl, solveRequest)
+            postProblem(props.problemUrlFragment, solveRequest)
                 .then(solution => {
                     setSolutions([solution]);
                     setFinished(true);
@@ -59,7 +59,7 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
                         <Center>
                             <GoButton clicked={startSolving}/>
                         </Center>
-                        <SolverPicker problemUrl={props.problemUrl}
+                        <SolverPicker problemUrlFragment={props.problemUrlFragment}
                                       setSolveRequest={solveRequest => setSolveRequest(solveRequest)}/>
                     </VStack>
                 )

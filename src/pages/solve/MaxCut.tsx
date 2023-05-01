@@ -31,7 +31,7 @@ const MaxCut: NextPage = () => {
 
                     <Divider/>
                     <ProgressHandler
-                        problemUrl="max-cut"
+                        problemUrlFragment="max-cut"
                         problemInput={graphString}/>
                 </Container>
             }/>

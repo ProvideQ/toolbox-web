@@ -4,9 +4,9 @@ import { Solution } from "../components/solvers/Solution";
 import { SolutionStatus } from "../components/solvers/SolutionStatus";
 import { SolveRequest } from "../components/solvers/SolveRequest";
 
-export async function postProblem<T>(problemUrl: string, solveRequest: SolveRequest<T>): Promise<Solution> {
+export async function postProblem<T>(problemUrlFragment: string, solveRequest: SolveRequest<T>): Promise<Solution> {
     return fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemUrl}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemUrlFragment}`,
         {
             method: "POST",
             headers: {
@@ -30,9 +30,9 @@ export async function postProblem<T>(problemUrl: string, solveRequest: SolveRequ
         });
 }
 
-export async function fetchSolvers(problemUrl: string): Promise<ProblemSolver[]> {
+export async function fetchSolvers(problemUrlFragment: string): Promise<ProblemSolver[]> {
     return fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/solvers/${problemUrl}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/solvers/${problemUrlFragment}`,
         {
             method: "GET",
             headers: {
@@ -43,14 +43,14 @@ export async function fetchSolvers(problemUrl: string): Promise<ProblemSolver[]>
         .then(json => json as ProblemSolver[])
         .catch(reason => {
             console.error(reason)
-            alert(`Could not retrieve solvers of type ${problemUrl}.`)
+            alert(`Could not retrieve solvers of type ${problemUrlFragment}.`)
             return []
         });
 }
 
-export async function fetchSubRoutines(problemUrl: string, solverId: string): Promise<SubRoutineDefinition[]> {
+export async function fetchSubRoutines(problemUrlFragment: string, solverId: string): Promise<SubRoutineDefinition[]> {
     return fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/sub-routines/${problemUrl}?${new URLSearchParams({ id: solverId })}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/sub-routines/${problemUrlFragment}?${new URLSearchParams({ id: solverId })}`,
         {
             method: "GET",
             headers: {
