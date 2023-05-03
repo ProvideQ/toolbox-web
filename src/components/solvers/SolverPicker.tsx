@@ -42,7 +42,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
         }
     }
 
-    const getSolvers = () => {
+    const SolverSelection = () => {
         return (
             <Container>
                 <Text>{props.problemDescription}</Text>
@@ -63,7 +63,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
             <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
                 {loadingSolvers
                     ? <Text>Loading solvers...</Text>
-                    : getSolvers()
+                    : <SolverSelection/>
                 }
             </Tooltip>
 
