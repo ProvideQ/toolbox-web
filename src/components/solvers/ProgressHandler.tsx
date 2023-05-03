@@ -36,10 +36,8 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
         setFinished(false);
 
         let newSolveRequest : SolveRequest<T> = {
-            requestContent: props.problemInput,
-            requestedSolverId: solveRequest.requestedSolverId,
-            requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
-            requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+            ...solveRequest,
+            requestContent: props.problemInput
         }
 
         setSolveRequest(newSolveRequest);
@@ -69,9 +67,8 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
                         <SolverPicker problemUrlFragment={props.problemUrlFragment}
                                       setSolveRequest={solverChoice => {
                                           setSolveRequest({
-                                              requestContent: props.problemInput,
+                                              ...solveRequest,
                                               requestedSolverId: solverChoice.requestedSolverId,
-                                              requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
                                               requestedSubSolveRequests: solverChoice.requestedSubSolveRequests
                                           });
                                       }}/>
