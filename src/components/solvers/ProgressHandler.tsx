@@ -35,15 +35,22 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
         setClicked(true);
         setFinished(false);
 
-        solveRequest.requestContent = props.problemInput;
+        let newSolveRequest : SolveRequest<T> = {
+            requestContent: props.problemInput,
+            requestedSolverId: solveRequest.requestedSolverId,
+            requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
+            requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+        }
+
+        setSolveRequest(newSolveRequest);
         if (props.explicitSolvers == undefined) {
-            postProblem(props.problemUrlFragment, solveRequest)
+            postProblem(props.problemUrlFragment, newSolveRequest)
                 .then(solution => {
                     setSolutions([solution]);
                     setFinished(true);
                 });
         } else {
-            Promise.all(props.explicitSolvers.map(s => postProblem(s, solveRequest)))
+            Promise.all(props.explicitSolvers.map(s => postProblem(s, newSolveRequest)))
                 .then(solutions => {
                     setSolutions(solutions);
                     setFinished(true);
@@ -61,8 +68,12 @@ export const ProgressHandler = <T extends {}>(props: ProgressHandlerProps<T>) =>
                         </Center>
                         <SolverPicker problemUrlFragment={props.problemUrlFragment}
                                       setSolveRequest={solverChoice => {
-                                          solveRequest.requestedSolverId = solverChoice.requestedSolverId;
-                                          solveRequest.requestedSubSolveRequests = solverChoice.requestedSubSolveRequests;
+                                          setSolveRequest({
+                                              requestContent: props.problemInput,
+                                              requestedSolverId: solverChoice.requestedSolverId,
+                                              requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
+                                              requestedSubSolveRequests: solverChoice.requestedSubSolveRequests
+                                          });
                                       }}/>
                     </VStack>
                 )

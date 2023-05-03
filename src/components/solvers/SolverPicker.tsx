@@ -39,15 +39,29 @@ export const SolverPicker = (props: SolverPickerProps) => {
 
     function onSolverChanged(e: ChangeEvent<HTMLSelectElement>) {
         if (e.target.selectedIndex == 0 || e.target.selectedIndex > solvers.length) {
-            solveRequest.requestedSolverId = undefined;
+            let newSolveRequest: SolverChoice = {
+                requestedSolverId: undefined,
+                requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
+                requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+            };
+
+            setSolveRequest(newSolveRequest);
+            props.setSolveRequest?.(newSolveRequest)
+
             setSubRoutines(undefined);
-            props.setSolveRequest?.(solveRequest)
         } else {
             let solver = solvers[e.target.selectedIndex - 1];
-            solveRequest.requestedSolverId = solver.id;
+            let newSolveRequest: SolverChoice = {
+                requestedSolverId: solver.id,
+                requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
+                requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+            };
+
+            setSolveRequest(newSolveRequest);
+            props.setSolveRequest?.(newSolveRequest)
+
             fetchSubRoutines(props.problemUrlFragment, solver.id)
                 .then(subRoutines => setSubRoutines(subRoutines));
-            props.setSolveRequest?.(solveRequest)
         }
     }
 
@@ -79,10 +93,16 @@ export const SolverPicker = (props: SolverPickerProps) => {
                 : <SolverSelection/>}
 
             {solveRequest.requestedSolverId == undefined
-                 ? <SettingsView problemUrl={props.problemUrlFragment}
+                ? <SettingsView problemUrl={props.problemUrlFragment}
                                 settingChanged={settings => {
-                                    solveRequest.requestedMetaSolverSettings = settings;
-                                    props.setSolveRequest(solveRequest);
+                                    let newSolveRequest: SolverChoice = {
+                                        requestedSolverId: solveRequest.requestedSolverId,
+                                        requestedMetaSolverSettings: settings,
+                                        requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+                                    };
+
+                                    setSolveRequest(newSolveRequest)
+                                    props.setSolveRequest(newSolveRequest);
                                 }}/>
                 : null}
 
@@ -97,6 +117,11 @@ export const SolverPicker = (props: SolverPickerProps) => {
                             problemDescription={def.description}
                             setSolveRequest={subSolveRequest => {
                                 solveRequest.requestedSubSolveRequests[def.type] = subSolveRequest;
+                                setSolveRequest({
+                                    requestedSolverId: solveRequest.requestedSolverId,
+                                    requestedMetaSolverSettings: solveRequest.requestedMetaSolverSettings,
+                                    requestedSubSolveRequests: solveRequest.requestedSubSolveRequests
+                                });
                             }}/>)}
                 </Box>}
         </Container>
