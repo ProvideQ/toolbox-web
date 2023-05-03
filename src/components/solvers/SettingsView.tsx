@@ -36,6 +36,14 @@ export const SettingsView = (props: SettingsViewProps) => {
         return null;
     }
 
+    function replaceSetting<T extends MetaSolverSetting>(key: string, newValue: T): MetaSolverSetting[] {
+        const index = settings.findIndex(setting => setting.name === key);
+        if (index !== -1) {
+            settings.splice(index, 1, newValue);
+        }
+        return settings;
+    }
+
     return (
         <Container>
             <Text>Settings:</Text>
@@ -58,8 +66,11 @@ export const SettingsView = (props: SettingsViewProps) => {
                                         min={range.min} max={range.max}
                                         step={step}
                                         onChange={v => {
-                                            range.value = v
-                                            props.settingChanged(settings);
+                                            const newSettings = replaceSetting<RangeSetting>(setting.name, {
+                                                ...range,
+                                                value: v
+                                            });
+                                            props.settingChanged(newSettings);
                                         }}>
                                     {Array.from({length: marks}, (_, i) => {
                                         return (
@@ -81,8 +92,11 @@ export const SettingsView = (props: SettingsViewProps) => {
                             settingView = <Checkbox key={checkbox.name}
                                                     defaultChecked={checkbox.state}
                                                     onChange={e => {
-                                                        checkbox.state = e.target.checked;
-                                                        props.settingChanged(settings);
+                                                        const newSettings = replaceSetting<CheckboxSetting>(setting.name, {
+                                                            ...checkbox,
+                                                            state: e.target.checked
+                                                        });
+                                                        props.settingChanged(newSettings);
                                                     }}/>;
                             break;
                         case MetaSolverSettingType.TEXT:
@@ -90,8 +104,11 @@ export const SettingsView = (props: SettingsViewProps) => {
                             settingView = <Textarea key={text.name}
                                                     defaultValue={text.text}
                                                     onChange={e => {
-                                                        text.text = e.target.value;
-                                                        props.settingChanged(settings);
+                                                        const newSettings = replaceSetting<TextSetting>(setting.name, {
+                                                            ...text,
+                                                            text: e.target.value
+                                                        });
+                                                        props.settingChanged(newSettings);
                                                     }}/>;
                             break;
                         case MetaSolverSettingType.SELECT:
@@ -100,8 +117,11 @@ export const SettingsView = (props: SettingsViewProps) => {
                                 <Select key={select.name}
                                         defaultValue={select.selectedOption}
                                         onChange={e => {
-                                            select.selectedOption = e.target.value;
-                                            props.settingChanged(settings);
+                                            const newSettings = replaceSetting<SelectSetting>(setting.name, {
+                                                ...select,
+                                                selectedOption: e.target.value
+                                            });
+                                            props.settingChanged(newSettings);
                                         }}>
                                     {select.options.map(option => <option key={option}>{option}</option>)}
                                 </Select>
