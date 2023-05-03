@@ -1,7 +1,7 @@
 import React from "react";
 import {Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Box, Code, Spinner} from "@chakra-ui/react";
 import {Container} from "../Container";
-import {Solution} from "./Solution";
+import {Solution} from "../../api/data-model/Solution";
 
 export interface SolutionViewProps {
     finished: boolean;

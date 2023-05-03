@@ -4,8 +4,8 @@ import { GoButton } from "./buttons/GoButton";
 import { postProblem } from "../../api/ToolboxAPI";
 import { SolutionView } from "./SolutionView";
 import { Container } from "../Container";
-import { Solution } from "./Solution";
-import { SolveRequest } from "./SolveRequest";
+import { Solution } from "../../api/data-model/Solution";
+import { SolveRequest } from "../../api/data-model/SolveRequest";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {
