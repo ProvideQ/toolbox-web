@@ -10,37 +10,14 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
-
-enum MetaSolverSettingType {
-    RANGE = "RANGE",
-    CHECKBOX = "CHECKBOX",
-    TEXT = "TEXT",
-    SELECT = "SELECT",
-}
-
-export interface MetaSolverSetting {
-    name: string;
-    type: MetaSolverSettingType;
-}
-
-export interface Range extends MetaSolverSetting {
-    min: number;
-    max: number;
-    value: number;
-}
-
-export interface Checkbox extends MetaSolverSetting {
-    state: boolean;
-}
-
-export interface Text extends MetaSolverSetting {
-    text: string;
-}
-
-export interface Select extends MetaSolverSetting {
-    options: string[];
-    selectedOption: string;
-}
+import {
+    RangeSetting,
+    CheckboxSetting,
+    TextSetting,
+    SelectSetting,
+    MetaSolverSetting,
+    MetaSolverSettingType
+} from "../../api/data-model/MetaSolverSettings";
 
 interface SettingsViewProps {
     problemUrl: string;
@@ -70,7 +47,7 @@ export const SettingsView = (props: SettingsViewProps) => {
 
                     switch (setting.type) {
                         case MetaSolverSettingType.RANGE:
-                            let range = setting as Range;
+                            let range = setting as RangeSetting;
                             let total = range.max - range.min;
                             let step = total < 100 ? total / 100 : 1;
                             let marks = 5;
@@ -100,7 +77,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                             );
                             break;
                         case MetaSolverSettingType.CHECKBOX:
-                            let checkbox = setting as Checkbox;
+                            let checkbox = setting as CheckboxSetting;
                             settingView = <Checkbox key={checkbox.name}
                                                     defaultChecked={checkbox.state}
                                                     onChange={e => {
@@ -109,7 +86,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                                                     }}/>;
                             break;
                         case MetaSolverSettingType.TEXT:
-                            let text = setting as Text;
+                            let text = setting as TextSetting;
                             settingView = <Textarea key={text.name}
                                                     defaultValue={text.text}
                                                     onChange={e => {
@@ -118,7 +95,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                                                     }}/>;
                             break;
                         case MetaSolverSettingType.SELECT:
-                            let select = setting as Select;
+                            let select = setting as SelectSetting;
                             settingView = (
                                 <Select key={select.name}
                                         defaultValue={select.selectedOption}

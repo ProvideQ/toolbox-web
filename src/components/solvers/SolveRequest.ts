@@ -1,4 +1,4 @@
-import { MetaSolverSetting } from "./SettingsView";
+import { MetaSolverSetting } from "../../api/data-model/MetaSolverSettings";
 
 export interface SolverChoice {
     /**

@@ -1,4 +1,4 @@
-import { MetaSolverSetting } from "../components/solvers/SettingsView";
+import { MetaSolverSetting } from "./data-model/MetaSolverSettings";
 import { SubRoutineDefinition } from "../components/solvers/SubRoutineDefinition";
 import { ProblemSolver } from "../components/solvers/ProblemSolver";
 import { Solution } from "../components/solvers/Solution";
