@@ -74,10 +74,10 @@ export const SolverPicker = (props: SolverPickerProps) => {
                 <Text>{props.problemDescription}</Text>
                 <Tooltip label="Use this dropdown to select the meta solver strategy" color="white">
                     <Select margin="2" onChange={onSolverChanged}>
-                        <option>Automated Solver Selection</option>
+                        <option selected={solveRequest.requestedSolverId === undefined}>Automated Solver Selection</option>
                         <optgroup label="Use Specific Solvers">
                             {solvers.map((s: ProblemSolver) => (
-                                <option key={s.id}>{s.name}</option>
+                                <option key={s.id} selected={solveRequest.requestedSolverId === s.id}>{s.name}</option>
                             ))}
                         </optgroup>
                     </Select>
