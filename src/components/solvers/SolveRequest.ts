@@ -6,9 +6,13 @@ export interface SolverChoice {
     /**
      * Map from problem type to SubSolveRequest to allow explicitly requested solvers for a subroutine
      */
-    requestedSubSolveRequests: Map<string, SolverChoice>
+    requestedSubSolveRequests: SolveMap
 }
 
 export interface SolveRequest<T> extends SolverChoice {
     requestContent: T;
+}
+
+export type SolveMap = {
+    [key: string]: SolverChoice
 }

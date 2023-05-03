@@ -16,7 +16,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
     const [solvers, setSolvers] = useState<ProblemSolver[]>([]);
     const [subRoutines, setSubRoutines] = useState<SubRoutineDefinition[] | undefined>(undefined);
     const [solveRequest, setSolveRequest] = useState<SolverChoice>({
-        requestedSubSolveRequests: new Map<string, SolverChoice>()
+        requestedSubSolveRequests: {}
     });
 
     useEffect(() => {
@@ -76,7 +76,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
                             problemUrlFragment={def.url}
                             problemDescription={def.description}
                             setSolveRequest={subSolveRequest => {
-                                solveRequest.requestedSubSolveRequests.set(def.type, subSolveRequest);
+                                solveRequest.requestedSubSolveRequests[def.type] = subSolveRequest;
                             }}/>)}
             </HStack>
         </Box>
