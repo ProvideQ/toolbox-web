@@ -1,4 +1,4 @@
-import {Center, Button, Tooltip} from "@chakra-ui/react";
+import { Button, Tooltip, Flex } from "@chakra-ui/react";
 import { MouseEventHandler } from "react";
 
 interface GoButtonProps {
@@ -6,12 +6,12 @@ interface GoButtonProps {
 }
 
 export const GoButton = (props: GoButtonProps) => (
-    <Center>
+    <Flex alignSelf='flex-start'>
         <Tooltip label="Unleash the Qubits!" color="white">
             <Button colorScheme='teal' size='lg'
                     onClick={props.clicked} >
                 GO!
             </Button>
         </Tooltip>
-    </Center>
+    </Flex>
 );
