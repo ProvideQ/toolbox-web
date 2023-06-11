@@ -13,6 +13,6 @@ This repository contains the web frontend for the ProvideQ toolbox.
 5. Use `yarn dev` to spin up a local development server
 
 ## License
-Copyright (c) 2022 ProvideQ
+Copyright (c) 2022 - 2023 ProvideQ
 
 This project is available under the [MIT License](./LICENSE)
