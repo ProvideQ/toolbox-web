@@ -65,7 +65,7 @@ const SAT: NextPage = () => {
         />
         <Divider />
         <ProgressHandler
-            problemType="sat"
+            problemUrlFragment="sat"
             problemInput={logicalExpressionString} />
       </Main>
     </Container>

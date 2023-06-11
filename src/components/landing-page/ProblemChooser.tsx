@@ -25,12 +25,12 @@ export const ProblemChooser = (props: GridProps) => (
     </GridItem>
     <GridItem>
       <ProblemCard
-        href="solve/#"
+        href="solve/FeatureModelAnomaly"
         new={false}
-        qubits={2}
-        speedup="superpolynomial"
-        problemName="DemoAlgorithm"
-        description="I'm running out of ideas for descriptive texts, please help me!"
+        qubits={12}
+        speedup="polynomial"
+        problemName="Feature Model Anomaly"
+        description="For a given feature model, check for Void Feature Model, Dead Features, False-Optional Features, Redundant Constraints.."
       />
     </GridItem>
   </Grid>
