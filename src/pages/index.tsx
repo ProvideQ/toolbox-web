@@ -30,9 +30,14 @@ const Home: NextPage = () => {
           Feel free to try it out!
         </Text>
         <Text color="text" align="justify">
-          Our GitHub: <Link href="https://github.com/ProvideQ">@ProvideQ</Link>
+          Our GitHub:{' '}
+          <Link href="https://github.com/ProvideQ" color="blue.400">@ProvideQ</Link>
           <br/>
-          Contact: <Link href="mailto:provideq@lists.kit.edu">provideq@lists.kit.edu</Link>
+          API documentation:{' '}
+          <Link href={process.env.NEXT_PUBLIC_API_BASE_URL + "/swagger-ui/index.html"} color="blue.400">OpenAPI definition</Link>
+          <br/>
+          Contact:{' '}
+          <Link href="mailto:provideq@lists.kit.edu" color="blue.400">provideq@lists.kit.edu</Link>
         </Text>
 
         <Heading as="h2" size="xl" pt="10">
