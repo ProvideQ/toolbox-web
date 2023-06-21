@@ -1,3 +1,6 @@
+[![Build](https://img.shields.io/github/actions/workflow/status/ProvideQ/toolbox-web/deploy-main.yml?style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/actions/workflows/deploy-main.yml)
+[![Release](https://img.shields.io/github/v/release/ProvideQ/toolbox-web?style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/releases/)
+
 # ProvideQ
 This repository contains the web frontend for the ProvideQ toolbox. 
 
