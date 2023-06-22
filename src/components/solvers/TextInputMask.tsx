@@ -1,6 +1,6 @@
 import { Divider, Text, Textarea } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { ChangeEvent, ReactElement, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { Container } from "../Container";
 import { Main } from "../Main";
 import { InputButtonPanel } from "./buttons/InputButtonPanel";
@@ -19,10 +19,10 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
     const [text, setText] = useState<string>("");
     const [errorString, setErrorString] = useState("");
 
-    function onTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>): void {
+    function onTextChanged(text: string): void {
         try {
-            setText(event.target.value);
-            props.onTextChanged(event.target.value);
+            setText(text);
+            props.onTextChanged(text);
 
             setErrorString('');
         } catch (e: any) {
@@ -46,14 +46,14 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
                           value={text}
                           minHeight="10rem"
                           isInvalid={errorString != ""}
-                          onChange={onTextAreaChange}/>
+                          onChange={x => onTextChanged(x.target.value)}/>
 
                 <Text backgroundColor="tomato">{errorString}</Text>
 
                 <InputButtonPanel
                     helpBody={<Help/>}
                     problemString={text}
-                    setProblemString={setText}
+                    setProblemString={x => onTextChanged(x as string)}
                     uploadString={str => str}
                     downloadString={str => str}/>
 
