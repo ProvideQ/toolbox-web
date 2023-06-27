@@ -1,5 +1,5 @@
 export enum SolutionStatus {
-    INVALID,
-    COMPUTING,
-    SOLVED
+  INVALID,
+  COMPUTING,
+  SOLVED,
 }
