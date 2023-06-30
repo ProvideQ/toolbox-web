@@ -3,7 +3,15 @@ import Head from "next/head";
 import { Container } from "../components/Container";
 import { Hero } from "../components/landing-page/Hero";
 import { Main } from "../components/Main";
-import { Text, Heading, Link, HStack, Image, VStack, Spacer } from "@chakra-ui/react";
+import {
+  Text,
+  Heading,
+  Link,
+  HStack,
+  Image,
+  VStack,
+  Spacer,
+} from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 
 const Home: NextPage = () => {
@@ -22,22 +30,36 @@ const Home: NextPage = () => {
           Welcome to the ProvideQ Toolbox!
         </Text>
         <Text color="text" align="justify">
-          ProvideQ aims to enable the Enablers by providing Quantum Readiness for Optimization Providers.
-          We collect quantum and classical algorithms for well-known optimization problems and implement solution strategies to decide which algorithms can provide the best solutions for a specific problem instance.
-          This website represents the current prototype of our toolbox. It is currently in active development.
+          ProvideQ aims to enable the Enablers by providing Quantum Readiness
+          for Optimization Providers. We collect quantum and classical
+          algorithms for well-known optimization problems and implement solution
+          strategies to decide which algorithms can provide the best solutions
+          for a specific problem instance. This website represents the current
+          prototype of our toolbox. It is currently in active development.
         </Text>
-        <Text color="text" align="justify" >
+        <Text color="text" align="justify">
           Feel free to try it out!
         </Text>
         <Text color="text" align="justify">
-          Our GitHub:{' '}
-          <Link href="https://github.com/ProvideQ" color="blue.400">@ProvideQ</Link>
-          <br/>
-          API documentation:{' '}
-          <Link href={process.env.NEXT_PUBLIC_API_BASE_URL + "/swagger-ui/index.html"} color="blue.400">OpenAPI definition</Link>
-          <br/>
-          Contact:{' '}
-          <Link href="mailto:provideq@lists.kit.edu" color="blue.400">provideq@lists.kit.edu</Link>
+          Our GitHub:{" "}
+          <Link href="https://github.com/ProvideQ" color="blue.400">
+            @ProvideQ
+          </Link>
+          <br />
+          API documentation:{" "}
+          <Link
+            href={
+              process.env.NEXT_PUBLIC_API_BASE_URL + "/swagger-ui/index.html"
+            }
+            color="blue.400"
+          >
+            OpenAPI definition
+          </Link>
+          <br />
+          Contact:{" "}
+          <Link href="mailto:provideq@lists.kit.edu" color="blue.400">
+            provideq@lists.kit.edu
+          </Link>
         </Text>
 
         <Heading as="h2" size="xl" pt="10">
@@ -46,42 +68,47 @@ const Home: NextPage = () => {
 
         <ProblemChooser />
 
-        <Spacer
-            paddingTop={"10rem"}
-        />
+        <Spacer paddingTop={"10rem"} />
 
-        <VStack
-            borderTopWidth={1}
-            paddingTop={"1rem"}
-        >
+        <VStack borderTopWidth={1} paddingTop={"1rem"}>
           <HStack justifyContent={"space-between"} width={"100%"}>
-            <Text color={"gray.500"} paddingY={"3"}>ProvideQ is made possible by these partners:</Text>
+            <Text color={"gray.500"} paddingY={"3"}>
+              ProvideQ is made possible by these partners:
+            </Text>
             <HStack>
-              <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>Imprint</Link>
-              <Link href="https://www.kit.edu/privacypolicy.php" color={"blue.400"}>Privacy Policy</Link>
+              <Link href="https://www.kit.edu/legals.php" color={"blue.400"}>
+                Imprint
+              </Link>
+              <Link
+                href="https://www.kit.edu/privacypolicy.php"
+                color={"blue.400"}
+              >
+                Privacy Policy
+              </Link>
             </HStack>
           </HStack>
-          <HStack
-              width={"100%"}
-              justifyContent={"space-between"}
-          >
+          <HStack width={"100%"} justifyContent={"space-between"}>
             <Link href="https://www.kit.edu/">
-              <Image src="/KIT.svg" height={"2.5rem"}/>
+              <Image src="/KIT.svg" height={"2.5rem"} />
             </Link>
             <Link href="https://www.tu-braunschweig.de/">
-              <Image src="/Braunschweig.svg" height={"2.5rem"}/>
+              <Image src="/Braunschweig.svg" height={"2.5rem"} />
             </Link>
             <Link href="https://www.uni-koeln.de/">
-              <Image src="/Köln.svg" height={"2.5rem"}/>
+              <Image src="/Köln.svg" height={"2.5rem"} />
             </Link>
             <Link href="https://www.uni-hannover.de/de/">
-              <Image src="/Hannover.svg" height={"2.5rem"}/>
+              <Image src="/Hannover.svg" height={"2.5rem"} />
             </Link>
             <Link href="https://www.gams.com/">
-              <Image src="/gams.svg" height={"2.5rem"}/>
+              <Image src="/gams.svg" height={"2.5rem"} />
             </Link>
             <Link href="https://www.4flow.com/">
-              <Image src="/4flow.svg" height={"2.5rem"} style={{transform: "scale(1.75)", paddingRight: "10px"}}/>
+              <Image
+                src="/4flow.svg"
+                height={"2.5rem"}
+                style={{ transform: "scale(1.75)", paddingRight: "10px" }}
+              />
             </Link>
           </HStack>
         </VStack>

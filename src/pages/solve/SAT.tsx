@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import { Container } from "../../components/Container";
 import { Main } from "../../components/Main";
@@ -27,46 +27,52 @@ const SAT: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
         {/* TODO: replace favicon */}
       </Head>
-      <SolverTitle title="SAT Solver" text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it." />
+      <SolverTitle
+        title="SAT Solver"
+        text="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it."
+      />
       <Main mb="20vh">
-          <TextArea problemString={logicalExpressionString}
-                    setProblemString={(value) => {
-                        setLogicalExpressionString(value);
+        <TextArea
+          problemString={logicalExpressionString}
+          setProblemString={(value) => {
+            setLogicalExpressionString(value);
 
-                        try {
-                            logicalExpressionParser.parseDimacs(value.toString());
-                            setErrorString('');
-                        } catch (e: any) {
-                            setErrorString(e.message);
-                        }
-                    }}/>
-          <Text backgroundColor="tomato" >{errorString}</Text>
+            try {
+              logicalExpressionParser.parseDimacs(value.toString());
+              setErrorString("");
+            } catch (e: any) {
+              setErrorString(e.message);
+            }
+          }}
+        />
+        <Text backgroundColor="tomato">{errorString}</Text>
         <InputButtonPanel
-            helpBody={<Help/>}
-            problemString={logicalExpressionString}
-            setProblemString={setLogicalExpressionString}
-            uploadString={(str: string) => {
-                try {
-                    return dimacsParser.parseLogicalExpression(str);
-                } catch (e: any) {
-                    return e.message;
-                }
-            }}
-            downloadString={(str: string) => {
-                let ret = '';
-                try {
-                    ret = logicalExpressionParser.parseDimacs(str);
-                    setErrorString('');
-                } catch (e: any) {
-                    setErrorString(e.message);
-                }
-                return ret;
-            }}
+          helpBody={<Help />}
+          problemString={logicalExpressionString}
+          setProblemString={setLogicalExpressionString}
+          uploadString={(str: string) => {
+            try {
+              return dimacsParser.parseLogicalExpression(str);
+            } catch (e: any) {
+              return e.message;
+            }
+          }}
+          downloadString={(str: string) => {
+            let ret = "";
+            try {
+              ret = logicalExpressionParser.parseDimacs(str);
+              setErrorString("");
+            } catch (e: any) {
+              setErrorString(e.message);
+            }
+            return ret;
+          }}
         />
         <Divider />
         <ProgressHandler
-            problemUrlFragment="sat"
-            problemInput={logicalExpressionString} />
+          problemUrlFragment="sat"
+          problemInput={logicalExpressionString}
+        />
       </Main>
     </Container>
   );

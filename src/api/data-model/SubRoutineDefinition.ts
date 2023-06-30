@@ -1,5 +1,5 @@
 export interface SubRoutineDefinition {
-    type: string,
-    url: string,
-    description: string,
+  type: string;
+  url: string;
+  description: string;
 }
