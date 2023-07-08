@@ -32,10 +32,13 @@ const OutputSection = (props: { title: string; content: any[] }) => (
         <AccordionPanel pb="4" key={c}>
           {c !== null && c !== undefined ? (
             <Code width="100%" padding="1rem">
-              {(typeof c === "string" || c instanceof String)
-                ? <pre style={{overflowX: "auto"}}>{c}</pre>
-                : <pre style={{overflowX: "auto"}}>{JSON.stringify(c, null, '\t')}</pre>
-              }
+              {typeof c === "string" || c instanceof String ? (
+                <pre style={{ overflowX: "auto" }}>{c}</pre>
+              ) : (
+                <pre style={{ overflowX: "auto" }}>
+                  {JSON.stringify(c, null, "\t")}
+                </pre>
+              )}
             </Code>
           ) : (
             <i>No {props.title} output!</i>
