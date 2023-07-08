@@ -17,7 +17,7 @@ export interface SolutionViewProps {
   solution: Solution | undefined;
 }
 
-const OutputSection = (props: { title: string; content: string[] }) => (
+const OutputSection = (props: { title: string; content: any[] }) => (
   <AccordionItem>
     <h2>
       <AccordionButton>
@@ -30,9 +30,12 @@ const OutputSection = (props: { title: string; content: string[] }) => (
     {props.content.map((c) => {
       return (
         <AccordionPanel pb="4" key={c}>
-          {c !== null && c !== undefined && c.trim() !== "" ? (
+          {c !== null && c !== undefined ? (
             <Code width="100%" padding="1rem">
-              <pre style={{ overflowX: "auto" }}>{c}</pre>
+              {(typeof c === "string" || c instanceof String)
+                ? <pre style={{overflowX: "auto"}}>{c}</pre>
+                : <pre style={{overflowX: "auto"}}>{JSON.stringify(c, null, '\t')}</pre>
+              }
             </Code>
           ) : (
             <i>No {props.title} output!</i>

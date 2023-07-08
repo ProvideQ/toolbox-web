@@ -5,7 +5,7 @@ export interface Solution {
   status: SolutionStatus;
   solverName: string;
   executionMilliseconds: number;
-  solutionData: string;
+  solutionData: any;
   metaData: string;
   debugData: string;
   error: string;
