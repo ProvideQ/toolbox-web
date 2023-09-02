@@ -38,8 +38,10 @@ export const ProgressHandler = <T extends {}>(
 
     setSolveRequest(newSolveRequest);
     Promise.all(
-      props.problemTypes.map(problemType => postProblem(problemType, newSolveRequest))
-    ).then(solutions => {
+      props.problemTypes.map((problemType) =>
+        postProblem(problemType, newSolveRequest)
+      )
+    ).then((solutions) => {
       setSolutions(solutions);
       setFinished(true);
     });
@@ -52,18 +54,20 @@ export const ProgressHandler = <T extends {}>(
           <Center>
             <GoButton clicked={startSolving} />
           </Center>
-          {props.problemTypes.map(problemType => <SolverPicker
-            key={problemType}
-            problemUrlFragment={problemType}
-            setSolveRequest={solverChoice => {
-              setSolveRequest({
-                ...solveRequest,
-                requestedSolverId: solverChoice.requestedSolverId,
-                requestedSubSolveRequests:
-                  solveRequest.requestedSubSolveRequests
-              })
-            }}
-          />)}
+          {props.problemTypes.map((problemType) => (
+            <SolverPicker
+              key={problemType}
+              problemUrlFragment={problemType}
+              setSolveRequest={(solverChoice) => {
+                setSolveRequest({
+                  ...solveRequest,
+                  requestedSolverId: solverChoice.requestedSolverId,
+                  requestedSubSolveRequests:
+                    solveRequest.requestedSubSolveRequests,
+                });
+              }}
+            />
+          ))}
         </VStack>
       ) : null}
 
