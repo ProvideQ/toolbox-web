@@ -27,15 +27,15 @@ const OutputSection = (props: { title: string; content: any[] }) => (
         <AccordionIcon />
       </AccordionButton>
     </h2>
-    {props.content.map((c) => {
+    {props.content.map((contentChunk, chunkIndex) => {
       return (
-        <AccordionPanel pb="4" key={c}>
-          {c !== null && c !== undefined ? (
+        <AccordionPanel pb="4" key={chunkIndex}>
+          {contentChunk !== null && contentChunk !== undefined ? (
             <Code width="100%" padding="1rem">
               <pre style={{ overflowX: "auto" }}>
-                {typeof c === "string" || c instanceof String
-                  ? c
-                  : JSON.stringify(c, null, "\t")}
+                {typeof contentChunk === "string" || contentChunk instanceof String
+                  ? contentChunk
+                  : JSON.stringify(contentChunk, null, "\t")}
               </pre>
             </Code>
           ) : (
