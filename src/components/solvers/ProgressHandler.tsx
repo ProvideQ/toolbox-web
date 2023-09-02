@@ -10,15 +10,9 @@ import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {
   /**
-   * List of url fragments that are used for problem solve request to the toolbox.
+   * List of problem types that should be solved with the given input.
    */
-  explicitSolvers?: string[];
-  /**
-   * Url to retrieve solver candidates.
-   * Also used for sending the problem solve request to the toolbox unless explicitSolvers is set,
-   * in which case this is used to send problem solve request.
-   */
-  problemUrlFragment: string;
+  problemTypes: string[];
   problemInput: T;
 }
 
@@ -43,21 +37,12 @@ export const ProgressHandler = <T extends {}>(
     };
 
     setSolveRequest(newSolveRequest);
-    if (props.explicitSolvers == undefined) {
-      postProblem(props.problemUrlFragment, newSolveRequest).then(
-        (solution) => {
-          setSolutions([solution]);
-          setFinished(true);
-        }
-      );
-    } else {
-      Promise.all(
-        props.explicitSolvers.map((s) => postProblem(s, newSolveRequest))
-      ).then((solutions) => {
-        setSolutions(solutions);
-        setFinished(true);
-      });
-    }
+    Promise.all(
+      props.problemTypes.map(problemType => postProblem(problemType, newSolveRequest))
+    ).then(solutions => {
+      setSolutions(solutions);
+      setFinished(true);
+    });
   }
 
   return (
@@ -67,24 +52,25 @@ export const ProgressHandler = <T extends {}>(
           <Center>
             <GoButton clicked={startSolving} />
           </Center>
-          <SolverPicker
-            problemUrlFragment={props.problemUrlFragment}
-            setSolveRequest={(solverChoice) => {
+          {props.problemTypes.map(problemType => <SolverPicker
+            key={problemType}
+            problemUrlFragment={problemType}
+            setSolveRequest={solverChoice => {
               setSolveRequest({
                 ...solveRequest,
                 requestedSolverId: solverChoice.requestedSolverId,
                 requestedSubSolveRequests:
-                  solverChoice.requestedSubSolveRequests,
-              });
+                  solveRequest.requestedSubSolveRequests
+              })
             }}
-          />
+          />)}
         </VStack>
       ) : null}
 
       {wasClicked
         ? solutions?.map((s) => (
             <Box
-              key={s.id}
+              key={`${s.solverName}-${s.id}`}
               w="50pc"
               m={2}
               borderWidth="1px"
