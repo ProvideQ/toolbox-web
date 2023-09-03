@@ -8,19 +8,11 @@ import { TextInputMask } from "../../components/solvers/TextInputMask";
 const anomalies: Option[] = [
   {
     label: "Void Feature Model",
-    value: "feature-model/anomaly/void",
+    value: "feature-model-anomaly-void",
   },
   {
     label: "Dead Features",
-    value: "feature-model/anomaly/dead",
-  },
-  {
-    label: "False-Optional Features",
-    value: "feature-model/anomaly/false-optional",
-  },
-  {
-    label: "Redundant Constraints",
-    value: "feature-model/anomaly/redundant-constraints",
+    value: "feature-model-anomaly-dead",
   },
 ];
 
@@ -49,8 +41,7 @@ const FeatureModelAnomaly: NextPage = () => {
           <Divider />
 
           <ProgressHandler
-            explicitSolvers={selectedAnomalies.map((a) => a.value)}
-            problemUrlFragment="feature-model/anomaly"
+            problemTypes={selectedAnomalies.map((option) => option.value)}
             problemInput={uvl}
           />
         </VStack>
