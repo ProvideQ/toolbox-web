@@ -122,16 +122,16 @@ export const SolverPicker = (props: SolverPickerProps) => {
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
           {subRoutines.map((def) => (
             <SolverPicker
-              key={def.type}
-              problemUrlFragment={def.url}
-              problemType={def.type}
+              key={def.problemTypeId}
+              problemUrlFragment={def.problemTypeId}
+              problemType={def.problemTypeId}
               problemDescription={def.description}
               setSolveRequest={(subSolveRequest) => {
                 let newSolveRequest: SolverChoice = {
                   ...solveRequest,
                   requestedSubSolveRequests: {
                     ...solveRequest.requestedSubSolveRequests,
-                    [def.type]: subSolveRequest,
+                    [def.problemTypeId]: subSolveRequest,
                   },
                 };
                 setSolveRequest(newSolveRequest);
