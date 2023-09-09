@@ -10,6 +10,9 @@
     "format": "prettier --write .",
     "test": "jest"
   },
+  "resolutions": {
+    "d3-interpolate": "2.0.1"
+  },
   "dependencies": {
     "@antv/g6": "^4.7.16",
     "@chakra-ui/react": "^2.3.1",
