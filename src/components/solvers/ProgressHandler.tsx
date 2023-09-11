@@ -57,7 +57,7 @@ export const ProgressHandler = <T extends {}>(
           {props.problemTypes.map((problemType) => (
             <SolverPicker
               key={problemType}
-              problemUrlFragment={problemType}
+              problemType={problemType}
               setSolveRequest={(solverChoice) => {
                 setSolveRequest({
                   ...solveRequest,

@@ -7,7 +7,7 @@ export interface SubRoutineDefinition {
    * Identifies the type of problem that needs to be solved with the described
    * sub-routine.
    */
-  problemTypeId: string;
+  type: string;
   /**
    * Describes why this sub-routine is required to solve a bigger problem.
    */
