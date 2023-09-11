@@ -102,7 +102,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
 
       {solveRequest.requestedSolverId == undefined ? (
         <SettingsView
-          problemUrl={props.problemType}
+          problemType={props.problemType}
           settingChanged={(settings) => {
             let newSolveRequest: SolverChoice = {
               ...solveRequest,

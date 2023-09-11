@@ -6,19 +6,16 @@ import { SolutionStatus } from "./data-model/SolutionStatus";
 import { SolveRequest } from "./data-model/SolveRequest";
 
 export async function postProblem<T>(
-  problemUrlFragment: string,
+  problemType: string,
   solveRequest: SolveRequest<T>
 ): Promise<Solution> {
-  return fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemUrlFragment}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(solveRequest),
-    }
-  )
+  return fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemType}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(solveRequest),
+  })
     .then((response) => response.json())
     .then((json) => json as Solution)
     .catch((reason) => {
@@ -36,10 +33,10 @@ export async function postProblem<T>(
 }
 
 export async function fetchSolvers(
-  problemUrlFragment: string
+  problemType: string
 ): Promise<ProblemSolver[]> {
   return fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/solvers/${problemUrlFragment}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/solvers/${problemType}`,
     {
       method: "GET",
       headers: {
@@ -51,19 +48,19 @@ export async function fetchSolvers(
     .then((json) => json as ProblemSolver[])
     .catch((reason) => {
       console.error(reason);
-      alert(`Could not retrieve solvers of type ${problemUrlFragment}.`);
+      alert(`Could not retrieve solvers of type ${problemType}.`);
       return [];
     });
 }
 
 export async function fetchSubRoutines(
-  problemUrlFragment: string,
+  problemType: string,
   solverId: string
 ): Promise<SubRoutineDefinition[]> {
   return fetch(
     `${
       process.env.NEXT_PUBLIC_API_BASE_URL
-    }/sub-routines/${problemUrlFragment}?${new URLSearchParams({
+    }/sub-routines/${problemType}?${new URLSearchParams({
       id: solverId,
     })}`,
     {
@@ -82,10 +79,10 @@ export async function fetchSubRoutines(
 }
 
 export async function fetchMetaSolverSettings(
-  problemUrl: string
+  problemType: string
 ): Promise<MetaSolverSetting[]> {
   return fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/meta-solver/settings/${problemUrl}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/meta-solver/settings/${problemType}`,
     {
       method: "GET",
       headers: {
