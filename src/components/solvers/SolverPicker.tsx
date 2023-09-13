@@ -7,15 +7,12 @@ import { SolverChoice } from "../../api/data-model/SolveRequest";
 import { SettingsView } from "./SettingsView";
 
 export interface SolverPickerProps {
-  problemUrlFragment: string;
+  problemType: string;
+
   /**
-   * Only needed internally - shows problem type
+   * Only needed internally if this should show a sub routine
    */
-  problemType?: string;
-  /**
-   * Only needed internally - shows problem description
-   */
-  problemDescription?: string;
+  subRoutineDefinition?: SubRoutineDefinition;
   setSolveRequest: (subRoutines: SolverChoice) => void;
 }
 
@@ -32,11 +29,11 @@ export const SolverPicker = (props: SolverPickerProps) => {
   useEffect(() => {
     setSubRoutines(undefined);
     setLoadingSolvers(true);
-    fetchSolvers(props.problemUrlFragment).then((solvers: ProblemSolver[]) => {
+    fetchSolvers(props.problemType).then((solvers: ProblemSolver[]) => {
       setSolvers(solvers);
       setLoadingSolvers(false);
     });
-  }, [props.problemUrlFragment]);
+  }, [props.problemType]);
 
   function onSolverChanged(e: ChangeEvent<HTMLSelectElement>) {
     if (
@@ -62,8 +59,8 @@ export const SolverPicker = (props: SolverPickerProps) => {
       setSolveRequest(newSolveRequest);
       props.setSolveRequest?.(newSolveRequest);
 
-      fetchSubRoutines(props.problemUrlFragment, solver.id).then(
-        (subRoutines) => setSubRoutines(subRoutines)
+      fetchSubRoutines(props.problemType, solver.id).then((subRoutines) =>
+        setSubRoutines(subRoutines)
       );
     }
   }
@@ -71,10 +68,10 @@ export const SolverPicker = (props: SolverPickerProps) => {
   const SolverSelection = () => {
     return (
       <Container>
-        {props.problemType == undefined ? null : (
-          <Text>{props.problemType} Subroutine:</Text>
+        {props.subRoutineDefinition == undefined ? null : (
+          <Text>{props.subRoutineDefinition?.type} Subroutine:</Text>
         )}
-        <Text>{props.problemDescription}</Text>
+        <Text>{props.subRoutineDefinition?.description}</Text>
         <Tooltip
           label="Use this dropdown to select the meta solver strategy"
           color="white"
@@ -105,7 +102,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
 
       {solveRequest.requestedSolverId == undefined ? (
         <SettingsView
-          problemUrl={props.problemUrlFragment}
+          problemType={props.problemType}
           settingChanged={(settings) => {
             let newSolveRequest: SolverChoice = {
               ...solveRequest,
@@ -123,9 +120,8 @@ export const SolverPicker = (props: SolverPickerProps) => {
           {subRoutines.map((def) => (
             <SolverPicker
               key={def.type}
-              problemUrlFragment={def.url}
               problemType={def.type}
-              problemDescription={def.description}
+              subRoutineDefinition={def}
               setSolveRequest={(subSolveRequest) => {
                 let newSolveRequest: SolverChoice = {
                   ...solveRequest,

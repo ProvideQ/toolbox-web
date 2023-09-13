@@ -19,6 +19,10 @@ export interface SolveRequest<T> extends SolverChoice {
   requestContent: T;
 }
 
+/**
+ * A SolveMap contains `SolverChoice` data for each problem type used in
+ * sub-routines of a request.
+ */
 export type SolveMap = {
-  [key: string]: SolverChoice;
+  [problemTypeId: string]: SolverChoice;
 };

@@ -24,7 +24,7 @@ import {
 } from "../../api/data-model/MetaSolverSettings";
 
 interface SettingsViewProps {
-  problemUrl: string;
+  problemType: string;
   settingChanged: (newSettings: MetaSolverSetting[]) => void;
 }
 
@@ -32,10 +32,10 @@ export const SettingsView = (props: SettingsViewProps) => {
   const [settings, setSettings] = useState<MetaSolverSetting[]>([]);
 
   useEffect(() => {
-    fetchMetaSolverSettings(props.problemUrl).then(
+    fetchMetaSolverSettings(props.problemType).then(
       (settings: MetaSolverSetting[]) => setSettings(settings)
     );
-  }, [props.problemUrl]);
+  }, [props.problemType]);
 
   if (settings.length == 0) {
     return null;
