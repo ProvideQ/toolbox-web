@@ -29,13 +29,14 @@ const SAT: NextPage = () => {
       <Text color="text" align="justify">
         For a given Boolean formula, this algorithm checks if there is an
         interpretation that satisfies it. You can enter any boolean formula with
-        any number of variables and combine them with boolean operators.
+        any number of variables and combine them with boolean operators (i.e.,
+        &quot;and&quot;, &quot;or&quot; and &quot;not&quot;).
       </Text>
 
       <Spacer />
 
       <EditorControls
-        idleText={'Try "a and not (not a or not b)" 👇'}
+        idleText={'Try "a and (not a or not b)" 👇'}
         errorText={errorString}
         onUpload={setLogicalExpressionString}
         editorContent={logicalExpressionString}

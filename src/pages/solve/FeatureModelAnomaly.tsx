@@ -34,11 +34,11 @@ const FeatureModelAnomaly: NextPage = () => {
 
   return (
     <Layout>
-      <Heading as="h1">FeatureModel Anomaly Solvers</Heading>
+      <Heading as="h1">Feature Model Anomaly Solvers</Heading>
       <Text color="text" align="justify">
         For a tree of features with cross tree constraints, these solvers can
-        detect various anomalies. Feature Models are given in the Universal
-        Variablity language.
+        detect various anomalies. Feature Models are given in the extended
+        Universal Variablity Language (UVL).
       </Text>
 
       <UnorderedList>
