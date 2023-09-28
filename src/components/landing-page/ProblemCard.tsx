@@ -16,7 +16,7 @@ export const ProblemCard = (props: ProblemCardProps) => {
         <Box display="flex" alignItems="baseline">
           {props.new && (
             <Badge borderRadius="full" px="2" colorScheme="blue" mr="2">
-              New
+              New!
             </Badge>
           )}
           <Box
