@@ -1,11 +1,10 @@
 import { LinkBox, LinkOverlay, Box, Image, Badge } from "@chakra-ui/react";
-import NextLink from 'next/link';
+import NextLink from "next/link";
 
 interface ProblemCardProps {
   href: string;
   new: boolean;
-  qubits: number;
-  speedup: "polynomial" | "superpolynomial";
+  tags: string[];
   problemName: string;
   description: string;
 }
@@ -16,7 +15,7 @@ export const ProblemCard = (props: ProblemCardProps) => {
       <Box p="6">
         <Box display="flex" alignItems="baseline">
           {props.new && (
-            <Badge borderRadius="full" px="2" colorScheme="teal" mr="2">
+            <Badge borderRadius="full" px="2" colorScheme="blue" mr="2">
               New
             </Badge>
           )}
@@ -27,7 +26,17 @@ export const ProblemCard = (props: ProblemCardProps) => {
             fontSize="xs"
             textTransform="uppercase"
           >
-            {props.qubits} qubits &bull; {props.speedup} speedup
+            {props.tags.map((tag) => (
+              <Badge
+                key={tag}
+                borderRadius="full"
+                px="2"
+                colorScheme="teal"
+                mr="2"
+              >
+                {tag}
+              </Badge>
+            ))}
           </Box>
         </Box>
 

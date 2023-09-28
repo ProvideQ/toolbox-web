@@ -1,13 +1,17 @@
 {
   "name": "provideq",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint && prettier --check .",
+    "format": "prettier --write .",
     "test": "jest"
+  },
+  "resolutions": {
+    "d3-interpolate": "2.0.1"
   },
   "dependencies": {
     "@antv/g6": "^4.7.16",
@@ -21,10 +25,12 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
-    "react-simple-code-editor": "^0.13.0",
-    "react-multi-select-component": "^4.3.4"
+    "react-multi-select-component": "^4.3.4",
+    "react-simple-code-editor": "^0.13.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
     "@types/node": "18.7.14",
     "@types/prismjs": "^1.26.0",
     "@types/react": "18.0.18",
@@ -32,9 +38,8 @@
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",
     "jest": "^29.1.1",
-    "typescript": "4.8.2",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "jest-environment-jsdom": "^29.1.1"
+    "jest-environment-jsdom": "^29.1.1",
+    "prettier": "2.8.8",
+    "typescript": "4.8.2"
   }
 }

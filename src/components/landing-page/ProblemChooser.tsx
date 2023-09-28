@@ -6,9 +6,8 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/SAT"
-        new={true}
-        qubits={23}
-        speedup="superpolynomial"
+        new={false}
+        tags={["simulated"]}
         problemName="SAT"
         description="For a given Boolean formula, this algorithm checks if there exists an interpretation that satisfies it."
       />
@@ -17,8 +16,7 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/MaxCut"
         new={false}
-        qubits={12}
-        speedup="polynomial"
+        tags={["QAOA", "simulated"]}
         problemName="MaxCut"
         description="For a given undirected, weighted graph, this algorithm finds a cut that is a maximum in some way or another."
       />
@@ -27,8 +25,7 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/FeatureModelAnomaly"
         new={false}
-        qubits={12}
-        speedup="polynomial"
+        tags={["sub-routines"]}
         problemName="Feature Model Anomaly"
         description="For a given feature model, check for Void Feature Model, Dead Features, False-Optional Features, Redundant Constraints.."
       />

@@ -1,5 +1,5 @@
 # adapted from https://github.com/dokku/github-action/blob/db5e3b84461e5e73c56d8b0f6a67aab0df25256c/example-workflows/simple.yml
-name: 'deploy-main'
+name: "deploy-main"
 
 on:
   push:

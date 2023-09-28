@@ -1,7 +1,6 @@
 // Copyright (c) 2015 Tomas Enarsson https://github.com/mobenar/mobenga-gml MIT license
 // Slightly modified version
 
-
 /**
  * Parses GML string.
  *
@@ -10,82 +9,72 @@
  * @throws {SyntaxError}
  */
 export function parseGML(gml) {
+  let json = ("{\n" + gml + "\n}")
+    .replace(/^(\s*)(\w+)\s*\[/gm, '$1"$2": {')
+    .replace(/^(\s*)]/gm, "$1},")
+    .replace(/^(\s*)(\w+)\s+(".+")$/gm, '$1"$2": $3,')
+    .replace(/^(\s*)(\w+)\s+(.+)$/gm, '$1"$2": "$3",')
+    .replace(/,(\s*)}/g, "$1}");
 
-    let json = ('{\n' + gml + '\n}')
-        .replace(/^(\s*)(\w+)\s*\[/gm, '$1"$2": {')
-        .replace(/^(\s*)]/gm, '$1},')
-        .replace(/^(\s*)(\w+)\s+(".+")$/gm, '$1"$2": $3,')
-        .replace(/^(\s*)(\w+)\s+(.+)$/gm, '$1"$2": "$3",')
-        .replace(/,(\s*)}/g, '$1}');
+  let graph = {};
+  let nodes = [];
+  let edges = [];
+  let i = 0;
+  let parsed;
 
-    let graph = {};
-    let nodes = [];
-    let edges = [];
-    let i = 0;
-    let parsed;
+  json = json.replace(/^(\s*)"node"/gm, function (all, indent) {
+    return indent + '"node[' + i++ + ']"';
+  });
 
-    json = json.replace(/^(\s*)"node"/gm, function (all, indent) {
+  i = 0;
 
-        return (indent + '"node[' + (i++) + ']"');
-    });
+  json = json.replace(/^(\s*)"edge"/gm, function (all, indent) {
+    return indent + '"edge[' + i++ + ']"';
+  });
 
-    i = 0;
+  try {
+    parsed = JSON.parse(json);
+  } catch (err) {
+    throw new SyntaxError("bad format");
+  }
 
-    json = json.replace(/^(\s*)"edge"/gm, function (all, indent) {
+  if (!isObject(parsed.graph)) {
+    throw new SyntaxError("no graph tag");
+  }
 
-        return (indent + '"edge[' + (i++) + ']"');
-    });
+  forIn(parsed.graph, function (key, value) {
+    const matches = key.match(/^(\w+)\[(\d+)]$/);
+    let name;
+    let i;
 
-    try {
-        parsed = JSON.parse(json);
+    if (matches) {
+      name = matches[1];
+      i = parseInt(matches[2], 10);
+
+      if (name === "node") {
+        nodes[i] = value;
+      } else if (name === "edge") {
+        edges[i] = value;
+      } else {
+        graph[key] = value;
+      }
+    } else {
+      graph[key] = value;
     }
-    catch (err) {
-        throw new SyntaxError('bad format');
-    }
+  });
 
-    if (!isObject(parsed.graph)) {
-        throw new SyntaxError('no graph tag');
-    }
+  graph.nodes = nodes;
+  graph.edges = edges;
 
-    forIn(parsed.graph, function (key, value) {
-        const matches = key.match(/^(\w+)\[(\d+)]$/);
-        let name;
-        let i;
-
-        if (matches) {
-            name = matches[1];
-            i = parseInt(matches[2], 10);
-
-            if (name === 'node') {
-                nodes[i] = value;
-            }
-            else if (name === 'edge') {
-                edges[i] = value;
-            }
-            else {
-                graph[key] = value;
-            }
-        }
-        else {
-            graph[key] = value;
-        }
-    });
-
-    graph.nodes = nodes;
-    graph.edges = edges;
-
-    return graph;
+  return graph;
 }
 
 function isObject(value) {
-
-    return (value && Object.prototype.toString.call(value) === '[object Object]');
+  return value && Object.prototype.toString.call(value) === "[object Object]";
 }
 
 function forIn(object, callback) {
-
-    Object.keys(object).forEach(function (key) {
-
-        callback(key, object[key]);
-    });
+  Object.keys(object).forEach(function (key) {
+    callback(key, object[key]);
+  });
 }

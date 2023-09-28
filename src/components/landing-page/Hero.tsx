@@ -1,4 +1,4 @@
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, Link } from "@chakra-ui/react";
 
 export const Hero = (props: { title: string }) => (
   <Flex
@@ -8,6 +8,8 @@ export const Hero = (props: { title: string }) => (
     bgGradient="linear(to-l, heroGradientStart, heroGradientEnd)"
     bgClip="text"
   >
-    <Heading fontSize="6vw">{props.title}</Heading>
+    <Link href="/">
+      <Heading fontSize="6vw">{props.title}</Heading>
+    </Link>
   </Flex>
 );
