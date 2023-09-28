@@ -39,7 +39,7 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
       <EditorControls
         errorText={errorString}
         idleText={props.textPlaceholder + " 👇"}
-        onUpload={setText}
+        onUpload={onTextChanged}
         editorContent={text}
         documentationLink="https://api.provideq.kit.edu/swagger-ui/index.html"
       />
