@@ -1,12 +1,10 @@
 import Head from "next/head";
 import React, { useState } from "react";
 import type { NextPage } from "next";
-import { TextArea } from "../../components/solvers/SAT/TextArea";
+import { TextInputMask } from "../../components/solvers/TextInputMask";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { Text, Divider, Heading, Spacer, Code } from "@chakra-ui/react";
 import { Layout } from "../../components/layout/Layout";
-import { EditorControls } from "../../components/solvers/EditorControls";
-import { baseUrl } from "../../api/ToolboxAPI";
 
 const QUBO: NextPage = () => {
   const [quboTerm, setQuboTerm] = useState("");
@@ -31,13 +29,10 @@ const QUBO: NextPage = () => {
 
       <Spacer />
 
-      <EditorControls
-        idleText={'Try "a and not (not a or not b)" 👇'}
-        onUpload={setQuboTerm}
-        editorContent={quboTerm}
-        documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/qubo`}
+      <TextInputMask
+        onTextChanged={setQuboTerm}
+        textPlaceholder={"Enter your QUBO problem in LP format"}
       />
-      <TextArea problemString={quboTerm} setProblemString={setQuboTerm} />
       <Divider />
       <ProgressHandler problemTypes={["qubo"]} problemInput={quboTerm} />
     </Layout>
