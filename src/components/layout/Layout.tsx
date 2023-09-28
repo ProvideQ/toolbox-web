@@ -10,7 +10,7 @@ export const Layout = (props: { children: ReactNode }) => (
     <Hero title="ProvideQ" />
     <Main>{props.children}</Main>
 
-    <Spacer mb="5rem"/>
+    <Spacer mb="5rem" />
     <Footer />
   </Container>
 );

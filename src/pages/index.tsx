@@ -1,10 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import {
-  Text,
-  Heading,
-  Link,
-} from "@chakra-ui/react";
+import { Text, Heading, Link } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";
 
