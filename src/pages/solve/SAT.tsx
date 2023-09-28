@@ -1,17 +1,25 @@
 import Head from "next/head";
 import React, { useState } from "react";
 import type { NextPage } from "next";
-import { Container } from "../../components/Container";
-import { Main } from "../../components/Main";
-import { SolverTitle } from "../../components/solvers/SolverTitle";
 import { TextArea } from "../../components/solvers/SAT/TextArea";
 import { Help } from "../../components/solvers/SAT/Help";
-import { InputButtonPanel } from "../../components/solvers/buttons/InputButtonPanel";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { Text, Divider, Heading, Spacer } from "@chakra-ui/react";
+import {
+  Text,
+  Divider,
+  Heading,
+  Spacer,
+  HStack,
+  ButtonGroup,
+  Button,
+  IconButton,
+} from "@chakra-ui/react";
 import { DimacsParser } from "../../converter/dimacs/DimacsParser";
 import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 import { Layout } from "../../components/layout/Layout";
+import { BiDownload } from "react-icons/bi";
+import { TbDownload, TbHelp, TbUpload } from "react-icons/tb";
+import { EditorControls } from "../../components/solvers/EditorControls";
 
 const SAT: NextPage = () => {
   const logicalExpressionParser = new LogicalExpressionParser();
@@ -38,6 +46,13 @@ const SAT: NextPage = () => {
 
       <Spacer />
 
+      <EditorControls
+        idleText={'Try "a and not (not a or not b)" 👇'}
+        errorText={errorString}
+        onUpload={setLogicalExpressionString}
+        editorContent={logicalExpressionString}
+        documentationLink="https://api.provideq.kit.edu/"
+      />
       <TextArea
         problemString={logicalExpressionString}
         setProblemString={(value) => {
@@ -49,29 +64,6 @@ const SAT: NextPage = () => {
           } catch (e: any) {
             setErrorString(e.message);
           }
-        }}
-      />
-      <Text backgroundColor="tomato">{errorString}</Text>
-      <InputButtonPanel
-        helpBody={<Help />}
-        problemString={logicalExpressionString}
-        setProblemString={setLogicalExpressionString}
-        uploadString={(str: string) => {
-          try {
-            return dimacsParser.parseLogicalExpression(str);
-          } catch (e: any) {
-            return e.message;
-          }
-        }}
-        downloadString={(str: string) => {
-          let ret = "";
-          try {
-            ret = logicalExpressionParser.parseDimacs(str);
-            setErrorString("");
-          } catch (e: any) {
-            setErrorString(e.message);
-          }
-          return ret;
         }}
       />
       <Divider />
