@@ -41,7 +41,6 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
         idleText={props.textPlaceholder + " 👇"}
         onUpload={onTextChanged}
         editorContent={text}
-        documentationLink="https://api.provideq.kit.edu/swagger-ui/index.html"
       />
       <Textarea
         placeholder={props.textPlaceholder}

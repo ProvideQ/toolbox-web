@@ -2,28 +2,16 @@ import Head from "next/head";
 import React, { useState } from "react";
 import type { NextPage } from "next";
 import { TextArea } from "../../components/solvers/SAT/TextArea";
-import { Help } from "../../components/solvers/SAT/Help";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import {
-  Text,
-  Divider,
-  Heading,
-  Spacer,
-  HStack,
-  ButtonGroup,
-  Button,
-  IconButton,
-} from "@chakra-ui/react";
+import { Text, Divider, Heading, Spacer } from "@chakra-ui/react";
 import { DimacsParser } from "../../converter/dimacs/DimacsParser";
 import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 import { Layout } from "../../components/layout/Layout";
-import { BiDownload } from "react-icons/bi";
-import { TbDownload, TbHelp, TbUpload } from "react-icons/tb";
 import { EditorControls } from "../../components/solvers/EditorControls";
+import { baseUrl } from "../../api/ToolboxAPI";
 
 const SAT: NextPage = () => {
   const logicalExpressionParser = new LogicalExpressionParser();
-  const dimacsParser = new DimacsParser();
 
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
@@ -51,7 +39,7 @@ const SAT: NextPage = () => {
         errorText={errorString}
         onUpload={setLogicalExpressionString}
         editorContent={logicalExpressionString}
-        documentationLink="https://api.provideq.kit.edu/"
+        documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/sat`}
       />
       <TextArea
         problemString={logicalExpressionString}
