@@ -1,4 +1,4 @@
-import { Box, Center, VStack } from "@chakra-ui/react";
+import { Box, Center, HStack, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { GoButton } from "./buttons/GoButton";
 import { postProblem } from "../../api/ToolboxAPI";
@@ -50,10 +50,7 @@ export const ProgressHandler = <T extends {}>(
   return (
     <Container>
       {!wasClicked || finished ? (
-        <VStack>
-          <Center>
-            <GoButton clicked={startSolving} />
-          </Center>
+        <HStack alignContent={"end"}>
           {props.problemTypes.map((problemType) => (
             <SolverPicker
               key={problemType}
@@ -68,7 +65,10 @@ export const ProgressHandler = <T extends {}>(
               }}
             />
           ))}
-        </VStack>
+          <Center>
+            <GoButton clicked={startSolving} />
+          </Center>
+        </HStack>
       ) : null}
 
       {wasClicked

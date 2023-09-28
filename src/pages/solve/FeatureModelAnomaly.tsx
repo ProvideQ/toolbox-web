@@ -1,9 +1,20 @@
-import { Box, Divider, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Divider,
+  Heading,
+  List,
+  ListItem,
+  Spacer,
+  Text,
+  UnorderedList,
+  VStack,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import React, { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
+import { Layout } from "../../components/layout/Layout";
 
 const anomalies: Option[] = [
   {
@@ -22,31 +33,49 @@ const FeatureModelAnomaly: NextPage = () => {
     useState<Option[]>(anomalies);
 
   return (
-    <TextInputMask
-      title="Feature Model Anomaly Solver"
-      description="For a tree of features with cross tree constraints, the solver detects anomalies."
-      textPlaceholder="Enter your feature model in UVL format"
-      onTextChanged={setUvl}
-      body={
-        <VStack>
-          <Box width="300px">
-            <MultiSelect
-              options={anomalies}
-              value={selectedAnomalies}
-              onChange={setSelectedAnomalies}
-              labelledBy="Select anomalies"
+    <Layout>
+      <Heading as="h1">Feature Model Anomaly Solvers</Heading>
+      <Text color="text" align="justify">
+        For a tree of features with cross tree constraints, these solvers can
+        detect various anomalies. Feature Models are given in the extended
+        Universal Variablity Language (UVL).
+      </Text>
+
+      <UnorderedList>
+        <ListItem>
+          A feature model is <b>void</b> if there is no valid selection of
+          features.
+        </ListItem>
+        <ListItem>
+          A feature is <b>dead</b> if the feature cannot be included in any
+          valid feature selection.
+        </ListItem>
+      </UnorderedList>
+
+      <TextInputMask
+        textPlaceholder="Enter your feature model in UVL format"
+        onTextChanged={setUvl}
+        body={
+          <VStack>
+            <Box width="300px">
+              <MultiSelect
+                options={anomalies}
+                value={selectedAnomalies}
+                onChange={setSelectedAnomalies}
+                labelledBy="Select anomalies"
+              />
+            </Box>
+
+            <Divider />
+
+            <ProgressHandler
+              problemTypes={selectedAnomalies.map((option) => option.value)}
+              problemInput={uvl}
             />
-          </Box>
-
-          <Divider />
-
-          <ProgressHandler
-            problemTypes={selectedAnomalies.map((option) => option.value)}
-            problemInput={uvl}
-          />
-        </VStack>
-      }
-    />
+          </VStack>
+        }
+      />
+    </Layout>
   );
 };
 export default FeatureModelAnomaly;

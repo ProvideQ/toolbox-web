@@ -5,11 +5,16 @@ import { Solution } from "./data-model/Solution";
 import { SolutionStatus } from "./data-model/SolutionStatus";
 import { SolveRequest } from "./data-model/SolveRequest";
 
+/**
+ * Getter for the base url of the toolbox API.
+ */
+export const baseUrl = () => process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function postProblem<T>(
   problemType: string,
   solveRequest: SolveRequest<T>
 ): Promise<Solution> {
-  return fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/solve/${problemType}`, {
+  return fetch(`${baseUrl()}/solve/${problemType}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,15 +40,12 @@ export async function postProblem<T>(
 export async function fetchSolvers(
   problemType: string
 ): Promise<ProblemSolver[]> {
-  return fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/solvers/${problemType}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  )
+  return fetch(`${baseUrl()}/solvers/${problemType}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
     .then((response) => response.json())
     .then((json) => json as ProblemSolver[])
     .catch((reason) => {
@@ -58,9 +60,7 @@ export async function fetchSubRoutines(
   solverId: string
 ): Promise<SubRoutineDefinition[]> {
   return fetch(
-    `${
-      process.env.NEXT_PUBLIC_API_BASE_URL
-    }/sub-routines/${problemType}?${new URLSearchParams({
+    `${baseUrl()}/sub-routines/${problemType}?${new URLSearchParams({
       id: solverId,
     })}`,
     {
@@ -81,15 +81,12 @@ export async function fetchSubRoutines(
 export async function fetchMetaSolverSettings(
   problemType: string
 ): Promise<MetaSolverSetting[]> {
-  return fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/meta-solver/settings/${problemType}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  )
+  return fetch(`${baseUrl()}/meta-solver/settings/${problemType}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
     .then((response) => response.json())
     .catch((reason) => {
       console.log(reason);
