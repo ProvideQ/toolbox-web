@@ -3,6 +3,7 @@ import Head from "next/head";
 import { Text, Heading, Link } from "@chakra-ui/react";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";
+import { baseUrl } from "../api/ToolboxAPI";
 
 const Home: NextPage = () => {
   return (
@@ -34,10 +35,7 @@ const Home: NextPage = () => {
         </Link>
         <br />
         API documentation:{" "}
-        <Link
-          href={process.env.NEXT_PUBLIC_API_BASE_URL + "/swagger-ui/index.html"}
-          color="blue.400"
-        >
+        <Link href={baseUrl() + "/swagger-ui/index.html"} color="blue.400">
           OpenAPI definition
         </Link>
         <br />
