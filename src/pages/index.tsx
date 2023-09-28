@@ -35,7 +35,10 @@ const Home: NextPage = () => {
         </Link>
         <br />
         API documentation:{" "}
-        <Link href={baseUrl() + "/swagger-ui/index.html"} color="blue.400">
+        <Link
+          href={baseUrl() + "/webjars/swagger-ui/index.html"}
+          color="blue.400"
+        >
           OpenAPI definition
         </Link>
         <br />
