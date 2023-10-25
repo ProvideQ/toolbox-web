@@ -39,6 +39,8 @@ export class LogicalExpressionParser {
     let wasOperator = false;
     let wasVariable = false;
     let wasClose = false;
+    let wasOpen = false;
+    let wasNegate = false;
 
     if (tokens.length > 0) {
       switch (tokens[0].name) {
@@ -62,8 +64,19 @@ export class LogicalExpressionParser {
         case TokenName.and:
           if (wasOperator)
             errors.push("Two operators (AND/OR) can't be next to each other");
+          if (wasOpen)
+            errors.push(
+              `Operator '${token.lexeme}' can't be after an opening parenthesis`
+            );
           break;
-        case TokenName.negatedVariable:
+        case TokenName.negate:
+          if (wasClose)
+            errors.push(
+              `Negation '${token.lexeme}' is after a closing parenthesis`
+            );
+          if (wasVariable)
+            errors.push(`Negation '${token.lexeme}' is after a variable`);
+          break;
         case TokenName.variable:
           if (wasVariable)
             errors.push(
@@ -78,13 +91,21 @@ export class LogicalExpressionParser {
           if (wasVariable)
             errors.push("Parenthesis can't be opened after a variable");
           break;
+        case TokenName.close:
+          if (wasOperator)
+            errors.push(
+              "Parenthesis can't be closed after an operator (AND/OR)"
+            );
+          if (wasNegate)
+            errors.push("Parenthesis can't be closed after a negation");
+          break;
       }
 
       wasOperator = token.name == TokenName.and || token.name == TokenName.or;
-      wasVariable =
-        token.name == TokenName.variable ||
-        token.name == TokenName.negatedVariable;
+      wasVariable = token.name == TokenName.variable;
+      wasOpen = token.name == TokenName.open;
       wasClose = token.name == TokenName.close;
+      wasNegate = token.name == TokenName.negate;
     }
 
     return errors;
