@@ -5,19 +5,14 @@ import {
   TokenName,
   variableRule,
 } from "./Syntax/CommonSyntax";
-import {
-  andRule,
-  negatedVariableRule,
-  negateRule,
-  orRule,
-} from "./Syntax/LogicalExpressionSyntax";
+import { andRule, negateRule, orRule } from "./Syntax/LogicalExpressionSyntax";
 
 // the order is important - tokens are applied from first to last
 const rules = [
   ...parenthesesRule,
   orRule,
   andRule,
-  negatedVariableRule,
+  negateRule,
   variableRule,
   blankRule,
 ];
