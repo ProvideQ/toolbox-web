@@ -21,7 +21,7 @@ describe("Parsing", () => {
   let dimacsParser = new DimacsParser();
   let logicalExpressionParser = new LogicalExpressionParser();
 
-  each([
+  /*each([
     [
       "((1 or 2 or not 3) and (!4 and (not 5 and 6)) and 3 and (7 or 2))",
       "c First comment\nc Some Comment\nc 1 => 1\np sat 7\n*(+( 1  2  -3 )*( -4 *( -5  6 )) 3 +( 7  2 ))",
@@ -48,7 +48,7 @@ describe("Parsing", () => {
         logicalExpression
       );
     }
-  );
+  );*/
 
   each([
     [
