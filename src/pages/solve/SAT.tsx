@@ -47,11 +47,14 @@ const SAT: NextPage = () => {
         setProblemString={(value) => {
           setLogicalExpressionString(value);
 
-          try {
-            logicalExpressionParser.parseDimacs(value.toString());
+          let errors = logicalExpressionParser.validateLogicalExpression(
+            value.toString()
+          );
+
+          if (errors.length > 0) {
+            setErrorString(errors.toString());
+          } else {
             setErrorString("");
-          } catch (e: any) {
-            setErrorString(e.message);
           }
         }}
       />
