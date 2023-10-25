@@ -1,7 +1,7 @@
 import { regexVariable } from "../../../converter/dimacs/Syntax/CommonSyntax";
 import {
   regexAND,
-  regexNOTVariable,
+  regexNOT,
   regexOR,
 } from "../../../converter/dimacs/Syntax/LogicalExpressionSyntax";
 
@@ -16,7 +16,7 @@ export const SAT_language = {
   },
   "SAT-punctuation": /[()]/,
   negation: {
-    pattern: regexNOTVariable,
+    pattern: regexNOT,
     alias: "string",
   },
   "SAT-variable": {
