@@ -10,6 +10,19 @@ import { SolveRequest } from "./data-model/SolveRequest";
  */
 export const baseUrl = () => process.env.NEXT_PUBLIC_API_BASE_URL;
 
+function invalidSolution(reason: string): Solution {
+  return {
+    id: -1,
+    status: SolutionStatus.INVALID,
+    solverName: "",
+    executionMilliseconds: 0,
+    solutionData: "",
+    debugData: "",
+    metaData: "",
+    error: `${reason}`,
+  };
+}
+
 export async function postProblem<T>(
   problemType: string,
   solveRequest: SolveRequest<T>
@@ -23,18 +36,19 @@ export async function postProblem<T>(
   })
     .then((response) => response.json())
     .then((json) => json as Solution)
-    .catch((reason) => {
-      return {
-        id: -1,
-        status: SolutionStatus.INVALID,
-        solverName: "",
-        executionMilliseconds: 0,
-        solutionData: "",
-        debugData: "",
-        metaData: "",
-        error: `${reason}`,
-      };
-    });
+    .catch(invalidSolution);
+}
+
+export async function fetchSolution(problemType: string, solutionId: number) {
+  return fetch(`${baseUrl()}/solution/${problemType}?id=${solutionId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => json as Solution)
+    .catch(invalidSolution);
 }
 
 export async function fetchSolvers(
