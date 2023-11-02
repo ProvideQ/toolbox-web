@@ -2,9 +2,7 @@ import {
   Box,
   Divider,
   Heading,
-  List,
   ListItem,
-  Spacer,
   Text,
   UnorderedList,
   VStack,
@@ -53,8 +51,9 @@ const FeatureModelAnomaly: NextPage = () => {
       </UnorderedList>
 
       <TextInputMask
+        text={uvl}
+        setText={setUvl}
         textPlaceholder="Enter your feature model in UVL format"
-        onTextChanged={setUvl}
         body={
           <VStack>
             <Box width="300px">
