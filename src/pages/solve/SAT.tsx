@@ -15,6 +15,20 @@ const SAT: NextPage = () => {
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
 
+  function updateProblemString(newValue: string) {
+    setLogicalExpressionString(newValue);
+
+    let errors = logicalExpressionValidator.validateLogicalExpression(
+      newValue.toString()
+    );
+
+    if (errors !== null) {
+      setErrorString(errors.toString());
+    } else {
+      setErrorString("");
+    }
+  }
+
   return (
     <Layout>
       <Head>
@@ -43,24 +57,13 @@ const SAT: NextPage = () => {
       />
       <TextArea
         problemString={logicalExpressionString}
-        setProblemString={(value) => {
-          setLogicalExpressionString(value);
-
-          let errors = logicalExpressionValidator.validateLogicalExpression(
-            value.toString()
-          );
-
-          if (errors) {
-            setErrorString(errors.toString());
-          } else {
-            setErrorString("");
-          }
-        }}
+        setProblemString={updateProblemString}
       />
       <Divider />
       <ProgressHandler
         problemTypes={["sat"]}
         problemInput={logicalExpressionString}
+        setProblemInput={updateProblemString}
       />
     </Layout>
   );
