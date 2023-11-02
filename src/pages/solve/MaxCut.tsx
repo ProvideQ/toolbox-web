@@ -47,7 +47,8 @@ const MaxCut: NextPage = () => {
 
       <TextInputMask
         textPlaceholder="Enter your graph in GML format"
-        onTextChanged={change}
+        text={graphData}
+        setText={change}
         body={
           <Container>
             <Center>

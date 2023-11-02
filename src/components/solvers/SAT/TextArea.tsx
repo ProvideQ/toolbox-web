@@ -7,7 +7,7 @@ import { SAT_language } from "./prism-SAT";
 
 interface TextAreaProps {
   problemString: string;
-  setProblemString: React.Dispatch<React.SetStateAction<string>>;
+  setProblemString: (problemString: string) => void;
 }
 
 export const TextArea = (props: TextAreaProps) => {
