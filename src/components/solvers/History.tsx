@@ -29,19 +29,22 @@ export const History = <T extends {}>(props: HistoryProps<T>) => {
         History
       </Heading>
       <List>
-        {props.problemStates.map((x) => (
-          <ListItem key={x.content}>
-            <Button
-              width="200px"
-              overflow="hidden"
-              variant="link"
-              onClick={(_) => reloadState(x)}
-            >
-              {x.content.toString()}
-            </Button>
-            <Divider />
-          </ListItem>
-        ))}
+        {props.problemStates.map((x) => {
+          let contentString = x.content.toString();
+          return (
+            <ListItem key={contentString}>
+              <Button
+                width="200px"
+                overflow="hidden"
+                variant="link"
+                onClick={(_) => reloadState(x)}
+              >
+                {contentString}
+              </Button>
+              <Divider />
+            </ListItem>
+          );
+        })}
       </List>
     </Stack>
   );
