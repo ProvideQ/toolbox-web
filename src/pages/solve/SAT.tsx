@@ -4,7 +4,6 @@ import type { NextPage } from "next";
 import { TextArea } from "../../components/solvers/SAT/TextArea";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { Text, Divider, Heading, Spacer } from "@chakra-ui/react";
-import { DimacsParser } from "../../converter/dimacs/DimacsParser";
 import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 import { Layout } from "../../components/layout/Layout";
 import { EditorControls } from "../../components/solvers/EditorControls";
@@ -15,6 +14,20 @@ const SAT: NextPage = () => {
 
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
+
+  function updateProblemString(newValue: string) {
+    setLogicalExpressionString(newValue);
+
+    let errors = logicalExpressionParser.validateLogicalExpression(
+      newValue.toString()
+    );
+
+    if (errors.length > 0) {
+      setErrorString(errors.toString());
+    } else {
+      setErrorString("");
+    }
+  }
 
   return (
     <Layout>
@@ -44,24 +57,13 @@ const SAT: NextPage = () => {
       />
       <TextArea
         problemString={logicalExpressionString}
-        setProblemString={(value) => {
-          setLogicalExpressionString(value);
-
-          let errors = logicalExpressionParser.validateLogicalExpression(
-            value.toString()
-          );
-
-          if (errors.length > 0) {
-            setErrorString(errors.toString());
-          } else {
-            setErrorString("");
-          }
-        }}
+        setProblemString={updateProblemString}
       />
       <Divider />
       <ProgressHandler
         problemTypes={["sat"]}
         problemInput={logicalExpressionString}
+        setProblemInput={updateProblemString}
       />
     </Layout>
   );

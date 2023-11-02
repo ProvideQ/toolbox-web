@@ -70,6 +70,7 @@ const FeatureModelAnomaly: NextPage = () => {
             <ProgressHandler
               problemTypes={selectedAnomalies.map((option) => option.value)}
               problemInput={uvl}
+              setProblemInput={setUvl}
             />
           </VStack>
         }
