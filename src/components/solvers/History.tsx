@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ProblemState, ProblemTypeSolutionId } from "./ProgressHandler";
 
@@ -33,14 +34,16 @@ export const History = <T extends {}>(props: HistoryProps<T>) => {
           let contentString = x.content.toString();
           return (
             <ListItem key={contentString}>
-              <Button
-                width="200px"
-                overflow="hidden"
-                variant="link"
-                onClick={(_) => reloadState(x)}
-              >
-                {contentString}
-              </Button>
+              <Tooltip label={contentString}>
+                <Button
+                  width="200px"
+                  overflow="hidden"
+                  variant="link"
+                  onClick={(_) => reloadState(x)}
+                >
+                  {contentString}
+                </Button>
+              </Tooltip>
               <Divider />
             </ListItem>
           );
