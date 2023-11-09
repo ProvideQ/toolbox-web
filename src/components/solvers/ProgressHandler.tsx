@@ -92,6 +92,9 @@ export const ProgressHandler = <T extends {}>(
   }
 
   async function loadSolution(ids: ProblemTypeSolutionId) {
+    setClicked(true);
+    setFinished(false);
+
     Promise.all(
       props.problemTypes.map((problemType) =>
         fetchSolution(problemType, ids[problemType])
