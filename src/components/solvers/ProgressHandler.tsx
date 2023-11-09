@@ -64,18 +64,6 @@ export const ProgressHandler = <T extends {}>(
     setClicked(true);
     setFinished(false);
 
-    // Check if the problem was previously solved
-    let existingProblem = problemStates.find(
-      (state) => state.content == props.problemInput
-    );
-    if (existingProblem !== undefined) {
-      await loadSolution(existingProblem.solutionIds);
-    } else {
-      await startSolving();
-    }
-  }
-
-  async function startSolving() {
     let newSolveRequest: SolveRequest<T> = {
       ...solveRequest,
       requestContent: props.problemInput,
