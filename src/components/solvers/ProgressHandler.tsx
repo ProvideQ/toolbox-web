@@ -1,5 +1,6 @@
 import { Box, Center, HStack } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import { History } from "./History";
 import { GoButton } from "./buttons/GoButton";
 import { fetchSolution, postProblem } from "../../api/ToolboxAPI";
@@ -44,6 +45,15 @@ export const ProgressHandler = <T extends {}>(
     requestContent: props.problemInput,
     requestedSubSolveRequests: {},
   });
+  const [cookies, setCookie, removeCookie] = useCookies(["problemStates"]);
+
+  useEffect(() => {
+    // Handle problem states cookies
+    if (problemStates.length == 0 && cookies.problemStates?.length > 0) {
+      setProblemStates(cookies.problemStates);
+    }
+    setCookie("problemStates", problemStates);
+  }, [problemStates, cookies, setCookie]);
 
   async function getSolution() {
     setClicked(true);
