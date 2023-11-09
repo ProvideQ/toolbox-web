@@ -37,6 +37,8 @@ export interface ProgressHandlerProps<T> {
 export const ProgressHandler = <T extends {}>(
   props: ProgressHandlerProps<T>
 ) => {
+  const historyCookieName: string = `problemStates-${props.problemTypes}`;
+
   const [wasClicked, setClicked] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
   const [solutions, setSolutions] = useState<Solution[]>();
@@ -45,15 +47,18 @@ export const ProgressHandler = <T extends {}>(
     requestContent: props.problemInput,
     requestedSubSolveRequests: {},
   });
-  const [cookies, setCookie, removeCookie] = useCookies(["problemStates"]);
+  const [cookies, setCookies] = useCookies([historyCookieName]);
 
   useEffect(() => {
     // Handle problem states cookies
-    if (problemStates.length == 0 && cookies.problemStates?.length > 0) {
-      setProblemStates(cookies.problemStates);
+    if (problemStates.length == 0 && cookies[historyCookieName]?.length > 0) {
+      setProblemStates(cookies[historyCookieName]);
     }
-    setCookie("problemStates", problemStates);
-  }, [problemStates, cookies, setCookie]);
+  }, [problemStates, cookies, historyCookieName]);
+
+  useEffect(() => {
+    setCookies(historyCookieName, problemStates);
+  }, [historyCookieName, problemStates, setCookies]);
 
   async function getSolution() {
     setClicked(true);
