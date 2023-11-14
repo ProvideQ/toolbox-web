@@ -1,6 +1,5 @@
 import { Box, Center, HStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { Solution } from "../../api/data-model/Solution";
 import { SolveRequest } from "../../api/data-model/SolveRequest";
 import { fetchSolution, postProblem } from "../../api/ToolboxAPI";
@@ -37,7 +36,7 @@ export interface ProgressHandlerProps<T> {
 export const ProgressHandler = <T extends {}>(
   props: ProgressHandlerProps<T>
 ) => {
-  const historyCookieName: string = `problemStates-${props.problemTypes}`;
+  const historyItemName: string = `problemStates-${props.problemTypes}`;
 
   const [wasClicked, setClicked] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
@@ -47,18 +46,23 @@ export const ProgressHandler = <T extends {}>(
     requestContent: props.problemInput,
     requestedSubSolveRequests: {},
   });
-  const [cookies, setCookies] = useCookies([historyCookieName]);
 
   useEffect(() => {
-    // Handle problem states cookies
-    if (problemStates.length == 0 && cookies[historyCookieName]?.length > 0) {
-      setProblemStates(cookies[historyCookieName]);
+    // Handle problem states from local storage
+    if (problemStates.length == 0) {
+      let historyItem = localStorage.getItem(historyItemName);
+      if (historyItem == null) return;
+
+      let storageStates = JSON.parse(historyItem);
+      if (storageStates.length > 0) {
+        setProblemStates(storageStates);
+      }
     }
-  }, [problemStates, cookies, historyCookieName]);
+  }, [problemStates, historyItemName]);
 
   useEffect(() => {
-    setCookies(historyCookieName, problemStates);
-  }, [historyCookieName, problemStates, setCookies]);
+    localStorage.setItem(historyItemName, JSON.stringify(problemStates));
+  }, [historyItemName, problemStates]);
 
   async function getSolution() {
     setClicked(true);
