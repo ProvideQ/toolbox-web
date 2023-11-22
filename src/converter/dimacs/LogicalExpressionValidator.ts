@@ -23,9 +23,9 @@ export class LogicalExpressionValidator {
   /**
    * Validates a logical expression
    * @param logicalExpression {string} logical expression
-   * @returns {string[]} an array of errors. If empty, the logical expression is valid.
+   * @returns {string[]} an array of errors, or null if there are none.
    */
-  public validateLogicalExpression(logicalExpression: string): string[] {
+  public validateLogicalExpression(logicalExpression: string): string[] | null {
     let tokens = this.lex.tokenize(logicalExpression);
     if (tokens.length == 0) return [];
 
@@ -33,7 +33,7 @@ export class LogicalExpressionValidator {
     return this.verifyTokens(tokens);
   }
 
-  private verifyTokens(tokens: Token[]): string[] {
+  private verifyTokens(tokens: Token[]): string[] | null {
     let errors: string[] = [];
     let wasOperator = false;
     let wasVariable = false;
@@ -107,6 +107,10 @@ export class LogicalExpressionValidator {
       wasNegate = token.name == TokenName.negate;
     }
 
-    return errors;
+    if (errors.length > 0) {
+      return errors;
+    } else {
+      return null;
+    }
   }
 }
