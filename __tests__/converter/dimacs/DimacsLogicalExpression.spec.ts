@@ -19,36 +19,6 @@ function isEquivalentDimacs(f1: string, f2: string) {
 
 describe("Parsing", () => {
   let dimacsParser = new DimacsParser();
-  let logicalExpressionParser = new LogicalExpressionParser();
-
-  /*each([
-    [
-      "((1 or 2 or not 3) and (!4 and (not 5 and 6)) and 3 and (7 or 2))",
-      "c First comment\nc Some Comment\nc 1 => 1\np sat 7\n*(+( 1  2  -3 )*( -4 *( -5  6 )) 3 +( 7  2 ))",
-    ],
-    [
-      "(1 or (2 and 3) or (((1 and 4) or 5) and 6))",
-      "p sat 6\n+(1 *(2  3)*(+(*(1  4) 5) 6))",
-    ],
-    [
-      "(((1 and not 2 and 3 and 4) or 3) and 5)",
-      "c Sample DIMACS .sat file\np sat 5\n*(+(*(1  -2  3  4) 3) 5)",
-    ],
-    ["((1 and not 2) or 3)", "p sat 3\n+(*(1 -2) 3)"],
-    ["((1 and 2) or not 3)", "p sat 3\n+(*(1 2) -3)"],
-  ]).test(
-    "parsing bi-directional",
-    (logicalExpression: string, dimacs: string) => {
-      isEquivalentDimacs(
-        logicalExpressionParser.parseDimacs(logicalExpression),
-        dimacs
-      );
-      isEquivalentLogicalExpression(
-        dimacsParser.parseLogicalExpression(dimacs),
-        logicalExpression
-      );
-    }
-  );*/
 
   each([
     [
