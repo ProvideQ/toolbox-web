@@ -17,14 +17,13 @@ const rules = [
   blankRule,
 ];
 
-export class LogicalExpressionParser {
+export class LogicalExpressionValidator {
   private lex: Lexer = new Lexer(rules);
 
   /**
-   * Converts a logical expression to an expression in dimacs sat format
-   * dimacs sat format: https://www.domagoj-babic.com/uploads/ResearchProjects/Spear/dimacs-cnf.pdf
+   * Validates a logical expression
    * @param logicalExpression {string} logical expression
-   * @returns {string} formula in dimacs sat format of the input
+   * @returns {string[]} an array of errors. If empty, the logical expression is valid.
    */
   public validateLogicalExpression(logicalExpression: string): string[] {
     let tokens = this.lex.tokenize(logicalExpression);

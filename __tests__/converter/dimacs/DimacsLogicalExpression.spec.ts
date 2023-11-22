@@ -1,6 +1,5 @@
 import each from "jest-each";
 import { DimacsParser } from "../../../src/converter/dimacs/DimacsParser";
-import { LogicalExpressionParser } from "../../../src/converter/dimacs/LogicalExpressionParser";
 import { regexBlank } from "../../../src/converter/dimacs/Syntax/CommonSyntax";
 import { regexComment } from "../../../src/converter/dimacs/Syntax/DimacsSyntax";
 import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogicalExpressionSyntax";
