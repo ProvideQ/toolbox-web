@@ -7,10 +7,10 @@ import { Layout } from "../../components/layout/Layout";
 import { EditorControls } from "../../components/solvers/EditorControls";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextArea } from "../../components/solvers/SAT/TextArea";
-import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
+import { LogicalExpressionValidator } from "../../converter/dimacs/LogicalExpressionValidator";
 
 const SAT: NextPage = () => {
-  const logicalExpressionParser = new LogicalExpressionParser();
+  const logicalExpressionParser = new LogicalExpressionValidator();
 
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
