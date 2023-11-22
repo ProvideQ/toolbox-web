@@ -50,7 +50,7 @@ const SAT: NextPage = () => {
             value.toString()
           );
 
-          if (errors.length > 0) {
+          if (errors) {
             setErrorString(errors.toString());
           } else {
             setErrorString("");
