@@ -1,9 +1,18 @@
-import { Box, Container, Select, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Select,
+  Text,
+  Textarea,
+  Tooltip,
+} from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { AuthenticationOptions } from "../../api/data-model/AuthenticationOptions";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
 import { ProblemSolver } from "../../api/data-model/ProblemSolver";
 import { SolverChoice } from "../../api/data-model/SolveRequest";
+import TextWithLinks from "../TextWithLink";
 import { SettingsView } from "./SettingsView";
 
 export interface SolverPickerProps {
@@ -65,6 +74,32 @@ export const SolverPicker = (props: SolverPickerProps) => {
     }
   }
 
+  const Authentication = (authenticationOptions: AuthenticationOptions) => {
+    return (
+      <Container>
+        <Text>This solver requires authentication</Text>
+        {authenticationOptions.supportsToken ? (
+          <Textarea
+            onChange={(e) => {
+              let newSolverChoice: SolverChoice = {
+                ...solverChoice,
+                authentication: {
+                  token: e.target.value,
+                },
+              };
+
+              setSolverChoice(newSolverChoice);
+              props.setSolverChoice?.(newSolverChoice);
+            }}
+            placeholder={`Enter your token for ${authenticationOptions.authenticationAgent} here`}
+          />
+        ) : null}
+
+        <TextWithLinks text={authenticationOptions.authenticationDescription} />
+      </Container>
+    );
+  };
+
   const SolverSelection = () => {
     return (
       <Container>
@@ -105,7 +140,12 @@ export const SolverPicker = (props: SolverPickerProps) => {
     <Container>
       {loadingSolvers ? <Text>Loading solvers...</Text> : <SolverSelection />}
 
-      {solveRequest.requestedSolverId == undefined ? (
+      {selectedSolver?.authenticationOptions !== undefined &&
+      selectedSolver?.authenticationOptions !== null
+        ? Authentication(selectedSolver.authenticationOptions)
+        : null}
+
+      {solverChoice.requestedSolverId == undefined ? (
         <SettingsView
           problemType={props.problemType}
           settingChanged={(settings) => {
