@@ -1,11 +1,11 @@
-import { Box, Center, HStack, VStack } from "@chakra-ui/react";
+import { Box, Center, HStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { GoButton } from "./buttons/GoButton";
 import { postProblem } from "../../api/ToolboxAPI";
 import { SolutionView } from "./SolutionView";
 import { Container } from "../Container";
 import { Solution } from "../../api/data-model/Solution";
-import { SolveRequest } from "../../api/data-model/SolveRequest";
+import { SolverChoice, SolveRequest } from "../../api/data-model/SolveRequest";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {
@@ -22,8 +22,7 @@ export const ProgressHandler = <T extends {}>(
   const [wasClicked, setClicked] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
   const [solutions, setSolutions] = useState<Solution[]>();
-  const [solveRequest, setSolveRequest] = useState<SolveRequest<T>>({
-    requestContent: props.problemInput,
+  const [solverChoice, setSolverChoice] = useState<SolverChoice>({
     requestedSubSolveRequests: {},
   });
 
@@ -31,15 +30,14 @@ export const ProgressHandler = <T extends {}>(
     setClicked(true);
     setFinished(false);
 
-    let newSolveRequest: SolveRequest<T> = {
-      ...solveRequest,
+    let solveRequest: SolveRequest<T> = {
+      ...solverChoice,
       requestContent: props.problemInput,
     };
 
-    setSolveRequest(newSolveRequest);
     Promise.all(
       props.problemTypes.map((problemType) =>
-        postProblem(problemType, newSolveRequest)
+        postProblem(problemType, solveRequest)
       )
     ).then((solutions) => {
       setSolutions(solutions);
@@ -55,14 +53,7 @@ export const ProgressHandler = <T extends {}>(
             <SolverPicker
               key={problemType}
               problemType={problemType}
-              setSolveRequest={(solverChoice) => {
-                setSolveRequest({
-                  ...solveRequest,
-                  requestedSolverId: solverChoice.requestedSolverId,
-                  requestedSubSolveRequests:
-                    solveRequest.requestedSubSolveRequests,
-                });
-              }}
+              setSolverChoice={setSolverChoice}
             />
           ))}
           <Center>
