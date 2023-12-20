@@ -1,9 +1,18 @@
-import { Box, Container, Select, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Container,
+  Select,
+  Text,
+  Textarea,
+  Tooltip,
+} from "@chakra-ui/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { AuthenticationOptions } from "../../api/data-model/AuthenticationOptions";
 import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
 import { ProblemSolver } from "../../api/data-model/ProblemSolver";
 import { SolverChoice } from "../../api/data-model/SolveRequest";
+import TextWithLinks from "../TextWithLink";
 import { SettingsView } from "./SettingsView";
 
 export interface SolverPickerProps {
@@ -13,7 +22,7 @@ export interface SolverPickerProps {
    * Only needed internally if this should show a sub routine
    */
   subRoutineDefinition?: SubRoutineDefinition;
-  setSolveRequest: (subRoutines: SolverChoice) => void;
+  setSolverChoice: (solverChoice: SolverChoice) => void;
 }
 
 export const SolverPicker = (props: SolverPickerProps) => {
@@ -22,7 +31,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
   const [subRoutines, setSubRoutines] = useState<
     SubRoutineDefinition[] | undefined
   >(undefined);
-  const [solveRequest, setSolveRequest] = useState<SolverChoice>({
+  const [solverChoice, setSolverChoice] = useState<SolverChoice>({
     requestedSubSolveRequests: {},
   });
 
@@ -40,30 +49,56 @@ export const SolverPicker = (props: SolverPickerProps) => {
       e.target.selectedIndex == 0 ||
       e.target.selectedIndex > solvers.length
     ) {
-      let newSolveRequest: SolverChoice = {
-        ...solveRequest,
+      let newSolverChoice: SolverChoice = {
+        ...solverChoice,
         requestedSolverId: undefined,
       };
 
-      setSolveRequest(newSolveRequest);
-      props.setSolveRequest?.(newSolveRequest);
+      setSolverChoice(newSolverChoice);
+      props.setSolverChoice?.(newSolverChoice);
 
       setSubRoutines(undefined);
     } else {
       let solver = solvers[e.target.selectedIndex - 1];
-      let newSolveRequest: SolverChoice = {
-        ...solveRequest,
+      let newSolverChoice: SolverChoice = {
+        ...solverChoice,
         requestedSolverId: solver.id,
       };
 
-      setSolveRequest(newSolveRequest);
-      props.setSolveRequest?.(newSolveRequest);
+      setSolverChoice(newSolverChoice);
+      props.setSolverChoice?.(newSolverChoice);
 
       fetchSubRoutines(props.problemType, solver.id).then((subRoutines) =>
         setSubRoutines(subRoutines)
       );
     }
   }
+
+  const Authentication = (authenticationOptions: AuthenticationOptions) => {
+    return (
+      <Container>
+        <Text>This solver requires authentication</Text>
+        {authenticationOptions.supportsToken ? (
+          <Textarea
+            onChange={(e) => {
+              let newSolverChoice: SolverChoice = {
+                ...solverChoice,
+                authentication: {
+                  token: e.target.value,
+                },
+              };
+
+              setSolverChoice(newSolverChoice);
+              props.setSolverChoice?.(newSolverChoice);
+            }}
+            placeholder={`Enter your token for ${authenticationOptions.authenticationAgent} here`}
+          />
+        ) : null}
+
+        <TextWithLinks text={authenticationOptions.authenticationDescription} />
+      </Container>
+    );
+  };
 
   const SolverSelection = () => {
     return (
@@ -77,14 +112,14 @@ export const SolverPicker = (props: SolverPickerProps) => {
           color="white"
         >
           <Select margin="2" onChange={onSolverChanged}>
-            <option selected={solveRequest.requestedSolverId === undefined}>
+            <option selected={solverChoice.requestedSolverId === undefined}>
               Automated Solver Selection
             </option>
             <optgroup label="Use Specific Solvers">
               {solvers.map((s: ProblemSolver) => (
                 <option
                   key={s.id}
-                  selected={solveRequest.requestedSolverId === s.id}
+                  selected={solverChoice.requestedSolverId === s.id}
                 >
                   {s.name}
                 </option>
@@ -96,21 +131,31 @@ export const SolverPicker = (props: SolverPickerProps) => {
     );
   };
 
+  let selectedSolver =
+    solverChoice.requestedSolverId !== undefined
+      ? solvers.find((s) => s.id === solverChoice.requestedSolverId)
+      : null;
+
   return (
     <Container>
       {loadingSolvers ? <Text>Loading solvers...</Text> : <SolverSelection />}
 
-      {solveRequest.requestedSolverId == undefined ? (
+      {selectedSolver?.authenticationOptions !== undefined &&
+      selectedSolver?.authenticationOptions !== null
+        ? Authentication(selectedSolver.authenticationOptions)
+        : null}
+
+      {solverChoice.requestedSolverId == undefined ? (
         <SettingsView
           problemType={props.problemType}
           settingChanged={(settings) => {
-            let newSolveRequest: SolverChoice = {
-              ...solveRequest,
+            let newSolverChoice: SolverChoice = {
+              ...solverChoice,
               requestedMetaSolverSettings: settings,
             };
 
-            setSolveRequest(newSolveRequest);
-            props.setSolveRequest(newSolveRequest);
+            setSolverChoice(newSolverChoice);
+            props.setSolverChoice(newSolverChoice);
           }}
         />
       ) : null}
@@ -122,16 +167,16 @@ export const SolverPicker = (props: SolverPickerProps) => {
               key={def.type}
               problemType={def.type}
               subRoutineDefinition={def}
-              setSolveRequest={(subSolveRequest) => {
-                let newSolveRequest: SolverChoice = {
-                  ...solveRequest,
+              setSolverChoice={(subSolverChoice) => {
+                let newSolverChoice: SolverChoice = {
+                  ...solverChoice,
                   requestedSubSolveRequests: {
-                    ...solveRequest.requestedSubSolveRequests,
-                    [def.type]: subSolveRequest,
+                    ...solverChoice.requestedSubSolveRequests,
+                    [def.type]: subSolverChoice,
                   },
                 };
-                setSolveRequest(newSolveRequest);
-                props.setSolveRequest?.(newSolveRequest);
+                setSolverChoice(newSolverChoice);
+                props.setSolverChoice?.(newSolverChoice);
               }}
             />
           ))}

@@ -1,3 +1,4 @@
+import { Authentication } from "./Authentication";
 import { MetaSolverSetting } from "./MetaSolverSettings";
 
 export interface SolverChoice {
@@ -13,6 +14,10 @@ export interface SolverChoice {
    * Map from problem type to SubSolveRequest to allow explicitly requested solvers for a subroutine
    */
   requestedSubSolveRequests: SolveMap;
+  /**
+   * Authentication data for the solver
+   */
+  authentication?: Authentication;
 }
 
 export interface SolveRequest<T> extends SolverChoice {

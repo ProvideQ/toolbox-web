@@ -27,7 +27,16 @@ export const ProblemChooser = (props: GridProps) => (
         new={false}
         tags={["sub-routines"]}
         problemName="Feature Model Anomaly"
-        description="For a given feature model, check for Void Feature Model, Dead Features, False-Optional Features, Redundant Constraints.."
+        description="Check whether a given feature model in the UVL format is void or if it has dead features."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/QUBO"
+        new={true}
+        tags={["QAOA"]}
+        problemName="QUBO"
+        description="For a quadratic term with binary decision variables, find the variable assignment minimizing the term."
       />
     </GridItem>
   </Grid>
