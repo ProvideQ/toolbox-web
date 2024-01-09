@@ -2,19 +2,17 @@ import {
   Box,
   Divider,
   Heading,
-  List,
   ListItem,
-  Spacer,
   Text,
   UnorderedList,
   VStack,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
-import React, { useState } from "react";
+import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
+import { Layout } from "../../components/layout/Layout";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
-import { Layout } from "../../components/layout/Layout";
 
 const anomalies: Option[] = [
   {

@@ -1,4 +1,4 @@
-import { LinkBox, LinkOverlay, Box, Image, Badge } from "@chakra-ui/react";
+import { Badge, Box, LinkBox, LinkOverlay } from "@chakra-ui/react";
 import NextLink from "next/link";
 
 interface ProblemCardProps {

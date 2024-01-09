@@ -8,13 +8,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container } from "../../components/Container";
+import { Layout } from "../../components/layout/Layout";
 import { GraphArea } from "../../components/solvers/Graph/GraphArea";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 import { parseGML } from "../../converter/graph/gml/GmlParser";
-import { Layout } from "../../components/layout/Layout";
 
 const MaxCut: NextPage = () => {
   const [graphData, setGraphData] = useState<any>(null);

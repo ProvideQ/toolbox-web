@@ -1,27 +1,27 @@
 import {
-  Container,
-  Slider,
-  Textarea,
-  Checkbox,
-  Select,
-  SliderTrack,
-  SliderFilledTrack,
-  Text,
-  SliderThumb,
-  SliderMark,
-  VStack,
   Box,
+  Checkbox,
+  Container,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderMark,
+  SliderThumb,
+  SliderTrack,
+  Text,
+  Textarea,
+  VStack,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
+import { useEffect, useState } from "react";
 import {
-  RangeSetting,
   CheckboxSetting,
-  TextSetting,
-  SelectSetting,
   MetaSolverSetting,
   MetaSolverSettingType,
+  RangeSetting,
+  SelectSetting,
+  TextSetting,
 } from "../../api/data-model/MetaSolverSettings";
+import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
 
 interface SettingsViewProps {
   problemType: string;

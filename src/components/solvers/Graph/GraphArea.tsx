@@ -1,6 +1,6 @@
-import { Box, Center, Container, Select, Spacer } from "@chakra-ui/react";
-import React, { useEffect, useRef, useState } from "react";
 import G6, { Graph, GraphData } from "@antv/g6";
+import { Box, Center, Container, Select, Spacer } from "@chakra-ui/react";
+import { useEffect, useRef, useState } from "react";
 
 interface GraphAreaProps {
   graphData: GraphData;

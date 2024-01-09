@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Accordion,
   AccordionButton,
@@ -9,8 +8,8 @@ import {
   Code,
   Spinner,
 } from "@chakra-ui/react";
-import { Container } from "../Container";
 import { Solution } from "../../api/data-model/Solution";
+import { Container } from "../Container";
 
 export interface SolutionViewProps {
   finished: boolean;

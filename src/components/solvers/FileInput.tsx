@@ -1,5 +1,3 @@
-import React from "react";
-
 export async function chooseFile(
   multiple?: boolean,
   accept?: string
