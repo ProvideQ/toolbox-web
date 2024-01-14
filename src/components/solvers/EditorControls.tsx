@@ -6,8 +6,8 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { TbDownload, TbHelp, TbUpload } from "react-icons/tb";
-import { chooseFile } from "./FileInput";
 import { baseUrl } from "../../api/ToolboxAPI";
+import { chooseFile } from "./FileInput";
 
 export interface EditorControlsProps {
   /**

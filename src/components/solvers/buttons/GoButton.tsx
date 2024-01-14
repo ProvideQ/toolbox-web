@@ -1,4 +1,4 @@
-import { Button, Tooltip, Flex } from "@chakra-ui/react";
+import { Button, Flex, Tooltip } from "@chakra-ui/react";
 import { MouseEventHandler } from "react";
 
 interface GoButtonProps {

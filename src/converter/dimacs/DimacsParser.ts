@@ -1,5 +1,12 @@
 import { Lexer, Token } from "@jlguenego/lexer";
 import {
+  blankRule,
+  parenthesesRule,
+  regexBlank,
+  TokenName,
+  variableRule,
+} from "./Syntax/CommonSyntax";
+import {
   andRule,
   commentRule,
   negateRule,
@@ -10,13 +17,6 @@ import {
   sat,
   startKeywords,
 } from "./Syntax/DimacsSyntax";
-import {
-  TokenName,
-  parenthesesRule,
-  variableRule,
-  blankRule,
-  regexBlank,
-} from "./Syntax/CommonSyntax";
 
 // the order is important - tokens are applied from first to last
 const rules = [

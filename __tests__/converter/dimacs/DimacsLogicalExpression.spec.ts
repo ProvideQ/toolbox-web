@@ -1,8 +1,8 @@
 import each from "jest-each";
-import { regexBlank } from "../../../src/converter/dimacs/Syntax/CommonSyntax";
 import { DimacsParser } from "../../../src/converter/dimacs/DimacsParser";
-import { regexComment } from "../../../src/converter/dimacs/Syntax/DimacsSyntax";
 import { LogicalExpressionParser } from "../../../src/converter/dimacs/LogicalExpressionParser";
+import { regexBlank } from "../../../src/converter/dimacs/Syntax/CommonSyntax";
+import { regexComment } from "../../../src/converter/dimacs/Syntax/DimacsSyntax";
 import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogicalExpressionSyntax";
 
 function isEquivalentLogicalExpression(f1: string, f2: string) {

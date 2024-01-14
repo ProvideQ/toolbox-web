@@ -1,14 +1,13 @@
-import Head from "next/head";
-import React, { useState } from "react";
+import { Divider, Heading, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { TextArea } from "../../components/solvers/SAT/TextArea";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { Text, Divider, Heading, Spacer } from "@chakra-ui/react";
-import { DimacsParser } from "../../converter/dimacs/DimacsParser";
-import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
+import Head from "next/head";
+import { useState } from "react";
+import { baseUrl } from "../../api/ToolboxAPI";
 import { Layout } from "../../components/layout/Layout";
 import { EditorControls } from "../../components/solvers/EditorControls";
-import { baseUrl } from "../../api/ToolboxAPI";
+import { ProgressHandler } from "../../components/solvers/ProgressHandler";
+import { TextArea } from "../../components/solvers/SAT/TextArea";
+import { LogicalExpressionParser } from "../../converter/dimacs/LogicalExpressionParser";
 
 const SAT: NextPage = () => {
   const logicalExpressionParser = new LogicalExpressionParser();

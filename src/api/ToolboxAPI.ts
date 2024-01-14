@@ -1,9 +1,9 @@
 import { MetaSolverSetting } from "./data-model/MetaSolverSettings";
-import { SubRoutineDefinition } from "./data-model/SubRoutineDefinition";
 import { ProblemSolver } from "./data-model/ProblemSolver";
 import { Solution } from "./data-model/Solution";
 import { SolutionStatus } from "./data-model/SolutionStatus";
 import { SolveRequest } from "./data-model/SolveRequest";
+import { SubRoutineDefinition } from "./data-model/SubRoutineDefinition";
 
 /**
  * Getter for the base url of the toolbox API.

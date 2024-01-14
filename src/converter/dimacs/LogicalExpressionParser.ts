@@ -1,9 +1,9 @@
 import { Lexer, Token } from "@jlguenego/lexer";
 import {
-  TokenName,
-  parenthesesRule,
-  variableRule,
   blankRule,
+  parenthesesRule,
+  TokenName,
+  variableRule,
 } from "./Syntax/CommonSyntax";
 import {
   andRule,

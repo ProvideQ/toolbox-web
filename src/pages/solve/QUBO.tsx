@@ -1,10 +1,10 @@
-import Head from "next/head";
-import React, { useState } from "react";
+import { Code, Divider, Heading, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import { TextInputMask } from "../../components/solvers/TextInputMask";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { Text, Divider, Heading, Spacer, Code } from "@chakra-ui/react";
+import Head from "next/head";
+import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
+import { ProgressHandler } from "../../components/solvers/ProgressHandler";
+import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const QUBO: NextPage = () => {
   const [quboTerm, setQuboTerm] = useState("");

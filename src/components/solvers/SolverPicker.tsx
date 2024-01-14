@@ -1,9 +1,9 @@
 import { Box, Container, Select, Text, Tooltip } from "@chakra-ui/react";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
-import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
+import { ChangeEvent, useEffect, useState } from "react";
 import { ProblemSolver } from "../../api/data-model/ProblemSolver";
 import { SolverChoice } from "../../api/data-model/SolveRequest";
+import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
+import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import { SettingsView } from "./SettingsView";
 
 export interface SolverPickerProps {

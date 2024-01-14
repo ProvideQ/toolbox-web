@@ -1,11 +1,11 @@
-import { Box, Center, HStack, VStack } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { GoButton } from "./buttons/GoButton";
-import { postProblem } from "../../api/ToolboxAPI";
-import { SolutionView } from "./SolutionView";
-import { Container } from "../Container";
+import { Box, Center, HStack } from "@chakra-ui/react";
+import { useState } from "react";
 import { Solution } from "../../api/data-model/Solution";
 import { SolveRequest } from "../../api/data-model/SolveRequest";
+import { postProblem } from "../../api/ToolboxAPI";
+import { Container } from "../Container";
+import { GoButton } from "./buttons/GoButton";
+import { SolutionView } from "./SolutionView";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProgressHandlerProps<T> {

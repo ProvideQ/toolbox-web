@@ -1,9 +1,7 @@
-import { Divider, Text, Textarea } from "@chakra-ui/react";
+import { Divider, Textarea } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import { Container } from "../Container";
-import { Main } from "../Main";
-import { Help } from "./SAT/Help";
 import { EditorControls } from "./EditorControls";
 
 export interface TextInputMaskProperties {
