@@ -10,7 +10,7 @@ import { TextArea } from "../../components/solvers/SAT/TextArea";
 import { LogicalExpressionValidator } from "../../converter/dimacs/LogicalExpressionValidator";
 
 const SAT: NextPage = () => {
-  const logicalExpressionParser = new LogicalExpressionValidator();
+  const logicalExpressionValidator = new LogicalExpressionValidator();
 
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
   const [errorString, setErrorString] = useState("");
@@ -46,7 +46,7 @@ const SAT: NextPage = () => {
         setProblemString={(value) => {
           setLogicalExpressionString(value);
 
-          let errors = logicalExpressionParser.validateLogicalExpression(
+          let errors = logicalExpressionValidator.validateLogicalExpression(
             value.toString()
           );
 
