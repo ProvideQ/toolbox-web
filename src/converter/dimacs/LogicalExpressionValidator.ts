@@ -107,10 +107,6 @@ export class LogicalExpressionValidator {
       wasNegate = token.name == TokenName.negate;
     }
 
-    if (errors.length > 0) {
-      return errors;
-    } else {
-      return null;
-    }
+    return errors;
   }
 }
