@@ -51,8 +51,9 @@ const FeatureModelAnomaly: NextPage = () => {
       </UnorderedList>
 
       <TextInputMask
+        text={uvl}
+        setText={setUvl}
         textPlaceholder="Enter your feature model in UVL format"
-        onTextChanged={setUvl}
         body={
           <VStack>
             <Box width="300px">
@@ -69,6 +70,7 @@ const FeatureModelAnomaly: NextPage = () => {
             <ProgressHandler
               problemTypes={selectedAnomalies.map((option) => option.value)}
               problemInput={uvl}
+              setProblemInput={setUvl}
             />
           </VStack>
         }

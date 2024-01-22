@@ -47,7 +47,8 @@ const MaxCut: NextPage = () => {
 
       <TextInputMask
         textPlaceholder="Enter your graph in GML format"
-        onTextChanged={change}
+        text={graphString}
+        setText={change}
         body={
           <Container>
             <Center>
@@ -62,6 +63,7 @@ const MaxCut: NextPage = () => {
             <ProgressHandler
               problemTypes={["max-cut"]}
               problemInput={graphString}
+              setProblemInput={change}
             />
           </Container>
         }
