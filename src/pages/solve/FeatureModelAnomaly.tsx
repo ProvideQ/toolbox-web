@@ -8,11 +8,11 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
-import React, { useState } from "react";
+import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
+import { Layout } from "../../components/layout/Layout";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
-import { Layout } from "../../components/layout/Layout";
 
 const anomalies: Option[] = [
   {
@@ -52,7 +52,7 @@ const FeatureModelAnomaly: NextPage = () => {
 
       <TextInputMask
         text={uvl}
-        setText={setUvl}
+        onTextChanged={setUvl}
         textPlaceholder="Enter your feature model in UVL format"
         body={
           <VStack>
