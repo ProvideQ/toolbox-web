@@ -6,12 +6,12 @@ import {
   Textarea,
   Tooltip,
 } from "@chakra-ui/react";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { AuthenticationOptions } from "../../api/data-model/AuthenticationOptions";
-import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
-import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
 import { ProblemSolver } from "../../api/data-model/ProblemSolver";
 import { SolverChoice } from "../../api/data-model/SolveRequest";
+import { SubRoutineDefinition } from "../../api/data-model/SubRoutineDefinition";
+import { fetchSolvers, fetchSubRoutines } from "../../api/ToolboxAPI";
 import TextWithLinks from "../TextWithLink";
 import { SettingsView } from "./SettingsView";
 
@@ -75,22 +75,24 @@ export const SolverPicker = (props: SolverPickerProps) => {
   }
 
   const Authentication = (authenticationOptions: AuthenticationOptions) => {
+    function updateAuthentication(token: string) {
+      let newSolverChoice: SolverChoice = {
+        ...solverChoice,
+        authentication: {
+          token: token,
+        },
+      };
+
+      setSolverChoice(newSolverChoice);
+      props.setSolverChoice?.(newSolverChoice);
+    }
+
     return (
       <Container>
         <Text>This solver requires authentication</Text>
         {authenticationOptions.supportsToken ? (
           <Textarea
-            onChange={(e) => {
-              let newSolverChoice: SolverChoice = {
-                ...solverChoice,
-                authentication: {
-                  token: e.target.value,
-                },
-              };
-
-              setSolverChoice(newSolverChoice);
-              props.setSolverChoice?.(newSolverChoice);
-            }}
+            onChange={(e) => updateAuthentication(e.target.value)}
             placeholder={`Enter your token for ${authenticationOptions.authenticationAgent} here`}
           />
         ) : null}
