@@ -49,7 +49,7 @@ export const ProgressHandler = <T extends {}>(
     storeHistory(props.problemTypes, problemStates);
   }, [problemStates, props.problemTypes]);
 
-  async function getSolution() {
+  async function startSolving() {
     setClicked(true);
     setFinished(false);
 
@@ -116,7 +116,7 @@ export const ProgressHandler = <T extends {}>(
             />
           ))}
           <Center>
-            <GoButton clicked={getSolution} />
+            <GoButton clicked={startSolving} />
           </Center>
         </HStack>
       ) : null}
