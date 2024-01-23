@@ -141,13 +141,11 @@ export const SolverPicker = (props: SolverPickerProps) => {
   return (
     <Container>
       {loadingSolvers ? <Text>Loading solvers...</Text> : <SolverSelection />}
-
       {selectedSolver?.authenticationOptions !== undefined &&
-      selectedSolver?.authenticationOptions !== null
-        ? Authentication(selectedSolver.authenticationOptions)
-        : null}
+        selectedSolver?.authenticationOptions !== null &&
+        Authentication(selectedSolver.authenticationOptions)}
 
-      {solverChoice.requestedSolverId == undefined ? (
+      {solverChoice.requestedSolverId == undefined && (
         <SettingsView
           problemType={props.problemType}
           settingChanged={(settings) => {
@@ -160,9 +158,9 @@ export const SolverPicker = (props: SolverPickerProps) => {
             props.setSolverChoice(newSolverChoice);
           }}
         />
-      ) : null}
+      )}
 
-      {subRoutines == undefined || subRoutines.length == 0 ? null : (
+      {subRoutines != undefined && subRoutines.length != 0 && (
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>
           {subRoutines.map((def) => (
             <SolverPicker
