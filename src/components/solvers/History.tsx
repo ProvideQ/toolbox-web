@@ -7,21 +7,19 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import { ProblemState, ProblemTypeSolutionId } from "./ProgressHandler";
+import { ProblemState } from "./ProgressHandler";
 
 interface HistoryProps<T> {
   problemStates: ProblemState<T>[];
 
-  setContent: (t: T) => void;
-  loadSolution: (id: ProblemTypeSolutionId) => void;
+  onRequestRollback: (problemState: ProblemState<T>) => void;
 }
 
 export const History = <T extends {}>(props: HistoryProps<T>) => {
   if (props.problemStates.length == 0) return null;
 
   function reloadState(state: ProblemState<T>) {
-    props.setContent(state.content);
-    props.loadSolution(state.solutionIds);
+    props.onRequestRollback(state);
   }
 
   return (

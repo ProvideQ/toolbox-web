@@ -1,12 +1,12 @@
 import { Box, Center, HStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { History } from "./History";
-import { GoButton } from "./buttons/GoButton";
-import { fetchSolution, postProblem } from "../../api/ToolboxAPI";
-import { SolutionView } from "./SolutionView";
-import { Container } from "../Container";
+import { useEffect, useState } from "react";
 import { Solution } from "../../api/data-model/Solution";
 import { SolveRequest } from "../../api/data-model/SolveRequest";
+import { fetchSolution, postProblem } from "../../api/ToolboxAPI";
+import { Container } from "../Container";
+import { GoButton } from "./buttons/GoButton";
+import { History } from "./History";
+import { SolutionView } from "./SolutionView";
 import { SolverPicker } from "./SolverPicker";
 
 export interface ProblemState<T> {
@@ -154,8 +154,10 @@ export const ProgressHandler = <T extends {}>(
 
       <History
         problemStates={problemStates}
-        loadSolution={loadSolution}
-        setContent={props.setProblemInput}
+        onRequestRollback={(problemState) => {
+          props.setProblemInput(problemState.content);
+          loadSolution(problemState.solutionIds);
+        }}
       />
     </Container>
   );
