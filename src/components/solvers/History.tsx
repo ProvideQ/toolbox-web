@@ -29,17 +29,17 @@ export const History = <T extends {}>(props: HistoryProps<T>) => {
       </Heading>
       <List>
         {props.problemStates.map((x) => {
-          let contentString = x.content.toString();
+          let problemString = x.problemInput.toString();
           return (
-            <ListItem key={contentString}>
-              <Tooltip label={contentString}>
+            <ListItem key={problemString}>
+              <Tooltip label={problemString}>
                 <Button
                   width="200px"
                   overflow="hidden"
                   variant="link"
                   onClick={(_) => reloadState(x)}
                 >
-                  {contentString}
+                  {problemString}
                 </Button>
               </Tooltip>
               <Divider />

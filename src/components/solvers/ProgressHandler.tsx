@@ -13,7 +13,7 @@ export interface ProblemState<T> {
   /**
    * Problem input
    */
-  content: T;
+  problemInput: T;
   /**
    * Ids of the solutions of the problem input per problem type
    */
@@ -88,7 +88,7 @@ export const ProgressHandler = <T extends {}>(
       }, {} as ProblemTypeSolutionId);
 
       let newProblemState: ProblemState<T> = {
-        content: props.problemInput,
+        problemInput: props.problemInput,
         solutionIds: solutionIdMap,
       };
 
@@ -155,7 +155,7 @@ export const ProgressHandler = <T extends {}>(
       <History
         problemStates={problemStates}
         onRequestRollback={(problemState) => {
-          props.setProblemInput(problemState.content);
+          props.setProblemInput(problemState.problemInput);
           loadSolution(problemState.solutionIds);
         }}
       />
