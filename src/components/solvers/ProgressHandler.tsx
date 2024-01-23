@@ -6,19 +6,9 @@ import { fetchSolution, postProblem } from "../../api/ToolboxAPI";
 import { Container } from "../Container";
 import { GoButton } from "./buttons/GoButton";
 import { History } from "./History";
+import { getHistory, ProblemState, storeHistory } from "./HistoryStorage";
 import { SolutionView } from "./SolutionView";
 import { SolverPicker } from "./SolverPicker";
-
-export interface ProblemState<T> {
-  /**
-   * Problem input
-   */
-  problemInput: T;
-  /**
-   * Ids of the solutions of the problem input per problem type
-   */
-  solutionIds: ProblemTypeSolutionId;
-}
 
 export type ProblemTypeSolutionId = {
   [problemTypeId: string]: number;
@@ -36,8 +26,6 @@ export interface ProgressHandlerProps<T> {
 export const ProgressHandler = <T extends {}>(
   props: ProgressHandlerProps<T>
 ) => {
-  const historyItemName: string = `problemStates-${props.problemTypes}`;
-
   const [wasClicked, setClicked] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
   const [solutions, setSolutions] = useState<Solution[]>();
@@ -50,19 +38,16 @@ export const ProgressHandler = <T extends {}>(
   useEffect(() => {
     // Handle problem states from local storage
     if (problemStates.length == 0) {
-      let historyItem = localStorage.getItem(historyItemName);
-      if (historyItem == null) return;
-
-      let storageStates = JSON.parse(historyItem);
-      if (storageStates.length > 0) {
-        setProblemStates(storageStates);
+      let history = getHistory<T>(props.problemTypes);
+      if (history.length > 0) {
+        setProblemStates(history);
       }
     }
-  }, [problemStates, historyItemName]);
+  }, [problemStates, props.problemTypes]);
 
   useEffect(() => {
-    localStorage.setItem(historyItemName, JSON.stringify(problemStates));
-  }, [historyItemName, problemStates]);
+    storeHistory(props.problemTypes, problemStates);
+  }, [problemStates, props.problemTypes]);
 
   async function getSolution() {
     setClicked(true);

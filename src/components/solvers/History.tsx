@@ -7,7 +7,7 @@ import {
   Stack,
   Tooltip,
 } from "@chakra-ui/react";
-import { ProblemState } from "./ProgressHandler";
+import { ProblemState } from "./HistoryStorage";
 
 interface HistoryProps<T> {
   problemStates: ProblemState<T>[];
