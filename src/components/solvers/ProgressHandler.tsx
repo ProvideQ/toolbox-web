@@ -10,7 +10,7 @@ import { getHistory, ProblemState, storeHistory } from "./HistoryStorage";
 import { SolutionView } from "./SolutionView";
 import { SolverPicker } from "./SolverPicker";
 
-export type ProblemTypeSolutionId = {
+export type SolutionIds = {
   [problemTypeId: string]: number;
 };
 
@@ -70,7 +70,7 @@ export const ProgressHandler = <T extends {}>(
       let solutionIdMap = result.reduce((acc, item) => {
         acc[item.problemType] = item.solution.id;
         return acc;
-      }, {} as ProblemTypeSolutionId);
+      }, {} as SolutionIds);
 
       let newProblemState: ProblemState<T> = {
         problemInput: props.problemInput,
@@ -83,7 +83,7 @@ export const ProgressHandler = <T extends {}>(
     });
   }
 
-  async function loadSolution(ids: ProblemTypeSolutionId) {
+  async function loadSolution(ids: SolutionIds) {
     setClicked(true);
     setFinished(false);
 

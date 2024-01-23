@@ -1,4 +1,4 @@
-import { ProblemTypeSolutionId } from "./ProgressHandler";
+import { SolutionIds } from "./ProgressHandler";
 
 export interface ProblemState<T> {
   /**
@@ -8,7 +8,7 @@ export interface ProblemState<T> {
   /**
    * Ids of the solutions of the problem input per problem type
    */
-  solutionIds: ProblemTypeSolutionId;
+  solutionIds: SolutionIds;
 }
 
 export function getHistory<T>(problemTypes: string[]): ProblemState<T>[] {
