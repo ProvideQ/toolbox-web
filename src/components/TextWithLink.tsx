@@ -1,5 +1,4 @@
-import { Box, Link } from "@chakra-ui/react";
-import React from "react";
+import { Link, Text } from "@chakra-ui/react";
 
 export interface TextWithLinksProps {
   text: string;
@@ -12,7 +11,7 @@ const TextWithLinks = (props: TextWithLinksProps) => {
   const parts: string[] = props.text.split(urlRegex);
 
   return (
-    <Box>
+    <Text>
       {parts.map((part, index) => {
         // Check if the part is a link
         if (urlRegex.test(part)) {
@@ -25,7 +24,7 @@ const TextWithLinks = (props: TextWithLinksProps) => {
           return <span key={index}>{part}</span>;
         }
       })}
-    </Box>
+    </Text>
   );
 };
 
