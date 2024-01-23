@@ -1,8 +1,7 @@
-import "prismjs/themes/prism-solarizedlight.css"; //TODO: use custom styling
-import React from "react";
-import Editor from "react-simple-code-editor";
+import { Box } from "@chakra-ui/react";
 import { highlight } from "prismjs";
-import { Box, Container } from "@chakra-ui/react";
+import "prismjs/themes/prism-solarizedlight.css"; //TODO: use custom styling
+import Editor from "react-simple-code-editor";
 import { SAT_language } from "./prism-SAT";
 
 interface TextAreaProps {
