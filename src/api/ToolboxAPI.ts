@@ -1,4 +1,5 @@
 import { MetaSolverSetting } from "./data-model/MetaSolverSettings";
+import { ProblemGraph } from "./data-model/ProblemGraph";
 import { ProblemSolver } from "./data-model/ProblemSolver";
 import { Solution } from "./data-model/Solution";
 import { SolutionStatus } from "./data-model/SolutionStatus";
@@ -40,6 +41,17 @@ export async function postProblem<T>(
 export async function fetchSolvers(
   problemType: string
 ): Promise<ProblemSolver[]> {
+  // Return mock promise
+  // todo remove
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { id: "tsp1", name: "TSP 1" },
+        { id: "tsp2", name: "TSP 2" },
+      ]);
+    }, 1000);
+  });
+
   return fetch(`${baseUrl()}/solvers/${problemType}`, {
     method: "GET",
     headers: {
@@ -92,4 +104,38 @@ export async function fetchMetaSolverSettings(
       console.log(reason);
       return [];
     });
+}
+
+export async function fetchProblemGraph(): Promise<ProblemGraph> {
+  return new Promise((resolve) => {
+    return resolve({
+      start: {
+        problemType: "vehicle-routing",
+        status: SolutionStatus.SOLVED,
+        solver: {
+          id: "vr-solver-1",
+          name: "VR Solver 1"
+        },
+        solutionId: 1,
+        subRoutines: [
+          {
+            problemType: "clustering",
+            status: SolutionStatus.COMPUTING,
+            solutionId: 2,
+            solver: {
+              id: "clustering-solver-1",
+              name: "Clustering Solver 1"
+            },
+            subRoutines: []
+          },
+          {
+            problemType: "travelling-salesman",
+            status: SolutionStatus.PENDING_USER_ACTION,
+            solutionId: 3,
+            subRoutines: []
+          }
+        ]
+      }
+    });
+  });
 }
