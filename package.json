@@ -10,11 +10,7 @@
     "format": "prettier --write .",
     "test": "jest"
   },
-  "resolutions": {
-    "d3-interpolate": "2.0.1"
-  },
   "dependencies": {
-    "@antv/g6": "^4.7.16",
     "@chakra-ui/react": "^2.3.1",
     "@emotion/react": "11",
     "@emotion/styled": "11",
@@ -26,7 +22,8 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "react-multi-select-component": "^4.3.4",
-    "react-simple-code-editor": "^0.13.0"
+    "react-simple-code-editor": "^0.13.0",
+    "reactflow": "^11.10.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",

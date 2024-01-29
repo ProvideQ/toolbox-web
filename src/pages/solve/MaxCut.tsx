@@ -11,20 +11,12 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { Container } from "../../components/Container";
 import { Layout } from "../../components/layout/Layout";
-import { GraphArea } from "../../components/solvers/Graph/GraphArea";
+import { GMLGraphView } from "../../components/solvers/Graph/GMLGraphView";
 import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
-import { parseGML } from "../../converter/graph/gml/GmlParser";
 
 const MaxCut: NextPage = () => {
-  const [graphData, setGraphData] = useState<any>(null);
   const [graphString, setGraphString] = useState("");
-
-  function change(x: string): void {
-    setGraphString(x);
-    let data = parseGML(x);
-    setGraphData(data);
-  }
 
   return (
     <Layout>
@@ -47,14 +39,12 @@ const MaxCut: NextPage = () => {
 
       <TextInputMask
         textPlaceholder="Enter your graph in GML format"
-        onTextChanged={change}
+        onTextChanged={setGraphString}
         body={
           <Container>
             <Center>
-              <GraphArea
-                graphData={graphData}
-                graphHeight={500}
-                graphWidth={500}
+              <GMLGraphView
+                gml={graphString}
               />
             </Center>
 
