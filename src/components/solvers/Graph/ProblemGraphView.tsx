@@ -1,9 +1,19 @@
 import { useEffect } from "react";
-import { Controls, Edge, Node, ReactFlow, useEdgesState, useNodesState } from "reactflow";
-import { ProblemGraph, ProblemNode } from "../../../api/data-model/ProblemGraph";
+import {
+  Controls,
+  Edge,
+  Node,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "reactflow";
+import "reactflow/dist/style.css";
+import {
+  ProblemGraph,
+  ProblemNode,
+} from "../../../api/data-model/ProblemGraph";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
 import { fetchSolvers } from "../../../api/ToolboxAPI";
-import 'reactflow/dist/style.css';
 
 export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
@@ -16,7 +26,10 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
     setEdges(edges);
     setNodes(nodes);
 
-    function problemGraphToReactFlow(graph: ProblemGraph): { nodes: Node[]; edges: Edge[] } {
+    function problemGraphToReactFlow(graph: ProblemGraph): {
+      nodes: Node[];
+      edges: Edge[];
+    } {
       function getNodeId(node: ProblemNode) {
         return node.problemType + node.solutionId.toString();
       }
@@ -54,7 +67,7 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
           (problemNode.solver == null ? "" : " - " + problemNode.solver?.name);
         let position = {
           x: getPositionX(levelInfo),
-          y: getPositionY(level)
+          y: getPositionY(level),
         };
         let data = { label: label };
         let type: string;
@@ -70,12 +83,12 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
           id: id,
           data: data,
           position: position,
-          type: type
+          type: type,
         };
 
         if (problemNode.status == SolutionStatus.PENDING_USER_ACTION) {
           node.style = {
-            background: "teal"
+            background: "teal",
           };
 
           fetchSolvers(problemNode.problemType).then((solvers) => {
@@ -90,23 +103,23 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
                   x:
                     node.position.x +
                     getPositionX({ index: i, count: solvers.length }),
-                  y: getPositionY(level + 1)
+                  y: getPositionY(level + 1),
                 },
                 type: "output",
                 style: {
-                  background: "teal"
-                }
+                  background: "teal",
+                },
               });
 
               edges.push({
                 id: id + "-" + solverId,
                 type: "step",
                 source: id,
-                target: solverId
+                target: solverId,
               });
             }
             node.style = {
-              background: "grey"
+              background: "grey",
             };
 
             setNodes(nodes);
@@ -122,11 +135,11 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
             id: getEdgeId(problemNode, subRoutine),
             source: id,
             target: getNodeId(subRoutine),
-            animated: subRoutine.status == SolutionStatus.COMPUTING
+            animated: subRoutine.status == SolutionStatus.COMPUTING,
           });
           addNode(subRoutine, level + 1, {
             index: i,
-            count: problemNode.subRoutines.length
+            count: problemNode.subRoutines.length,
           });
         }
       }
@@ -143,7 +156,7 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
         width: "50vw",
         height: "50vh",
         border: "2px solid black",
-        borderRadius: "15px"
+        borderRadius: "15px",
       }}
     >
       <ReactFlow
@@ -151,7 +164,8 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        fitView>
+        fitView
+      >
         <Controls />
       </ReactFlow>
     </div>

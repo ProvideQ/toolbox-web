@@ -43,9 +43,7 @@ const MaxCut: NextPage = () => {
         body={
           <Container>
             <Center>
-              <GMLGraphView
-                gml={graphString}
-              />
+              <GMLGraphView gml={graphString} />
             </Center>
 
             <Divider />

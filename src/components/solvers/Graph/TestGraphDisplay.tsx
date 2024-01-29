@@ -7,12 +7,10 @@ export const TestGraphDisplay = () => {
   let [graph, setGraph] = useState<ProblemGraph | null>(null);
 
   useEffect(() => {
-    fetchProblemGraph()
-      .then(graph => {
-        setGraph(graph);
-      });
+    fetchProblemGraph().then((graph) => {
+      setGraph(graph);
+    });
   }, []);
 
-  return (
-    <ProblemGraphView graph={graph} />);
+  return <ProblemGraphView graph={graph} />;
 };

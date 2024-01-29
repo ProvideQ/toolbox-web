@@ -114,7 +114,7 @@ export async function fetchProblemGraph(): Promise<ProblemGraph> {
         status: SolutionStatus.SOLVED,
         solver: {
           id: "vr-solver-1",
-          name: "VR Solver 1"
+          name: "VR Solver 1",
         },
         solutionId: 1,
         subRoutines: [
@@ -124,18 +124,18 @@ export async function fetchProblemGraph(): Promise<ProblemGraph> {
             solutionId: 2,
             solver: {
               id: "clustering-solver-1",
-              name: "Clustering Solver 1"
+              name: "Clustering Solver 1",
             },
-            subRoutines: []
+            subRoutines: [],
           },
           {
             problemType: "travelling-salesman",
             status: SolutionStatus.PENDING_USER_ACTION,
             solutionId: 3,
-            subRoutines: []
-          }
-        ]
-      }
+            subRoutines: [],
+          },
+        ],
+      },
     });
   });
 }

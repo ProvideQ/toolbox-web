@@ -15,7 +15,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
         {/* TODO: replace favicon */}
       </Head>
-      <TestGraphDisplay/>
+      <TestGraphDisplay />
       <Text color="text" align="justify" as="b">
         Welcome to the ProvideQ Toolbox!
       </Text>

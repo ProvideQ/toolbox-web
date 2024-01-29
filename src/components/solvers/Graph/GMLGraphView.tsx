@@ -1,5 +1,12 @@
 import { useEffect } from "react";
-import { Controls, Edge, Node, ReactFlow, useEdgesState, useNodesState } from "reactflow";
+import {
+  Controls,
+  Edge,
+  Node,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
+} from "reactflow";
 import "reactflow/dist/style.css";
 import { parseGML } from "../../../converter/graph/gml/GmlParser";
 
@@ -52,8 +59,8 @@ export const GMLGraphView = (props: { gml: string }) => {
           type: getNodeType(node),
           position: {
             x: 0,
-            y: i * 100
-          }
+            y: i * 100,
+          },
         };
         return n;
       });
@@ -63,7 +70,7 @@ export const GMLGraphView = (props: { gml: string }) => {
           id: i.toString(),
           source: edge.source,
           target: edge.target,
-          label: edge.label
+          label: edge.label,
         };
         return e;
       });
@@ -78,7 +85,7 @@ export const GMLGraphView = (props: { gml: string }) => {
         width: "50vw",
         height: "50vh",
         border: "2px solid black",
-        borderRadius: "15px"
+        borderRadius: "15px",
       }}
     >
       <ReactFlow
@@ -86,7 +93,8 @@ export const GMLGraphView = (props: { gml: string }) => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        fitView>
+        fitView
+      >
         <Controls />
       </ReactFlow>
     </div>
