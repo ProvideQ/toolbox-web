@@ -70,6 +70,8 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
           y: getPositionY(level),
         };
         let data = { label: label };
+
+        // Add input/output connect points for edges
         let type: string;
         if (level == 0) {
           type = "input";
@@ -86,6 +88,7 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
           type: type,
         };
 
+        // Load decision nodes when user action is required
         if (problemNode.status == SolutionStatus.PENDING_USER_ACTION) {
           node.style = {
             background: "teal",
@@ -129,6 +132,7 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
 
         nodes.push(node);
 
+        // Add edge per sub-routine and recursively add sub-routines
         for (let i = 0; i < problemNode.subRoutines.length; i++) {
           const subRoutine = problemNode.subRoutines[i];
           edges.push({
