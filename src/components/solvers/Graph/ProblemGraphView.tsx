@@ -1,3 +1,4 @@
+import { Property } from "csstype";
 import { useEffect } from "react";
 import {
   Controls,
@@ -14,6 +15,20 @@ import {
 } from "../../../api/data-model/ProblemGraph";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
 import { fetchSolvers } from "../../../api/ToolboxAPI";
+import Color = Property.Color;
+
+function getStatusColor(status: SolutionStatus): Color {
+  switch (status) {
+    case SolutionStatus.INVALID:
+      return "red";
+    case SolutionStatus.COMPUTING:
+      return "cornflowerblue";
+    case SolutionStatus.SOLVED:
+      return "teal";
+    case SolutionStatus.PENDING_USER_ACTION:
+      return "ghostwhite";
+  }
+}
 
 export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
@@ -86,14 +101,13 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
           data: data,
           position: position,
           type: type,
+          style: {
+            background: getStatusColor(problemNode.status),
+          },
         };
 
         // Load decision nodes when user action is required
         if (problemNode.status == SolutionStatus.PENDING_USER_ACTION) {
-          node.style = {
-            background: "teal",
-          };
-
           fetchSolvers(problemNode.problemType).then((solvers) => {
             node.type = "default";
             for (let i = 0; i < solvers.length; i++) {
@@ -110,7 +124,9 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
                 },
                 type: "output",
                 style: {
-                  background: "teal",
+                  background: getStatusColor(
+                    SolutionStatus.PENDING_USER_ACTION
+                  ),
                 },
               });
 
@@ -121,9 +137,6 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
                 target: solverId,
               });
             }
-            node.style = {
-              background: "grey",
-            };
 
             setNodes(nodes);
             setEdges(edges);
