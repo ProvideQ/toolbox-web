@@ -159,8 +159,6 @@ export const ProblemGraphView = (props: { graph: ProblemGraph | null }) => {
       style={{
         width: "50vw",
         height: "50vh",
-        border: "2px solid black",
-        borderRadius: "15px",
       }}
     >
       <ReactFlow
