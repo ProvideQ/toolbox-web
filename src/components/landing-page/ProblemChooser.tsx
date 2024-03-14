@@ -30,5 +30,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="For a given feature model, check for Void Feature Model, Dead Features, False-Optional Features, Redundant Constraints.."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/VRP"
+        new={true}
+        tags={["sub-routines", "simulated"]}
+        problemName="Vehicle Routing Problem"
+        description="For a given set of customers and a fleet of vehicles, this algorithm finds the optimal set of routes for the vehicles to traverse in order to deliver to the customers."
+      />
+    </GridItem>
   </Grid>
 );
