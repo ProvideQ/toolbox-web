@@ -11,9 +11,17 @@ import {
   SliderMark,
   VStack,
   Box,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
+import {
+  fetchMetaSolverSettings,
+  fetchSolverSettings,
+} from "../../api/ToolboxAPI";
 import {
   RangeSetting,
   CheckboxSetting,
@@ -21,10 +29,12 @@ import {
   SelectSetting,
   MetaSolverSetting,
   MetaSolverSettingType,
+  IntegerSetting,
 } from "../../api/data-model/MetaSolverSettings";
 
 interface SettingsViewProps {
   problemType: string;
+  solverId?: string;
   settingChanged: (newSettings: MetaSolverSetting[]) => void;
 }
 
@@ -32,10 +42,18 @@ export const SettingsView = (props: SettingsViewProps) => {
   const [settings, setSettings] = useState<MetaSolverSetting[]>([]);
 
   useEffect(() => {
-    fetchMetaSolverSettings(props.problemType).then(
-      (settings: MetaSolverSetting[]) => setSettings(settings)
+    let settingsPromises = [fetchMetaSolverSettings(props.problemType)];
+
+    if (props.solverId) {
+      settingsPromises.push(
+        fetchSolverSettings(props.problemType, props.solverId),
+      );
+    }
+
+    Promise.all(settingsPromises).then((allSettings: MetaSolverSetting[][]) =>
+      setSettings(allSettings.flat()),
     );
-  }, [props.problemType]);
+  }, [props.problemType, props.solverId]);
 
   if (settings.length == 0) {
     return null;
@@ -43,7 +61,7 @@ export const SettingsView = (props: SettingsViewProps) => {
 
   function replaceSetting<T extends MetaSolverSetting>(
     key: string,
-    newValue: T
+    newValue: T,
   ): MetaSolverSetting[] {
     const index = settings.findIndex((setting) => setting.name === key);
     if (index !== -1) {
@@ -80,7 +98,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                       {
                         ...range,
                         value: v,
-                      }
+                      },
                     );
                     props.settingChanged(newSettings);
                   }}
@@ -112,11 +130,36 @@ export const SettingsView = (props: SettingsViewProps) => {
                       {
                         ...checkbox,
                         state: e.target.checked,
-                      }
+                      },
                     );
                     props.settingChanged(newSettings);
                   }}
                 />
+              );
+              break;
+            case MetaSolverSettingType.INTEGER:
+              let integerSetting = setting as IntegerSetting;
+              settingView = (
+                <NumberInput
+                  defaultValue={integerSetting.number}
+                  key={integerSetting.name}
+                  onChange={(_str, number) => {
+                    const newSettings = replaceSetting<IntegerSetting>(
+                      setting.name,
+                      {
+                        ...integerSetting,
+                        number: number,
+                      },
+                    );
+                    props.settingChanged(newSettings);
+                  }}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
               );
               break;
             case MetaSolverSettingType.TEXT:
@@ -131,7 +174,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                       {
                         ...text,
                         text: e.target.value,
-                      }
+                      },
                     );
                     props.settingChanged(newSettings);
                   }}
@@ -150,7 +193,7 @@ export const SettingsView = (props: SettingsViewProps) => {
                       {
                         ...select,
                         selectedOption: e.target.value,
-                      }
+                      },
                     );
                     props.settingChanged(newSettings);
                   }}
@@ -167,7 +210,7 @@ export const SettingsView = (props: SettingsViewProps) => {
 
           return (
             <VStack key={setting.name} align="left" paddingY="2">
-              <Text align="left">{setting.name}</Text>
+              <Text align="left">{setting.title}</Text>
 
               {settingView}
             </VStack>

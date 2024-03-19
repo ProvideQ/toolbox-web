@@ -3,11 +3,13 @@ export enum MetaSolverSettingType {
   CHECKBOX = "CHECKBOX",
   TEXT = "TEXT",
   SELECT = "SELECT",
+  INTEGER = "INTEGER",
 }
 
 export interface MetaSolverSetting {
   name: string;
   type: MetaSolverSettingType;
+  title: string;
 }
 
 export interface RangeSetting extends MetaSolverSetting {
@@ -27,4 +29,8 @@ export interface TextSetting extends MetaSolverSetting {
 export interface SelectSetting extends MetaSolverSetting {
   options: string[];
   selectedOption: string;
+}
+
+export interface IntegerSetting extends MetaSolverSetting {
+  number: number;
 }

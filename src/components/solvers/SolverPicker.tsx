@@ -60,7 +60,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
       props.setSolveRequest?.(newSolveRequest);
 
       fetchSubRoutines(props.problemType, solver.id).then((subRoutines) =>
-        setSubRoutines(subRoutines)
+        setSubRoutines(subRoutines),
       );
     }
   }
@@ -69,7 +69,7 @@ export const SolverPicker = (props: SolverPickerProps) => {
     return (
       <Container>
         {props.subRoutineDefinition == undefined ? null : (
-          <Text>{props.subRoutineDefinition?.type} Subroutine:</Text>
+          <Text as="b">{props.subRoutineDefinition?.type} Subroutine:</Text>
         )}
         <Text>{props.subRoutineDefinition?.description}</Text>
         <Tooltip
@@ -100,20 +100,19 @@ export const SolverPicker = (props: SolverPickerProps) => {
     <Container>
       {loadingSolvers ? <Text>Loading solvers...</Text> : <SolverSelection />}
 
-      {solveRequest.requestedSolverId == undefined ? (
-        <SettingsView
-          problemType={props.problemType}
-          settingChanged={(settings) => {
-            let newSolveRequest: SolverChoice = {
-              ...solveRequest,
-              requestedMetaSolverSettings: settings,
-            };
+      <SettingsView
+        problemType={props.problemType}
+        solverId={solveRequest.requestedSolverId}
+        settingChanged={(settings) => {
+          let newSolveRequest: SolverChoice = {
+            ...solveRequest,
+            requestedMetaSolverSettings: settings,
+          };
 
-            setSolveRequest(newSolveRequest);
-            props.setSolveRequest(newSolveRequest);
-          }}
-        />
-      ) : null}
+          setSolveRequest(newSolveRequest);
+          props.setSolveRequest(newSolveRequest);
+        }}
+      />
 
       {subRoutines == undefined || subRoutines.length == 0 ? null : (
         <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={2}>

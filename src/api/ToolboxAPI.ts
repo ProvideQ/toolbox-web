@@ -25,7 +25,7 @@ function invalidSolution(reason: string): Solution {
 
 export async function postProblem<T>(
   problemType: string,
-  solveRequest: SolveRequest<T>
+  solveRequest: SolveRequest<T>,
 ): Promise<Solution> {
   return fetch(`${baseUrl()}/solve/${problemType}`, {
     method: "POST",
@@ -52,7 +52,7 @@ export async function fetchSolution(problemType: string, solutionId: number) {
 }
 
 export async function fetchSolvers(
-  problemType: string
+  problemType: string,
 ): Promise<ProblemSolver[]> {
   return fetch(`${baseUrl()}/solvers/${problemType}`, {
     method: "GET",
@@ -71,7 +71,7 @@ export async function fetchSolvers(
 
 export async function fetchSubRoutines(
   problemType: string,
-  solverId: string
+  solverId: string,
 ): Promise<SubRoutineDefinition[]> {
   return fetch(
     `${baseUrl()}/sub-routines/${problemType}?${new URLSearchParams({
@@ -82,7 +82,7 @@ export async function fetchSubRoutines(
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   )
     .then((response) => response.json())
     .catch((reason) => {
@@ -93,7 +93,7 @@ export async function fetchSubRoutines(
 }
 
 export async function fetchMetaSolverSettings(
-  problemType: string
+  problemType: string,
 ): Promise<MetaSolverSetting[]> {
   return fetch(`${baseUrl()}/meta-solver/settings/${problemType}`, {
     method: "GET",
@@ -101,6 +101,28 @@ export async function fetchMetaSolverSettings(
       "Content-Type": "application/json",
     },
   })
+    .then((response) => response.json())
+    .catch((reason) => {
+      console.log(reason);
+      return [];
+    });
+}
+
+export async function fetchSolverSettings(
+  problemType: string,
+  solverId: string,
+): Promise<MetaSolverSetting[]> {
+  return fetch(
+    `${baseUrl()}/settings/${problemType}?${new URLSearchParams({
+      id: solverId,
+    })}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  )
     .then((response) => response.json())
     .catch((reason) => {
       console.log(reason);
