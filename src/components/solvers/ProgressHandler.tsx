@@ -24,7 +24,7 @@ export interface ProgressHandlerProps<T> {
 }
 
 export const ProgressHandler = <T extends {}>(
-  props: ProgressHandlerProps<T>
+  props: ProgressHandlerProps<T>,
 ) => {
   const [wasClicked, setClicked] = useState<boolean>(false);
   const [finished, setFinished] = useState<boolean>(false);
@@ -64,8 +64,8 @@ export const ProgressHandler = <T extends {}>(
         postProblem(problemType, newSolveRequest).then((s) => ({
           problemType: problemType,
           solution: s,
-        }))
-      )
+        })),
+      ),
     ).then((result) => {
       let solutionIdMap = result.reduce((acc, item) => {
         acc[item.problemType] = item.solution.id;
@@ -89,8 +89,8 @@ export const ProgressHandler = <T extends {}>(
 
     Promise.all(
       props.problemTypes.map((problemType) =>
-        fetchSolution(problemType, ids[problemType])
-      )
+        fetchSolution(problemType, ids[problemType]),
+      ),
     ).then((solutions) => {
       setSolutions(solutions);
       setFinished(true);
@@ -108,9 +108,7 @@ export const ProgressHandler = <T extends {}>(
               setSolveRequest={(solverChoice) => {
                 setSolveRequest({
                   ...solveRequest,
-                  requestedSolverId: solverChoice.requestedSolverId,
-                  requestedSubSolveRequests:
-                    solveRequest.requestedSubSolveRequests,
+                  ...solverChoice,
                 });
               }}
             />
