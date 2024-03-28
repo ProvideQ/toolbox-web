@@ -39,5 +39,15 @@ export const ProblemChooser = (props: GridProps) => (
         description="For a quadratic term with binary decision variables, find the variable assignment minimizing the term."
       />
     </GridItem>
+    <GridItem>
+        <ProblemCard
+          href="solve/LP"
+          new={true}
+          tags={["QAOA"]}
+          problemName="LP"
+          description="Optimize a linear objective function with real-valued variables under linear constraints."
+        />
+</GridItem>
+
   </Grid>
 );
