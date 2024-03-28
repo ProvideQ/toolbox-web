@@ -1,4 +1,4 @@
-import { Code, Divider, Heading, Spacer, Text } from "@chakra-ui/react";
+import { Divider, Heading, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
@@ -19,15 +19,15 @@ const LP: NextPage = () => {
       </Head>
 
       <Heading as="h1">LP Solver</Heading>
-        <Text color="text" align="justify">
-            In the Linear Programming (LP) problem, we seek to optimize a linear
-            objective function subject to a set of linear equality and inequality
-            constraints. The objective function and constraints are expressed in terms of
-            decision variables, which can assume any real values. The problem statement is
-            formulated in the LP format, and solvers will provide an optimal variable
-            assignment as a solution, aiming to maximize or minimize the objective
-            function while satisfying all constraints.
-        </Text>
+      <Text color="text" align="justify">
+        In the Linear Programming (LP) problem, we seek to optimize a linear
+        objective function subject to a set of linear equality and inequality
+        constraints. The objective function and constraints are expressed in
+        terms of decision variables, which can assume any real values. The
+        problem statement is formulated in the LP format, and solvers will
+        provide an optimal variable assignment as a solution, aiming to maximize
+        or minimize the objective function while satisfying all constraints.
+      </Text>
 
       <Spacer />
 

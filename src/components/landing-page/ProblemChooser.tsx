@@ -40,14 +40,13 @@ export const ProblemChooser = (props: GridProps) => (
       />
     </GridItem>
     <GridItem>
-        <ProblemCard
-          href="solve/LP"
-          new={true}
-          tags={["QAOA"]}
-          problemName="LP"
-          description="Optimize a linear objective function with real-valued variables under linear constraints."
-        />
-</GridItem>
-
+      <ProblemCard
+        href="solve/LP"
+        new={true}
+        tags={["QAOA"]}
+        problemName="LP"
+        description="Optimize a linear objective function with real-valued variables under linear constraints."
+      />
+    </GridItem>
   </Grid>
 );
