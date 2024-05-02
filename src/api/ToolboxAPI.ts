@@ -93,3 +93,19 @@ export async function fetchMetaSolverSettings(
       return [];
     });
 }
+
+export async function uvl2svg(
+  uvl: string
+): Promise<MetaSolverSetting[]> {
+  return fetch(`${baseUrl()}/visualize/feature-model`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .catch((reason) => {
+      console.log(reason);
+      return [];
+    });
+}
