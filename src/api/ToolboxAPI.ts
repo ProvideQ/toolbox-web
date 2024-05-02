@@ -94,18 +94,19 @@ export async function fetchMetaSolverSettings(
     });
 }
 
-export async function uvl2svg(
-  uvl: string
-): Promise<MetaSolverSetting[]> {
-  return fetch(`${baseUrl()}/visualize/feature-model`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .catch((reason) => {
-      console.log(reason);
-      return [];
-    });
+export async function visualizeFeatureModel(uvl: string): Promise<string> {
+    const url = `${baseUrl()}/visualize/feature-model`;
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+            },
+            body: JSON.stringify({ uvl }),
+        });
+        return await response.text();
+    } catch (error) {
+        console.error("Failed to send POST request:", error);
+        throw error;
+    }
 }
