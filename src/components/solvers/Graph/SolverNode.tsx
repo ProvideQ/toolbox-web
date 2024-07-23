@@ -19,12 +19,11 @@ import { useState } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { FaGears } from "react-icons/fa6";
 import { Handle, NodeProps, Position } from "reactflow";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 
 export interface SolverNodeData {
+  problemTypeId: string;
   problemSolver: ProblemSolverInfo;
-  problemDto: ProblemDto<any>;
   selectCallback: (problemSolver: ProblemSolverInfo) => void;
 }
 
@@ -38,6 +37,29 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
       padding=".5rem"
       background={selected ? "green" : "kitGreen"}
       fontSize="xs"
+      css={{
+        "&::before, &::after": {
+          content: '""',
+          position: "absolute",
+          borderBottomRightRadius: "5px",
+          borderBottomLeftRadius: "5px",
+          left: "50%",
+          top: "-0.2px",
+          width: "15px",
+          height: "8px",
+          background: "white",
+          borderLeft: "1px solid black",
+          borderRight: "1px solid black",
+          borderBottom: "1px solid black",
+          zIndex: 10,
+        },
+        "&::before": {
+          transform: "translate(calc(-50% - 50px), -4%)",
+        },
+        "&::after": {
+          transform: "translate(calc(-50% + 50px), -4%)",
+        },
+      }}
     >
       <Handle type="target" position={Position.Top} />
       <VStack gap="0px">
@@ -67,7 +89,7 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
                   </Text>
                 </PopoverHeader>
                 <PopoverBody>
-                  <Text>Solves {props.data.problemDto.typeId}</Text>
+                  <Text>Solves {props.data.problemTypeId}</Text>
                   Additional Info:
                   <Button colorScheme="blue">10x Quantum Speedup</Button>
                 </PopoverBody>

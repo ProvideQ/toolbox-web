@@ -1,11 +1,7 @@
 import {
-  Accordion,
-  AccordionButton,
-  AccordionIcon,
-  AccordionItem,
-  AccordionPanel,
   Box,
-  Flex,
+  Button,
+  Divider,
   HStack,
   Modal,
   ModalBody,
@@ -13,6 +9,15 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverFooter,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
   Spinner,
   Text,
   Tooltip,
@@ -20,7 +25,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Property } from "csstype";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import { BsDatabaseFillGear } from "react-icons/bs";
 import {
   FaChevronCircleDown,
@@ -28,6 +33,7 @@ import {
   FaQuestion,
   FaQuestionCircle,
 } from "react-icons/fa";
+import { FaGears } from "react-icons/fa6";
 import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import { MdError } from "react-icons/md";
@@ -35,9 +41,8 @@ import { Handle, NodeProps, Position } from "reactflow";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
-import { SubRoutineReferenceDto } from "../../../api/data-model/SubRoutineReferenceDto";
-import { fetchProblem } from "../../../api/ToolboxAPI";
-import { SolutionView } from "../SolutionView";
+import { ProblemDetails } from "./ProblemDetails";
+import { ProblemList } from "./ProblemList";
 import { useSolvers } from "./SolverProvider";
 import Color = Property.Color;
 
@@ -55,18 +60,19 @@ export interface LevelInfo {
 
 export interface ProblemNodeData {
   // Data
-  problemDto: ProblemDto<any>;
+  problemDtos: ProblemDto<any>[];
 
   // Styling info
   level: number;
   levelInfo: LevelInfo;
 
-  // solve: (problem: ProblemDto<any>) => void;
+  // Callbacks
+  solveCallback: (problem: ProblemDto<any>) => void;
 }
 
 function getNodeType(data: ProblemNodeData) {
   // Add input/output connect points for edges
-  if (data.problemDto.state === ProblemState.NEEDS_CONFIGURATION) {
+  if (data.problemDtos.some((dto) => dto.solverId === undefined)) {
     if (data.level == 0) {
       return "input";
     } else {
@@ -75,7 +81,7 @@ function getNodeType(data: ProblemNodeData) {
   } else {
     if (data.level === 0) {
       return "input";
-    } else if (data.problemDto.subProblems.length == 0) {
+    } else if (data.problemDtos.length == 0) {
       return "output";
     } else {
       return "default";
@@ -83,27 +89,30 @@ function getNodeType(data: ProblemNodeData) {
   }
 }
 
-function getStatusColor(problemDto: ProblemDto<any>): Color {
-  switch (problemDto.state) {
-    case ProblemState.NEEDS_CONFIGURATION:
-      return "ghostwhite";
-    case ProblemState.READY_TO_SOLVE:
-      return "cornflowerblue";
-    case ProblemState.SOLVING:
-      return "cornflowerblue";
-    case ProblemState.SOLVED:
-      switch (problemDto.solution.status) {
-        case SolutionStatus.INVALID:
-          return "orange";
-        case SolutionStatus.COMPUTING:
-          return "cornflowerblue";
-        case SolutionStatus.SOLVED:
-          return "teal";
-        case SolutionStatus.ERROR:
-          return "red";
-      }
+function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
+  for (let problemDto of problemDtos) {
+    switch (problemDto.state) {
+      case ProblemState.NEEDS_CONFIGURATION:
+        return "ghostwhite";
+      case ProblemState.SOLVED:
+        switch (problemDto.solution.status) {
+          case SolutionStatus.INVALID:
+            return "orange";
+          case SolutionStatus.ERROR:
+            return "red";
+        }
+    }
   }
+
+  // If all dtos are solved, the whole node should have the solved color
+  if (problemDtos.every((dto) => dto.state === ProblemState.SOLVED)) {
+    return "teal";
+  }
+
+  // Otherwise if any dto is ready to solve or solving, the whole node should have the ready to solve color
+  return "cornflowerblue";
 }
+
 function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
   switch (problemDto.state) {
     case ProblemState.NEEDS_CONFIGURATION:
@@ -132,31 +141,32 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const [selectedSubProblems, setSelectedSubProblems] = useState<string[]>([]);
 
   const nodeType = getNodeType(props.data);
-  const nodeColor = getStatusColor(props.data.problemDto);
-
-  useEffect(() => {}, [props.data.problemDto.subProblems]);
+  const nodeColor = getStatusColor(props.data.problemDtos);
 
   const { solvers, getSolvers } = useSolvers();
 
-  const solverName = solvers[props.data.problemDto.typeId]?.find(
-    (s) => s.id === props.data.problemDto.solverId
-  )?.name;
+  // Type id is the same for all problems
+  const typeId = props.data.problemDtos[0].typeId;
+  const solverId = props.data.problemDtos[0].solverId;
+  const solverName = solvers[typeId]?.find((s) => s.id === solverId)?.name;
 
-  console.log(
-    "ProblemNode",
-    props.data.problemDto.typeId,
-    props.data.problemDto.id,
-    props.data.problemDto.state,
-    props.data.problemDto.subProblems
-  );
+  // Fetch solvers for type if necessary
+  getSolvers(typeId);
+
+  const extended = solverId !== undefined;
+
+  console.log("ProblemNode", typeId, props.data.problemDtos);
 
   return (
-    <Box
-      border="1px"
-      borderRadius="10px"
-      background={nodeColor}
-      fontSize="xs"
-      overflow="hidden"
+    <VStack
+      width="10rem"
+      css={{
+        // prevent this from consuming pointer events
+        pointerEvents: "none",
+        "& > *": {
+          pointerEvents: "auto",
+        },
+      }}
     >
       {(nodeType === "output" || nodeType === "default") && (
         <Handle type="target" position={Position.Top} />
@@ -164,310 +174,181 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
       {(nodeType === "input" || nodeType === "default") && (
         <Handle type="source" position={Position.Bottom} />
       )}
-      <HStack align="start" maxW="10rem" padding="0.5rem">
-        <Tooltip hasArrow label="Problem" placement="bottom">
-          <div style={{ height: "20px" }}>
-            <BsDatabaseFillGear size="1.5rem" />
+      <Box
+        border="1px"
+        borderRadius={extended ? "0px" : "10px"}
+        borderTopRadius="10px"
+        background={nodeColor}
+        width="10rem"
+        fontSize="xs"
+        position="relative"
+        zIndex="2"
+        css={{
+          "&::before, &::after": {
+            content: '""',
+            position: "absolute",
+            left: "50%",
+            bottom: "-10px",
+            width: "15px",
+            height: "15px",
+            background: "white",
+            border: "1px solid black",
+            borderRadius: "5px",
+            zIndex: 1,
+          },
+          "&::before": {
+            transform: "translate(calc(-50% - 50px))",
+          },
+          "&::after": {
+            transform: "translate(calc(-50% + 50px))",
+          },
+        }}
+      >
+        <HStack align="start" maxW="10rem" padding="0.5rem">
+          <Tooltip hasArrow label="Problem" placement="bottom">
+            <div style={{ height: "20px" }}>
+              <BsDatabaseFillGear size="1.5rem" />
+            </div>
+          </Tooltip>
+          <VStack>
+            <Text fontWeight="semibold">
+              {props.data.problemDtos[0].typeId}
+            </Text>
+          </VStack>
+          <div>
+            <FaQuestionCircle size="1rem" onClick={onOpen} />
           </div>
-        </Tooltip>
-        <VStack>
-          <Text fontWeight="semibold">{props.data.problemDto.typeId}</Text>
-          <Text fontWeight="light" fontSize="xs">
-            {solverName}
-          </Text>
-        </VStack>
-        <div>
-          <FaQuestionCircle size="1rem" onClick={onOpen} />
-        </div>
 
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          scrollBehavior="inside"
-          isCentered
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalCloseButton />
-            <ModalHeader>
-              <Text fontWeight="semibold">{props.data.problemDto.typeId}</Text>
-            </ModalHeader>
-            <ModalBody>
-              <ProblemDetails problemDto={props.data.problemDto} />
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      </HStack>
-
-      {props.data.problemDto.subProblems.length > 0 && (
-        <VStack maxWidth="10rem" bg="white" borderTop="1px" position="relative">
-          <Box
-            position="absolute"
-            bg={nodeColor}
-            borderRadius={10}
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            top={0}
-            left="50%"
-            transform="translate(-50%, -50%)"
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            scrollBehavior="inside"
+            isCentered
           >
-            {dropdownOpen ? <FaChevronCircleUp /> : <FaChevronCircleDown />}
-          </Box>
-
-          <div
-            style={{
-              width: "100%",
-              maxHeight: "10rem",
-              overflowY: "auto",
-            }}
-          >
-            {/*// todo: subproblem list should be in the child node instead. so subproblemms for SAT should be listed in the SAT node - EACH SAT NODE should also keep the state of the current subproblem meaning you can see the solution of the subproblem too
-             SO WE NEED TO PASS THE LIST OF SUBPROBLEMS TO THE CHILD NODE AND HAVE A WAY TO REPRESENT A LIST OF PROBLEM NODES*/}
-            {dropdownOpen
-              ? props.data.problemDto.subProblems.map((subRoutine) => (
-                  <SubProblemList
-                    key={subRoutine.subRoutine.typeId}
-                    selectedProblems={selectedSubProblems}
-                    setSelectedProblems={setSelectedSubProblems}
-                    subRoutineDefinition={subRoutine}
-                  />
-                ))
-              : props.data.problemDto.subProblems.map((subProblem) => (
-                  <HStack
-                    key={subProblem.subRoutine.typeId}
-                    align="start"
-                    width="100%"
-                  >
-                    <Text paddingLeft={2} fontSize=".4rem">
-                      {subProblem.subProblemIds.length}
-                      {"x "}
-                      {subProblem.subRoutine.typeId}
-                    </Text>
-                    <div
-                      style={{
-                        maxWidth: "10rem",
-                        height: "0.6rem",
-                        display: "flex",
-                        flex: "1 0 auto",
-                        flexDirection: "row",
-                      }}
-                    >
-                      {subProblem.subProblemIds.map((subProblemId) => {
-                        // todo extract to component and save subproblemdto state
-                        // let subProblemDto = await fetchProblem(
-                        //   subProblem.subRoutine.typeId,
-                        //   subProblemId
-                        // );
-                        return (
-                          <Box
-                            key={subProblemId}
-                            flexGrow={1}
-                            bg="white"
-                            minW=".1rem"
-                          />
-                        );
-                      })}
-                    </div>
-                  </HStack>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalCloseButton />
+              <ModalHeader>
+                <Text fontWeight="semibold">{typeId}</Text>
+              </ModalHeader>
+              <ModalBody>
+                {props.data.problemDtos.map((problemDto) => (
+                  <>
+                    <ProblemDetails
+                      key={problemDto.id}
+                      problemDto={problemDto}
+                    />
+                    <Divider />
+                  </>
                 ))}
-          </div>
-        </VStack>
-      )}
-    </Box>
-  );
-}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </HStack>
 
-function getHumanReadableState(status: ProblemState) {
-  switch (status) {
-    case ProblemState.NEEDS_CONFIGURATION:
-      return "Needs Configuration";
-    case ProblemState.READY_TO_SOLVE:
-      return "Ready to Solve";
-    case ProblemState.SOLVING:
-      return "Solving";
-    case ProblemState.SOLVED:
-      return "Solved";
-  }
-}
-
-export const SubProblemList = (props: {
-  subRoutineDefinition: SubRoutineReferenceDto;
-  selectedProblems: string[];
-  setSelectedProblems: Dispatch<SetStateAction<string[]>>;
-}) => {
-  const [subProblems, setSubProblems] = useState<ProblemDto<any>[]>([]);
-  const [lastSelectedProblem, setLastSelectedProblem] = useState<
-    ProblemDto<any> | undefined
-  >(undefined);
-
-  const { solvers, getSolvers } = useSolvers();
-
-  // Fetch latest sub problem dtos
-  useEffect(() => {
-    Promise.all(
-      props.subRoutineDefinition.subProblemIds.map((subProblemId) =>
-        fetchProblem(props.subRoutineDefinition.subRoutine.typeId, subProblemId)
-      )
-    ).then((subProblems) => setSubProblems(subProblems));
-  }, [props.subRoutineDefinition]);
-
-  function handleClick(
-    e: React.MouseEvent<HTMLDivElement>,
-    clickedSubProblem: ProblemDto<any>
-  ) {
-    setLastSelectedProblem(clickedSubProblem);
-    if (!lastSelectedProblem) {
-      props.setSelectedProblems([clickedSubProblem.id]);
-      return;
-    }
-
-    let newProblemIds: string[];
-    if (e.shiftKey) {
-      let lastIndex = subProblems.indexOf(lastSelectedProblem);
-      let currentIndex = subProblems.indexOf(clickedSubProblem);
-      let start = Math.min(lastIndex, currentIndex);
-      let end = Math.max(lastIndex, currentIndex);
-      newProblemIds = subProblems.slice(start, end + 1).map((p) => p.id);
-    } else {
-      newProblemIds = [clickedSubProblem.id];
-    }
-
-    if (e.ctrlKey) {
-      props.setSelectedProblems((prev) => [
-        ...prev.filter((id) => !newProblemIds.includes(id)),
-        ...newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
-        ),
-      ]);
-    } else {
-      props.setSelectedProblems((prev) =>
-        newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
-        )
-      );
-    }
-  }
-
-  return (
-    // <TableContainer key={subProblem.subRoutine.typeId}>
-    //   <Table size="2sm">
-    //     <Thead>
-    //       <Tr>
-    //         <Th>Subroutine</Th>
-    //         <Th>Solver</Th>
-    //         <Th>Status</Th>
-    //       </Tr>
-    //     </Thead>
-    //     <Tbody>
-    //       {subProblem.subProblemIds.map((subProblemId, index) => {
-    //         return (
-    //           <Tr key={index}>
-    //             <Td>
-    //               {subProblem.subRoutine.typeId} {index}
-    //             </Td>
-    //             <Td>No solver</Td>
-    //             <Td>Not solved</Td>
-    //           </Tr>
-    //         );
-    //       })}
-    //     </Tbody>
-    //   </Table>
-    // </TableContainer>
-    <>
-      <VStack fontSize="2xs" gap={0}>
-        <Text alignSelf="start">
-          Selected {props.selectedProblems.length} of {subProblems.length}
-        </Text>
-
-        {subProblems.map((subProblem, index) => {
-          getSolvers(subProblem.typeId);
-          return (
-            <Flex
-              key={subProblem.id}
-              direction="row"
-              width="100%"
-              alignItems="center"
-              bg={
-                props.selectedProblems.find((id) => id == subProblem.id)
-                  ? "lightgrey"
-                  : "white"
-              }
-              onClick={(e) => handleClick(e, subProblem)}
+        {props.data.problemDtos.length > 1 && (
+          <VStack bg="white" borderTop="1px" position="relative">
+            <Box
+              position="absolute"
+              bg={nodeColor}
+              borderRadius={10}
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              top={0}
+              left="50%"
+              transform="translate(-50%, -50%)"
             >
-              <Text width=".75rem">{getStatusIcon(subProblem)}</Text>
-              <Text width="3rem">
-                {props.subRoutineDefinition.subRoutine.typeId} {index + 1}
-              </Text>
+              {dropdownOpen ? <FaChevronCircleUp /> : <FaChevronCircleDown />}
+            </Box>
 
-              <Text width="4rem">
-                {subProblem.solverId
-                  ? solvers[subProblem.typeId]?.find(
-                      (s) => s.id == subProblem.solverId
-                    )?.name ?? subProblem.solverId
-                  : "-"}
-              </Text>
-            </Flex>
-            // <Grid key={subProblemId} gridTemplateColumns="150px 1fr">
-            //   <GridItem>
-            //     <Text>
-            //       {props.subRoutineDefinition.subRoutine.typeId} {index}
-            //     </Text>
-            //   </GridItem>
-            //   <GridItem>
-            //     <Text>-</Text>
-            //   </GridItem>
-            //   <GridItem>
-            //     <Text>{<FaQuestion />}</Text>
-            //   </GridItem>
-            // </Grid>
-          );
-        })}
-      </VStack>
-    </>
-  );
-};
+            <div
+              style={{
+                width: "100%",
+                maxHeight: "10rem",
+                overflowY: "auto",
+              }}
+            >
+              {dropdownOpen && (
+                <ProblemList
+                  problemDtos={props.data.problemDtos}
+                  selectedProblems={selectedSubProblems}
+                  setSelectedProblems={setSelectedSubProblems}
+                />
+              )}
+            </div>
+          </VStack>
+        )}
+      </Box>
 
-export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
-  const { solvers, getSolvers } = useSolvers();
+      {extended && (
+        <Box
+          alignSelf="stretch"
+          border="1px"
+          borderBottomRadius="10px"
+          padding=".5rem"
+          background={"kitGreen"}
+          fontSize="xs"
+          zIndex="0"
+          position="relative"
+          marginTop="-10px"
+        >
+          <HStack align="start" maxW="10rem">
+            <Tooltip hasArrow label="Solver" placement="bottom">
+              <div>
+                <FaGears size="2rem" />
+              </div>
+            </Tooltip>
+            <Text padding=".5rem" fontWeight="semibold">
+              {solverName}
+            </Text>
 
-  // Update solvers in case they are not loaded yet
-  if (!solvers[props.problemDto.typeId]) getSolvers(props.problemDto.typeId);
+            <Popover>
+              <PopoverTrigger>
+                <div>
+                  <FaQuestionCircle size="1rem" />
+                </div>
+              </PopoverTrigger>
+              <Portal>
+                <PopoverContent>
+                  <PopoverArrow />
+                  <PopoverCloseButton />
+                  <PopoverHeader>
+                    <Text fontWeight="semibold">{solverName}</Text>
+                  </PopoverHeader>
+                  <PopoverBody>
+                    <Text>Solves {typeId}</Text>
+                    Additional Info:
+                    <Button colorScheme="blue">10x Quantum Speedup</Button>
+                  </PopoverBody>
+                  <PopoverFooter>
+                    <Text fontSize="xs">{solverId}</Text>
+                  </PopoverFooter>
+                </PopoverContent>
+              </Portal>
+            </Popover>
+          </HStack>
 
-  return (
-    <VStack gap="20px" align="start">
-      <Text>Status: {getHumanReadableState(props.problemDto.state)}</Text>
-      <Text>
-        Solver:{" "}
-        {solvers[props.problemDto.typeId]?.find(
-          (s) => s.id === props.problemDto.solverId
-        )?.name ?? "-"}
-      </Text>
-      {props.problemDto.subProblems.length === 0 ? (
-        <Text>No subroutines</Text>
-      ) : (
-        <VStack width="100%" align="stretch">
-          Sub Routines:
-          <Accordion>
-            {props.problemDto.subProblems.map((subProblem) => (
-              <AccordionItem key={subProblem.subRoutine.typeId}>
-                <h2>
-                  <AccordionButton>
-                    <Box as="span" flex="1" textAlign="left">
-                      {subProblem.subRoutine.typeId}
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb="4">
-                  {subProblem.subRoutine.description}
-                </AccordionPanel>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </VStack>
-      )}
-      {props.problemDto.solution !== null && (
-        <SolutionView solution={props.problemDto.solution} />
+          {props.data.problemDtos.some(
+            (dto) => dto.state === ProblemState.NEEDS_CONFIGURATION
+          ) && (
+            <Text
+              background="transparent"
+              align="center"
+              className="hover:#AAAAAAAA"
+              border="1px"
+              borderRadius="0.25rem"
+              paddingX="2rem"
+              paddingY="1px"
+              onClick={() => {
+                for (let problemDto of props.data.problemDtos) {
+                  props.data.solveCallback(problemDto);
+                }
+              }}
+            >
+              Solve
+            </Text>
+          )}
+        </Box>
       )}
     </VStack>
   );
-};
+}

@@ -6,7 +6,7 @@ export const TestGraphDisplay = () => {
     <SolverProvider>
       <ProblemGraphView
         problemType="feature-model-anomaly-dead"
-        problemId="c0e7d01d-9219-4545-80e1-e2b5be11ff5a"
+        problemId="63c30711-39ef-4eb9-8afe-9fbc59857983"
       />
     </SolverProvider>
   );

@@ -28,23 +28,30 @@ export interface ProblemGraphViewProps {
   problemId: string;
 }
 
+export interface ProblemNodeIdentifier {
+  subRoutineDefinitionDto: SubRoutineDefinitionDto;
+  solverId?: string;
+}
+
 /**
  * Nodes are identified recursively through their parent node and the sub-routine definition.
  * Each node can represent either one problem or a collection of problems,
  * but they share the same sub-routine definition and recursive context.
- * @param subRoutineDefinitionDto
+ * @param identifier Identifier for the problem node
  * @param parentNode
  */
 function getNodeId(
-  subRoutineDefinitionDto: SubRoutineDefinitionDto,
+  identifier: ProblemNodeIdentifier,
   parentNode: Node
 ): string {
   return (
     parentNode.id +
     "|" +
-    subRoutineDefinitionDto.typeId +
+    identifier.subRoutineDefinitionDto.typeId +
     "-" +
-    subRoutineDefinitionDto.description
+    identifier.subRoutineDefinitionDto.description +
+    "-" +
+    identifier.solverId
   );
 }
 
@@ -53,7 +60,7 @@ function getNodeId(
  * @param to The target sub-routine definition
  * @param fromId The source node
  */
-function getEdgeId(to: SubRoutineDefinitionDto, fromId: Node): string {
+function getEdgeId(to: ProblemNodeIdentifier, fromId: Node): string {
   return fromId + "->" + getNodeId(to, fromId);
 }
 
@@ -69,7 +76,20 @@ function getNodePositionX(levelInfo: LevelInfo | null): number {
 }
 
 function getNodePositionY(level: number): number {
-  return level * 150;
+  return level * 200;
+}
+
+function groupBySolver(problemDtos: ProblemDto<any>[]) {
+  let solvers = new Map<string | undefined, ProblemDto<any>[]>();
+  for (let problemDto of problemDtos) {
+    const problems = solvers.get(problemDto.solverId);
+    if (problems) {
+      problems.push(problemDto);
+    } else {
+      solvers.set(problemDto.solverId, [problemDto]);
+    }
+  }
+  return solvers;
 }
 
 const nodeTypes: NodeTypes = {
@@ -125,23 +145,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     [setEdges]
   );
 
-  const createNode = useCallback(
-    (
-      nodeId: string,
-      problemDto: ProblemDto<any>,
-      level: number,
-      levelInfo: LevelInfo
-    ) => {
-      let data: ProblemNodeData = {
-        problemDto: problemDto,
-        level: level,
-        levelInfo: levelInfo,
-      };
-
+  const createProblemNode = useCallback(
+    (nodeId: string, nodeData: ProblemNodeData) => {
       let node: Node<ProblemNodeData> = {
         id: nodeId,
-        data: data,
-        position: getNodePosition(data),
+        data: nodeData,
+        position: getNodePosition(nodeData),
         type: "problemNode",
       };
 
@@ -149,7 +158,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
       return node;
     },
-    [addNode, scheduleNodeUpdate]
+    [addNode]
   );
 
   const updateNode = useCallback(
@@ -163,63 +172,99 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         type: "problemNode",
       }));
 
+      // Solver id and thus sub problems are the same for all problems
+      const subProblems = node.data.problemDtos[0].subProblems;
+
       // Update sub-routine nodes
-      for (let i = 0; i < node.data.problemDto.subProblems.length; i++) {
-        let subProblem = node.data.problemDto.subProblems[i];
-        let subNodeId = getNodeId(subProblem.subRoutine, node);
+      for (let i = 0; i < subProblems.length; i++) {
+        const subProblem = subProblems[i];
 
-        let subNode = nodes.find((node) => node.id === subNodeId);
-        let edgeId = getEdgeId(subProblem.subRoutine, node);
-        if (subNode === undefined) {
-          // Create new node
-          fetchProblem(
-            subProblem.subRoutine.typeId,
-            subProblem.subProblemIds[0]
-          ).then((subProblemDto) => {
-            let subNodeId = getNodeId(subProblem.subRoutine, node);
+        Promise.all(
+          subProblem.subProblemIds.map((subProblemId) =>
+            fetchProblem(subProblem.subRoutine.typeId, subProblemId)
+          )
+        ).then((subProblemDtos) => {
+          // Create sub problem nodes per used solver
+          const problemsPerSolver = groupBySolver(subProblemDtos);
+          problemsPerSolver.forEach((problemDtos, solverId) => {
+            const problemNodeIdentifier: ProblemNodeIdentifier = {
+              subRoutineDefinitionDto: subProblem.subRoutine,
+              solverId: solverId,
+            };
 
-            addEdge({
-              id: edgeId,
-              source: node.id,
-              target: subNodeId,
-              data: {
-                sourceProblemDto: node.data.problemDto,
-              },
-              animated: subProblemDto.state === ProblemState.SOLVING,
-            });
+            const subNodeId = getNodeId(problemNodeIdentifier, node);
+            const edgeId = getEdgeId(problemNodeIdentifier, node);
 
-            let subNode = createNode(
-              subNodeId,
-              subProblemDto,
-              node.data.level + 1,
-              {
-                index: i,
-                count: node.data.problemDto.subProblems.length,
+            const subNode = nodes.find((n) => n.id === subNodeId);
+            if (subNode) {
+              // Update existing node if it exists
+              scheduleNodeUpdate(subNode);
+
+              const edge = edges.find((edge) => edge.id === edgeId);
+              if (edge) {
+                updateEdge(edge);
               }
-            );
-            scheduleNodeUpdate(subNode);
-          });
-        } else {
-          // Update existing node
-          scheduleNodeUpdate(subNode);
+            } else {
+              // Otherwise create a new node
+              addEdge({
+                id: edgeId,
+                source: node.id,
+                target: subNodeId,
+                data: {
+                  sourceProblemDto: problemDtos,
+                },
+                animated: problemDtos.some(
+                  (dto) => dto.state === ProblemState.SOLVING
+                ),
+              });
 
-          const edge = edges.find((edge) => edge.id === edgeId);
-          if (edge) {
-            updateEdge(edge);
-          }
-        }
+              let subNode = createProblemNode(subNodeId, {
+                problemDtos: problemDtos,
+                level: node.data.level + 1,
+                levelInfo: {
+                  index: i,
+                  count: subProblems.length,
+                },
+
+                solveCallback: (problemDto) => {
+                  patchProblem(problemDto.typeId, problemDto.id, {
+                    state: ProblemState.SOLVING,
+                  }).then((dto) => {
+                    setNodes((previousNodes) =>
+                      previousNodes.map((n) => {
+                        if (n.id !== subNodeId) return n;
+
+                        let updatedNode: Node<ProblemNodeData> = {
+                          ...n,
+                          data: {
+                            ...n.data,
+                            problemDtos: [dto], // todo this needs to include all updated dtos
+                          },
+                        };
+                        scheduleNodeUpdate(updatedNode);
+
+                        return updatedNode;
+                      })
+                    );
+                  });
+                },
+              });
+              scheduleNodeUpdate(subNode);
+            }
+          });
+        });
       }
 
       function createSolverNodes(node: Node<ProblemNodeData>) {
-        getSolvers(node.data.problemDto.typeId).then((solvers) => {
+        getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
           for (let i = 0; i < solvers.length; i++) {
             let solverId = solvers[i].id.toString();
             let solverNodeId = node.id + solverNodeIdentifier + solverId;
             let solverNode: Node<SolverNodeData> = {
               id: solverNodeId,
               data: {
+                problemTypeId: node.data.problemDtos[0].typeId,
                 problemSolver: solvers[i],
-                problemDto: node.data.problemDto,
                 selectCallback: (problemSolver) => {
                   // todo update visuals here too
 
@@ -230,14 +275,13 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                     updateEdge(edge);
                   }
 
-                  patchProblem(
-                    node.data.problemDto.typeId,
-                    node.data.problemDto.id,
-                    {
-                      solverId: problemSolver.id,
-                      state: ProblemState.SOLVING,
-                    }
-                  ).then((dto) =>
+                  Promise.all(
+                    node.data.problemDtos.map((problemDto) =>
+                      patchProblem(problemDto.typeId, problemDto.id, {
+                        solverId: problemSolver.id,
+                      })
+                    )
+                  ).then((dtos) => {
                     setNodes((previousNodes) =>
                       previousNodes.map((n) => {
                         if (n.id !== node.id) return n;
@@ -246,15 +290,15 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                           ...n,
                           data: {
                             ...n.data,
-                            problemDto: dto,
+                            problemDtos: dtos,
                           },
                         };
                         scheduleNodeUpdate(updatedNode);
 
                         return updatedNode;
                       })
-                    )
-                  );
+                    );
+                  });
                 },
               },
               position: {
@@ -278,9 +322,10 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         });
       }
 
-      function updateSolverNodes(node: Node) {
+      function updateSolverNodes(node: Node<ProblemNodeData>) {
         // Load solver nodes when user action is required
-        if (node.data.problemDto.state == ProblemState.NEEDS_CONFIGURATION) {
+        console.log("data", node.data);
+        if (node.data.problemDtos[0].solverId === undefined) {
           const existingSolverNode = nodes.find((n) =>
             n.id.startsWith(node.id + solverNodeIdentifier)
           );
@@ -334,8 +379,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     [
       addEdge,
       addNode,
-      createNode,
+      createProblemNode,
       edges,
+      getSolvers,
       nodes,
       scheduleNodeUpdate,
       setEdges,
@@ -365,14 +411,40 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       }
 
       // Create root node
-      let rootNode = createNode(props.problemId, problemDto, 0, {
-        index: 0,
-        count: 1,
+      let rootNode = createProblemNode(props.problemId, {
+        problemDtos: [problemDto],
+        level: 0,
+        levelInfo: {
+          index: 0,
+          count: 1,
+        },
+        solveCallback: (problemDto) => {
+          patchProblem(problemDto.typeId, problemDto.id, {
+            state: ProblemState.SOLVING,
+          }).then((dto) => {
+            setNodes((previousNodes) =>
+              previousNodes.map((n) => {
+                if (n.id !== rootNode.id) return n;
+
+                let updatedNode: Node<ProblemNodeData> = {
+                  ...n,
+                  data: {
+                    ...n.data,
+                    problemDtos: [dto],
+                  },
+                };
+                scheduleNodeUpdate(updatedNode);
+
+                return updatedNode;
+              })
+            );
+          });
+        },
       });
       scheduleNodeUpdate(rootNode);
     });
   }, [
-    createNode,
+    createProblemNode,
     props.problemId,
     props.problemType,
     scheduleNodeUpdate,

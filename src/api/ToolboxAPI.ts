@@ -19,7 +19,16 @@ export async function fetchProblem<T>(
     },
   })
     .then((response) => response.json())
-    .then((json) => json as ProblemDto<T>)
+    .then((json) => {
+      const data = json as ProblemDto<T>;
+
+      // Explicitly set solverId to undefined if it is null
+      if (data.solverId === null) {
+        data.solverId = undefined;
+      }
+
+      return data;
+    })
     .catch((reason) => {
       return {
         ...getInvalidProblemDto(),
