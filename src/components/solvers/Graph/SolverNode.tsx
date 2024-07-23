@@ -36,7 +36,7 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
       border="1px"
       borderRadius="10px"
       padding=".5rem"
-      background={selected ? "green" : "#00876CBE"}
+      background={selected ? "green" : "kitGreen"}
       fontSize="xs"
     >
       <Handle type="target" position={Position.Top} />
