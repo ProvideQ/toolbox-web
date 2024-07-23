@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const QUBO: NextPage = () => {
@@ -34,7 +33,6 @@ const QUBO: NextPage = () => {
         textPlaceholder={"Enter your QUBO problem in LP format"}
       />
       <Divider />
-      <ProgressHandler problemTypes={["qubo"]} problemInput={quboTerm} />
     </Layout>
   );
 };

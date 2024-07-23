@@ -12,7 +12,7 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   CheckboxSetting,
   MetaSolverSetting,
@@ -21,7 +21,7 @@ import {
   SelectSetting,
   TextSetting,
 } from "../../api/data-model/MetaSolverSettings";
-import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
+// import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
 
 interface SettingsViewProps {
   problemType: string;
@@ -31,11 +31,11 @@ interface SettingsViewProps {
 export const SettingsView = (props: SettingsViewProps) => {
   const [settings, setSettings] = useState<MetaSolverSetting[]>([]);
 
-  useEffect(() => {
-    fetchMetaSolverSettings(props.problemType).then(
-      (settings: MetaSolverSetting[]) => setSettings(settings)
-    );
-  }, [props.problemType]);
+  // useEffect(() => {
+  //   fetchMetaSolverSettings(props.problemType).then(
+  //     (settings: MetaSolverSetting[]) => setSettings(settings)
+  //   );
+  // }, [props.problemType]);
 
   if (settings.length == 0) {
     return null;

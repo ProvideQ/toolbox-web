@@ -11,7 +11,6 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { Layout } from "../../components/layout/Layout";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const anomalies: Option[] = [
@@ -65,11 +64,6 @@ const FeatureModelAnomaly: NextPage = () => {
             </Box>
 
             <Divider />
-
-            <ProgressHandler
-              problemTypes={selectedAnomalies.map((option) => option.value)}
-              problemInput={uvl}
-            />
           </VStack>
         }
       />

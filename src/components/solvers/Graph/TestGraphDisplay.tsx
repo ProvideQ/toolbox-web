@@ -1,16 +1,13 @@
-import { useEffect, useState } from "react";
-import { ProblemGraph } from "../../../api/data-model/ProblemGraph";
-import { fetchProblemGraph } from "../../../api/ToolboxAPI";
 import { ProblemGraphView } from "./ProblemGraphView";
+import { SolverProvider } from "./SolverProvider";
 
 export const TestGraphDisplay = () => {
-  let [graph, setGraph] = useState<ProblemGraph | null>(null);
-
-  useEffect(() => {
-    fetchProblemGraph().then((graph) => {
-      setGraph(graph);
-    });
-  }, []);
-
-  return <ProblemGraphView graph={graph} />;
+  return (
+    <SolverProvider>
+      <ProblemGraphView
+        problemType="feature-model-anomaly-dead"
+        problemId="c0e7d01d-9219-4545-80e1-e2b5be11ff5a"
+      />
+    </SolverProvider>
+  );
 };

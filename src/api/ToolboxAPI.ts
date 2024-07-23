@@ -1,38 +1,74 @@
-import { MetaSolverSetting } from "./data-model/MetaSolverSettings";
-import { ProblemGraph } from "./data-model/ProblemGraph";
-import { ProblemSolver } from "./data-model/ProblemSolver";
-import { Solution } from "./data-model/Solution";
-import { SolutionStatus } from "./data-model/SolutionStatus";
-import { SolveRequest } from "./data-model/SolveRequest";
-import { SubRoutineDefinition } from "./data-model/SubRoutineDefinition";
+import { getInvalidProblemDto, ProblemDto } from "./data-model/ProblemDto";
+import { ProblemSolverInfo } from "./data-model/ProblemSolverInfo";
+import { ProblemState } from "./data-model/ProblemState";
+import { SubRoutineDefinitionDto } from "./data-model/SubRoutineDefinitionDto";
 
 /**
  * Getter for the base url of the toolbox API.
  */
 export const baseUrl = () => process.env.NEXT_PUBLIC_API_BASE_URL;
 
+export async function fetchProblem<T>(
+  problemType: string,
+  problemId: string
+): Promise<ProblemDto<T>> {
+  return fetch(`${baseUrl()}/problems/${problemType}/${problemId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => json as ProblemDto<T>)
+    .catch((reason) => {
+      return {
+        ...getInvalidProblemDto(),
+        error: `${reason}`,
+      };
+    });
+}
+
 export async function postProblem<T>(
   problemType: string,
-  solveRequest: SolveRequest<T>
-): Promise<Solution> {
-  return fetch(`${baseUrl()}/solve/${problemType}`, {
+  problemRequest: ProblemDto<T>
+): Promise<ProblemDto<T>> {
+  return fetch(`${baseUrl()}/problems/${problemType}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(solveRequest),
+    body: JSON.stringify(problemRequest),
   })
     .then((response) => response.json())
-    .then((json) => json as Solution)
+    .then((json) => json as ProblemDto<T>)
     .catch((reason) => {
       return {
-        id: -1,
-        status: SolutionStatus.INVALID,
-        solverName: "",
-        executionMilliseconds: 0,
-        solutionData: "",
-        debugData: "",
-        metaData: "",
+        ...problemRequest,
+        error: `${reason}`,
+      };
+    });
+}
+
+export async function patchProblem<T>(
+  problemType: string,
+  problemId: string,
+  updateParameters: { input?: any; solverId?: string; state?: ProblemState }
+): Promise<ProblemDto<T>> {
+  let x = JSON.stringify(updateParameters);
+  let url = `${baseUrl()}/problems/${problemType}/${problemId}`;
+  console.log(url);
+  return fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updateParameters),
+  })
+    .then((response) => response.json())
+    .then((json) => json as ProblemDto<T>)
+    .catch((reason) => {
+      return {
+        ...getInvalidProblemDto(),
         error: `${reason}`,
       };
     });
@@ -40,26 +76,15 @@ export async function postProblem<T>(
 
 export async function fetchSolvers(
   problemType: string
-): Promise<ProblemSolver[]> {
-  // Return mock promise
-  // todo remove
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        { id: "tsp1", name: "TSP 1" },
-        { id: "tsp2", name: "TSP 2" },
-      ]);
-    }, 1000);
-  });
-
+): Promise<ProblemSolverInfo[]> {
   return fetch(`${baseUrl()}/solvers/${problemType}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   })
-    .then((response) => response.json())
-    .then((json) => json as ProblemSolver[])
+    .then(async (response) => response.json())
+    .then((json) => json as ProblemSolverInfo[])
     .catch((reason) => {
       console.error(reason);
       alert(`Could not retrieve solvers of type ${problemType}.`);
@@ -70,7 +95,7 @@ export async function fetchSolvers(
 export async function fetchSubRoutines(
   problemType: string,
   solverId: string
-): Promise<SubRoutineDefinition[]> {
+): Promise<SubRoutineDefinitionDto[]> {
   return fetch(
     `${baseUrl()}/sub-routines/${problemType}?${new URLSearchParams({
       id: solverId,
@@ -90,52 +115,18 @@ export async function fetchSubRoutines(
     });
 }
 
-export async function fetchMetaSolverSettings(
-  problemType: string
-): Promise<MetaSolverSetting[]> {
-  return fetch(`${baseUrl()}/meta-solver/settings/${problemType}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .catch((reason) => {
-      console.log(reason);
-      return [];
-    });
-}
-
-export async function fetchProblemGraph(): Promise<ProblemGraph> {
-  return new Promise((resolve) => {
-    return resolve({
-      start: {
-        problemType: "vehicle-routing",
-        status: SolutionStatus.SOLVED,
-        solver: {
-          id: "vr-solver-1",
-          name: "VR Solver 1",
-        },
-        solutionId: 1,
-        subRoutines: [
-          {
-            problemType: "clustering",
-            status: SolutionStatus.COMPUTING,
-            solutionId: 2,
-            solver: {
-              id: "clustering-solver-1",
-              name: "Clustering Solver 1",
-            },
-            subRoutines: [],
-          },
-          {
-            problemType: "travelling-salesman",
-            status: SolutionStatus.PENDING_USER_ACTION,
-            solutionId: 3,
-            subRoutines: [],
-          },
-        ],
-      },
-    });
-  });
-}
+// export async function fetchMetaSolverSettings(
+//   problemType: string
+// ): Promise<MetaSolverSetting[]> {
+//   return fetch(`${baseUrl()}/meta-solver/settings/${problemType}`, {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then((response) => response.json())
+//     .catch((reason) => {
+//       console.log(reason);
+//       return [];
+//     });
+// }

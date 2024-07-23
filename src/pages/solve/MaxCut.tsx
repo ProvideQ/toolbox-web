@@ -12,7 +12,6 @@ import { useState } from "react";
 import { Container } from "../../components/Container";
 import { Layout } from "../../components/layout/Layout";
 import { GMLGraphView } from "../../components/solvers/Graph/GMLGraphView";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const MaxCut: NextPage = () => {
@@ -47,10 +46,6 @@ const MaxCut: NextPage = () => {
             </Center>
 
             <Divider />
-            <ProgressHandler
-              problemTypes={["max-cut"]}
-              problemInput={graphString}
-            />
           </Container>
         }
       />
