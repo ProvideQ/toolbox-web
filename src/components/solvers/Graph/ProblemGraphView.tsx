@@ -15,8 +15,8 @@ import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
 import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
-import { DecisionNode, DecisionNodeData } from "./DecisionNode";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
+import { SolverNode, SolverNodeData } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
 
 interface ProblemEdgeData {
@@ -73,11 +73,11 @@ function getNodePositionY(level: number): number {
 }
 
 const nodeTypes: NodeTypes = {
-  decisionNode: DecisionNode,
+  solverNode: SolverNode,
   problemNode: ProblemNode,
 };
-const decisionNodeIdentifier: string = "-decision-node-";
-const decisionEdgeIdentifier: string = "-decision-edge-";
+const solverNodeIdentifier: string = "-solver-node-";
+const solverEdgeIdentifier: string = "-solver-edge-";
 
 export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
@@ -154,7 +154,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   const updateNode = useCallback(
     (node: Node<ProblemNodeData>) => {
-      updateDecisionNodes(node);
+      updateSolverNodes(node);
 
       // Update node data
       updateNodeData(node.id, (n) => ({
@@ -210,12 +210,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         }
       }
 
-      function createDecisionNodes(node: Node<ProblemNodeData>) {
+      function createSolverNodes(node: Node<ProblemNodeData>) {
         getSolvers(node.data.problemDto.typeId).then((solvers) => {
           for (let i = 0; i < solvers.length; i++) {
             let solverId = solvers[i].id.toString();
-            let solverNodeId = node.id + decisionNodeIdentifier + solverId;
-            let decisionNode: Node<DecisionNodeData> = {
+            let solverNodeId = node.id + solverNodeIdentifier + solverId;
+            let solverNode: Node<SolverNodeData> = {
               id: solverNodeId,
               data: {
                 problemSolver: solvers[i],
@@ -224,7 +224,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                   // todo update visuals here too
 
                   let edge = edges.find((e) =>
-                    e.target.startsWith(node.id + decisionEdgeIdentifier)
+                    e.target.startsWith(node.id + solverEdgeIdentifier)
                   );
                   if (edge) {
                     updateEdge(edge);
@@ -263,46 +263,44 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                   getNodePositionX({ index: i, count: solvers.length }),
                 y: getNodePositionY(node.data.level + 1),
               },
-              type: "decisionNode",
+              type: "solverNode",
             };
 
-            addNode(decisionNode);
+            addNode(solverNode);
 
             addEdge({
-              id: node.id + decisionEdgeIdentifier + decisionNode.id,
+              id: node.id + solverEdgeIdentifier + solverNode.id,
               type: "step",
               source: node.id,
-              target: decisionNode.id,
+              target: solverNode.id,
             });
           }
         });
       }
 
-      function updateDecisionNodes(node: Node) {
-        // Load decision nodes when user action is required
+      function updateSolverNodes(node: Node) {
+        // Load solver nodes when user action is required
         if (node.data.problemDto.state == ProblemState.NEEDS_CONFIGURATION) {
-          const existingDecisionNode = nodes.find((n) =>
-            n.id.startsWith(node.id + decisionNodeIdentifier)
+          const existingSolverNode = nodes.find((n) =>
+            n.id.startsWith(node.id + solverNodeIdentifier)
           );
-          if (existingDecisionNode === undefined) {
-            createDecisionNodes(node);
+          if (existingSolverNode === undefined) {
+            createSolverNodes(node);
           }
         } else {
-          removeDecisionNodes(node);
+          removeSolverNodes(node);
         }
       }
 
-      function removeDecisionNodes(node: Node<ProblemNodeData>) {
+      function removeSolverNodes(node: Node<ProblemNodeData>) {
         setNodes((previousNodes) =>
           previousNodes.filter((n) => {
-            let x = n.id.startsWith(node.id + decisionNodeIdentifier);
+            let x = n.id.startsWith(node.id + solverNodeIdentifier);
             return !x;
           })
         );
         setEdges((edges) =>
-          edges.filter(
-            (e) => !e.id.startsWith(node.id + decisionEdgeIdentifier)
-          )
+          edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
         );
       }
 

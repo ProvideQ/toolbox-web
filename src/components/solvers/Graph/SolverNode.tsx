@@ -22,13 +22,13 @@ import { Handle, NodeProps, Position } from "reactflow";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 
-export interface DecisionNodeData {
+export interface SolverNodeData {
   problemSolver: ProblemSolverInfo;
   problemDto: ProblemDto<any>;
   selectCallback: (problemSolver: ProblemSolverInfo) => void;
 }
 
-export function DecisionNode(props: NodeProps<DecisionNodeData>) {
+export function SolverNode(props: NodeProps<SolverNodeData>) {
   const [selected, setSelected] = useState(false);
 
   return (
