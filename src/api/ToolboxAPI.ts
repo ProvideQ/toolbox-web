@@ -63,7 +63,6 @@ export async function patchProblem<T>(
   problemId: string,
   updateParameters: { input?: any; solverId?: string; state?: ProblemState }
 ): Promise<ProblemDto<T>> {
-  let x = JSON.stringify(updateParameters);
   let url = `${baseUrl()}/problems/${problemTypeId}/${problemId}`;
   console.log(url);
   return fetch(url, {
