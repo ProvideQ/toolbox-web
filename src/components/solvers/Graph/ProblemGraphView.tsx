@@ -24,7 +24,7 @@ interface ProblemEdgeData {
 }
 
 export interface ProblemGraphViewProps {
-  problemType: string;
+  problemTypeId: string;
   problemId: string;
 }
 
@@ -404,7 +404,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   useEffect(() => {
     setNodes([]);
     setEdges([]);
-    fetchProblem(props.problemType, props.problemId).then((problemDto) => {
+    fetchProblem(props.problemTypeId, props.problemId).then((problemDto) => {
       if (problemDto.error) {
         console.error(problemDto.error);
         return;
@@ -446,7 +446,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   }, [
     createProblemNode,
     props.problemId,
-    props.problemType,
+    props.problemTypeId,
     scheduleNodeUpdate,
     setEdges,
     setNodes,

@@ -24,7 +24,7 @@ import {
 // import { fetchMetaSolverSettings } from "../../api/ToolboxAPI";
 
 interface SettingsViewProps {
-  problemType: string;
+  problemTypeId: string;
   settingChanged: (newSettings: MetaSolverSetting[]) => void;
 }
 

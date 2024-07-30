@@ -9,10 +9,10 @@ import { SubRoutineDefinitionDto } from "./data-model/SubRoutineDefinitionDto";
 export const baseUrl = () => process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function fetchProblem<T>(
-  problemType: string,
+  problemTypeId: string,
   problemId: string
 ): Promise<ProblemDto<T>> {
-  return fetch(`${baseUrl()}/problems/${problemType}/${problemId}`, {
+  return fetch(`${baseUrl()}/problems/${problemTypeId}/${problemId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -38,10 +38,10 @@ export async function fetchProblem<T>(
 }
 
 export async function postProblem<T>(
-  problemType: string,
+  problemTypeId: string,
   problemRequest: ProblemDto<T>
 ): Promise<ProblemDto<T>> {
-  return fetch(`${baseUrl()}/problems/${problemType}`, {
+  return fetch(`${baseUrl()}/problems/${problemTypeId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -59,12 +59,12 @@ export async function postProblem<T>(
 }
 
 export async function patchProblem<T>(
-  problemType: string,
+  problemTypeId: string,
   problemId: string,
   updateParameters: { input?: any; solverId?: string; state?: ProblemState }
 ): Promise<ProblemDto<T>> {
   let x = JSON.stringify(updateParameters);
-  let url = `${baseUrl()}/problems/${problemType}/${problemId}`;
+  let url = `${baseUrl()}/problems/${problemTypeId}/${problemId}`;
   console.log(url);
   return fetch(url, {
     method: "PATCH",
@@ -84,9 +84,9 @@ export async function patchProblem<T>(
 }
 
 export async function fetchSolvers(
-  problemType: string
+  problemTypeId: string
 ): Promise<ProblemSolverInfo[]> {
-  return fetch(`${baseUrl()}/solvers/${problemType}`, {
+  return fetch(`${baseUrl()}/solvers/${problemTypeId}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -96,17 +96,17 @@ export async function fetchSolvers(
     .then((json) => json as ProblemSolverInfo[])
     .catch((reason) => {
       console.error(reason);
-      alert(`Could not retrieve solvers of type ${problemType}.`);
+      alert(`Could not retrieve solvers of type ${problemTypeId}.`);
       return [];
     });
 }
 
 export async function fetchSubRoutines(
-  problemType: string,
+  problemTypeId: string,
   solverId: string
 ): Promise<SubRoutineDefinitionDto[]> {
   return fetch(
-    `${baseUrl()}/sub-routines/${problemType}?${new URLSearchParams({
+    `${baseUrl()}/sub-routines/${problemTypeId}?${new URLSearchParams({
       id: solverId,
     })}`,
     {
@@ -125,9 +125,9 @@ export async function fetchSubRoutines(
 }
 
 // export async function fetchMetaSolverSettings(
-//   problemType: string
+//   problemTypeId: string
 // ): Promise<MetaSolverSetting[]> {
-//   return fetch(`${baseUrl()}/meta-solver/settings/${problemType}`, {
+//   return fetch(`${baseUrl()}/meta-solver/settings/${problemTypeId}`, {
 //     method: "GET",
 //     headers: {
 //       "Content-Type": "application/json",

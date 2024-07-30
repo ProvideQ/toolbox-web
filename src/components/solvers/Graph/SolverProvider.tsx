@@ -20,15 +20,15 @@ export const SolverProvider = (props: { children: ReactNode }) => {
   const [solvers, setSolvers] = useState<SolversMap>({});
 
   // Function to get solvers, either from cache or by fetching
-  const getSolvers = async (problemType: string) => {
-    const cachedSolvers = solvers[problemType];
+  const getSolvers = async (problemTypeId: string) => {
+    const cachedSolvers = solvers[problemTypeId];
     if (cachedSolvers) {
       return cachedSolvers;
     } else {
-      const fetchedSolvers = await fetchSolvers(problemType);
+      const fetchedSolvers = await fetchSolvers(problemTypeId);
       setSolvers((prevSolvers) => ({
         ...prevSolvers,
-        [problemType]: fetchedSolvers,
+        [problemTypeId]: fetchedSolvers,
       }));
       return fetchedSolvers;
     }
