@@ -70,23 +70,23 @@ export interface ProblemNodeData {
   solveCallback: (problem: ProblemDto<any>) => void;
 }
 
-function getNodeType(data: ProblemNodeData) {
-  // Add input/output connect points for edges
-  if (data.problemDtos.some((dto) => dto.solverId === undefined)) {
-    if (data.level == 0) {
-      return "input";
-    } else {
-      return "default";
-    }
-  } else {
-    if (data.level === 0) {
-      return "input";
-    } else if (data.problemDtos.length == 0) {
-      return "output";
-    } else {
-      return "default";
-    }
-  }
+function getNodeType(data: ProblemNodeData): {
+  topHandle: boolean;
+  bottomHandle: boolean;
+} {
+  let topHandle = data.level > 0;
+
+  let bottomHandle =
+    data.problemDtos[0].solverId === undefined ||
+    data.problemDtos.some(
+      (dto) =>
+        dto.state === ProblemState.SOLVED || dto.state === ProblemState.SOLVING
+    );
+
+  return {
+    topHandle: topHandle,
+    bottomHandle: bottomHandle,
+  };
 }
 
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
@@ -138,9 +138,9 @@ function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
 export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedSubProblems, setSelectedSubProblems] = useState<string[]>([]);
+  const [selectedProblemIds, setSelectedProblemIds] = useState<string[]>([]);
 
-  const nodeType = getNodeType(props.data);
+  const { topHandle, bottomHandle } = getNodeType(props.data);
   const nodeColor = getStatusColor(props.data.problemDtos);
 
   const { solvers, getSolvers } = useSolvers();
@@ -155,7 +155,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
 
   const extended = solverId !== undefined;
 
-  console.log("ProblemNode", typeId, props.data.problemDtos);
+  console.log("ProblemNode", props.data.problemDtos);
 
   return (
     <VStack
@@ -168,13 +168,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         },
       }}
     >
-      {(nodeType === "output" || nodeType === "default") && (
-        <Handle type="target" position={Position.Top} />
-      )}
-      {(nodeType === "input" || nodeType === "default") && (
-        <Handle type="source" position={Position.Bottom} />
-      )}
+      {topHandle && <Handle type="target" position={Position.Top} />}
+      {bottomHandle && <Handle type="source" position={Position.Bottom} />}
       <Box
+        bg="red"
         border="1px"
         borderRadius={extended ? "0px" : "10px"}
         borderTopRadius="10px"
@@ -196,6 +193,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             borderRadius: "5px",
             zIndex: 1,
           },
+          // TODO: add x button to connection point in case there is a solver connect to deconnect it and set solver id to ""
           "&::before": {
             transform: "translate(calc(-50% - 50px))",
           },
@@ -212,6 +210,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </Tooltip>
           <VStack>
             <Text fontWeight="semibold">
+              {props.data.problemDtos.length > 1
+                ? props.data.problemDtos.length + "x "
+                : ""}
               {props.data.problemDtos[0].typeId}
             </Text>
           </VStack>
@@ -233,13 +234,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               </ModalHeader>
               <ModalBody>
                 {props.data.problemDtos.map((problemDto) => (
-                  <>
-                    <ProblemDetails
-                      key={problemDto.id}
-                      problemDto={problemDto}
-                    />
+                  <div key={problemDto.id}>
+                    <ProblemDetails problemDto={problemDto} />
                     <Divider />
-                  </>
+                  </div>
                 ))}
               </ModalBody>
             </ModalContent>
@@ -247,7 +245,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         </HStack>
 
         {props.data.problemDtos.length > 1 && (
-          <VStack bg="white" borderTop="1px" position="relative">
+          <VStack borderTop={dropdownOpen ? "1px" : "0px"} position="relative">
             <Box
               position="absolute"
               bg={nodeColor}
@@ -265,13 +263,14 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                 width: "100%",
                 maxHeight: "10rem",
                 overflowY: "auto",
+                marginBottom: "10px",
               }}
             >
               {dropdownOpen && (
                 <ProblemList
                   problemDtos={props.data.problemDtos}
-                  selectedProblems={selectedSubProblems}
-                  setSelectedProblems={setSelectedSubProblems}
+                  selectedProblemIds={selectedProblemIds}
+                  setSelectedProblemIds={setSelectedProblemIds}
                 />
               )}
             </div>
@@ -285,7 +284,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           border="1px"
           borderBottomRadius="10px"
           padding=".5rem"
-          background={"kitGreen"}
+          background="ghostwhite"
           fontSize="xs"
           zIndex="0"
           position="relative"
@@ -327,24 +326,84 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             </Popover>
           </HStack>
 
+          {/*Solve Button*/}
           {props.data.problemDtos.some(
-            (dto) => dto.state === ProblemState.NEEDS_CONFIGURATION
+            (dto) =>
+              dto.state === ProblemState.NEEDS_CONFIGURATION ||
+              dto.state === ProblemState.READY_TO_SOLVE
+          ) &&
+            props.data.problemDtos.every(
+              (dto) => dto.state !== ProblemState.SOLVING
+            ) && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "0.5rem",
+                }}
+              >
+                <Button
+                  bg="kitGreen"
+                  width="1000px"
+                  height="25px"
+                  textColor="white"
+                  fontWeight="bold"
+                  fontSize="small"
+                  _hover={{
+                    bg: "kitGreenAlpha",
+                  }}
+                  border="1px"
+                  borderColor="black"
+                  borderRadius="0.25rem"
+                  paddingY="1px"
+                  onClick={() => {
+                    for (let problemDto of props.data.problemDtos) {
+                      props.data.solveCallback(problemDto);
+                    }
+                  }}
+                >
+                  Solve
+                </Button>
+              </div>
+            )}
+
+          {/*Solving*/}
+          {props.data.problemDtos.some(
+            (dto) => dto.state === ProblemState.SOLVING
           ) && (
             <Text
-              background="transparent"
+              background="kitGreenAlpha"
+              textColor="white"
+              fontWeight="bold"
+              fontSize="small"
               align="center"
               className="hover:#AAAAAAAA"
               border="1px"
+              borderColor="black"
               borderRadius="0.25rem"
-              paddingX="2rem"
               paddingY="1px"
-              onClick={() => {
-                for (let problemDto of props.data.problemDtos) {
-                  props.data.solveCallback(problemDto);
-                }
-              }}
             >
-              Solve
+              Solving
+            </Text>
+          )}
+
+          {/*Solved*/}
+          {props.data.problemDtos.every(
+            (dto) => dto.state === ProblemState.SOLVED
+          ) && (
+            <Text
+              background="kitGreenAlpha"
+              textColor="white"
+              fontWeight="bold"
+              fontSize="small"
+              align="center"
+              className="hover:#AAAAAAAA"
+              border="1px"
+              borderColor="black"
+              borderRadius="0.25rem"
+              paddingY="1px"
+            >
+              Solved
             </Text>
           )}
         </Box>

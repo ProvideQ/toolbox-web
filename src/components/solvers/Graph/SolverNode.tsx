@@ -15,7 +15,6 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { FaGears } from "react-icons/fa6";
 import { Handle, NodeProps, Position } from "reactflow";
@@ -28,14 +27,12 @@ export interface SolverNodeData {
 }
 
 export function SolverNode(props: NodeProps<SolverNodeData>) {
-  const [selected, setSelected] = useState(false);
-
   return (
     <Box
       border="1px"
       borderRadius="10px"
       padding=".5rem"
-      background={selected ? "green" : "kitGreen"}
+      background="ghostwhite"
       fontSize="xs"
       css={{
         "&::before, &::after": {
@@ -100,20 +97,35 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
             </Portal>
           </Popover>
         </HStack>
-        <Text
-          background="transparent"
-          className="hover:#AAAAAAAA"
-          border="1px"
-          borderRadius="0.25rem"
-          paddingX="2rem"
-          paddingY="1px"
-          onClick={() => {
-            props.data.selectCallback(props.data.problemSolver);
-            setSelected(true);
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "0.5rem",
           }}
         >
-          Select
-        </Text>
+          <Button
+            bg="kitGreen"
+            height="25px"
+            textColor="white"
+            fontWeight="bold"
+            fontSize="small"
+            _hover={{
+              bg: "kitGreenAlpha",
+            }}
+            border="1px"
+            borderColor="black"
+            borderRadius="0.25rem"
+            paddingX="3rem"
+            paddingY="1px"
+            onClick={() => {
+              props.data.selectCallback(props.data.problemSolver);
+            }}
+          >
+            Select
+          </Button>
+        </div>
       </VStack>
     </Box>
   );

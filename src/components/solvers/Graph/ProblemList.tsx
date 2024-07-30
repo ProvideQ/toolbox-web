@@ -6,6 +6,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Select,
   Spinner,
   Text,
   useDisclosure,
@@ -19,7 +20,9 @@ import { MdError } from "react-icons/md";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
+import { patchProblem } from "../../../api/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
+import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
 
 function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
@@ -46,8 +49,8 @@ function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
 
 export const ProblemList = (props: {
   problemDtos: ProblemDto<any>[];
-  selectedProblems: string[];
-  setSelectedProblems: Dispatch<SetStateAction<string[]>>;
+  selectedProblemIds: string[];
+  setSelectedProblemIds: Dispatch<SetStateAction<string[]>>;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalProblemDto, setModalProblemDto] = useState<ProblemDto<any>>();
@@ -56,6 +59,7 @@ export const ProblemList = (props: {
   >(undefined);
 
   const { solvers, getSolvers } = useSolvers();
+  const { updateProblem } = useGraphUpdates();
 
   const typeId = props.problemDtos[0].typeId;
   const solverId = props.problemDtos[0].solverId;
@@ -66,7 +70,7 @@ export const ProblemList = (props: {
   ) {
     setLastSelectedProblem(clickedSubProblem);
     if (!lastSelectedProblem) {
-      props.setSelectedProblems([clickedSubProblem.id]);
+      props.setSelectedProblemIds([clickedSubProblem.id]);
       return;
     }
 
@@ -82,14 +86,14 @@ export const ProblemList = (props: {
     }
 
     if (e.ctrlKey) {
-      props.setSelectedProblems((prev) => [
+      props.setSelectedProblemIds((prev) => [
         ...prev.filter((id) => !newProblemIds.includes(id)),
         ...newProblemIds.filter(
           (id) => lastSelectedProblem.id == id || !prev.includes(id)
         ),
       ]);
     } else {
-      props.setSelectedProblems((prev) =>
+      props.setSelectedProblemIds((prev) =>
         newProblemIds.filter(
           (id) => lastSelectedProblem.id == id || !prev.includes(id)
         )
@@ -98,92 +102,84 @@ export const ProblemList = (props: {
   }
 
   return (
-    // <TableContainer key={subProblem.subRoutine.typeId}>
-    //   <Table size="2sm">
-    //     <Thead>
-    //       <Tr>
-    //         <Th>Subroutine</Th>
-    //         <Th>Solver</Th>
-    //         <Th>Status</Th>
-    //       </Tr>
-    //     </Thead>
-    //     <Tbody>
-    //       {subProblem.subProblemIds.map((subProblemId, index) => {
-    //         return (
-    //           <Tr key={index}>
-    //             <Td>
-    //               {subProblem.subRoutine.typeId} {index}
-    //             </Td>
-    //             <Td>No solver</Td>
-    //             <Td>Not solved</Td>
-    //           </Tr>
-    //         );
-    //       })}
-    //     </Tbody>
-    //   </Table>
-    // </TableContainer>
-    <>
-      <VStack fontSize="2xs" gap={0}>
-        <Text alignSelf="start">
-          Selected {props.selectedProblems.length} of {props.problemDtos.length}
-        </Text>
+    <VStack fontSize="2xs" gap={0}>
+      <Text alignSelf="start">
+        Selected {props.selectedProblemIds.length} of {props.problemDtos.length}
+      </Text>
 
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          scrollBehavior="inside"
-          isCentered
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        scrollBehavior="inside"
+        isCentered
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>
+            <Text fontWeight="semibold">{typeId}</Text>
+          </ModalHeader>
+          <ModalBody>
+            {modalProblemDto && <ProblemDetails problemDto={modalProblemDto} />}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      {props.problemDtos.map((problemDto, index) => (
+        <Flex
+          key={problemDto.id}
+          direction="row"
+          width="100%"
+          alignItems="center"
+          bg={
+            props.selectedProblemIds.find((id) => id == problemDto.id)
+              ? "lightgrey"
+              : "ghostwhite"
+          }
+          onClick={(e) => handleClick(e, problemDto)}
         >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalCloseButton />
-            <ModalHeader>
-              <Text fontWeight="semibold">{typeId}</Text>
-            </ModalHeader>
-            <ModalBody>
-              {modalProblemDto && (
-                <ProblemDetails problemDto={modalProblemDto} />
-              )}
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-
-        {props.problemDtos.map((problemDto, index) => (
-          <Flex
+          <Text width=".75rem">{getStatusIcon(problemDto)}</Text>
+          <Text width="3rem">
+            {typeId} {index + 1}
+          </Text>
+          <Select
+            variant="unstyled"
             key={problemDto.id}
-            direction="row"
-            width="100%"
-            alignItems="center"
-            bg={
-              props.selectedProblems.find((id) => id == problemDto.id)
-                ? "lightgrey"
-                : "white"
-            }
-            onClick={(e) => handleClick(e, problemDto)}
+            padding="0px"
+            margin="0px"
+            fontSize="2xs"
+            defaultValue={problemDto.solverId}
+            onChange={(e) => {
+              patchProblem(problemDto.typeId, problemDto.id, {
+                solverId: e.target.value,
+                state: ProblemState.READY_TO_SOLVE,
+              }).then((dto) => {
+                updateProblem(dto.id);
+              });
+            }}
           >
-            <Text width=".75rem">{getStatusIcon(problemDto)}</Text>
-            <Text width="3rem">
-              {typeId} {index + 1}
-            </Text>
-            <Text width="4rem">
-              {problemDto.solverId
-                ? solvers[problemDto.typeId]?.find(
-                    (s) => s.id == problemDto.solverId
-                  )?.name ?? problemDto.solverId
-                : "-"}
-            </Text>
+            {[
+              <option key="" value="">
+                -
+              </option>,
+              ...solvers[problemDto.typeId].map((solverInfo) => (
+                <option key={solverInfo.id} value={solverInfo.id}>
+                  {solverInfo.name}
+                </option>
+              )),
+            ]}
+          </Select>
 
-            <div
-              onClick={() => {
-                setModalProblemDto(problemDto);
-                onOpen();
-              }}
-            >
-              <FaQuestionCircle size="1rem" />
-            </div>
-          </Flex>
-        ))}
-      </VStack>
-    </>
+          <div
+            onClick={() => {
+              setModalProblemDto(problemDto);
+              onOpen();
+            }}
+          >
+            <FaQuestionCircle size="1rem" />
+          </div>
+        </Flex>
+      ))}
+    </VStack>
   );
 };
