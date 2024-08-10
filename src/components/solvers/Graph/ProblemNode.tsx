@@ -211,7 +211,12 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                 borderRadius: "5px",
               }}
             >
-              {extended && <FaXmark color="red" onClick={disconnect} />}
+              {extended &&
+                props.data.problemDtos.every(
+                  (dto) =>
+                    dto.state !== ProblemState.SOLVING &&
+                    dto.state !== ProblemState.SOLVED
+                ) && <FaXmark color="red" onClick={disconnect} />}
             </div>
           )
         )}
