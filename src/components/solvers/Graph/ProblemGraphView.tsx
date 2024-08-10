@@ -283,28 +283,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                 index: j,
                 count: entries.length,
               },
-              solveCallback: (problemDto) => {
-                patchProblem(problemDto.typeId, problemDto.id, {
-                  state: ProblemState.SOLVING,
-                }).then((dto) => {
-                  setNodes((previousNodes) =>
-                    previousNodes.map((n) => {
-                      if (n.id !== subNodeId) return n;
-
-                      let updatedNode: Node<ProblemNodeData> = {
-                        ...n,
-                        data: {
-                          ...n.data,
-                          problemDtos: [dto], // todo this needs to include all updated dtos
-                        },
-                      };
-                      scheduleNodeUpdate(updatedNode);
-
-                      return updatedNode;
-                    })
-                  );
-                });
-              },
             };
 
             if (subNode) {
@@ -510,28 +488,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         levelInfo: {
           index: 0,
           count: 1,
-        },
-        solveCallback: (problemDto) => {
-          patchProblem(problemDto.typeId, problemDto.id, {
-            state: ProblemState.SOLVING,
-          }).then((dto) => {
-            setNodes((previousNodes) =>
-              previousNodes.map((n) => {
-                if (n.id !== rootNode.id) return n;
-
-                let updatedNode: Node<ProblemNodeData> = {
-                  ...n,
-                  data: {
-                    ...n.data,
-                    problemDtos: [dto],
-                  },
-                };
-                scheduleNodeUpdate(updatedNode);
-
-                return updatedNode;
-              })
-            );
-          });
         },
       });
       scheduleNodeUpdate(rootNode);

@@ -70,9 +70,6 @@ export interface ProblemNodeData {
   // Styling info
   level: number;
   levelInfo: LevelInfo;
-
-  // Callbacks
-  solveCallback: (problem: ProblemDto<any>) => void;
 }
 
 function getNodeType(data: ProblemNodeData): {
@@ -384,7 +381,13 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                   paddingY="1px"
                   onClick={() => {
                     for (let problemDto of props.data.problemDtos) {
-                      props.data.solveCallback(problemDto);
+                      // props.data.solveCallback(problemDto);
+
+                      patchProblem(problemDto.typeId, problemDto.id, {
+                        state: ProblemState.SOLVING,
+                      }).then((dto) => {
+                        updateProblem(dto.id);
+                      });
                     }
                   }}
                 >
