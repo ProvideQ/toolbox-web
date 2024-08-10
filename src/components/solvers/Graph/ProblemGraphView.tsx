@@ -215,9 +215,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       // Get parent node
       const parentNodeId = getParentNodeId(node.id);
       const parentNode = nodes.find((n) => n.id === parentNodeId);
-      if (!parentNode) return;
 
-      setScheduledNodeUpdates((nodes) => nodes.concat(parentNode));
+      const updateNode = parentNode ? parentNode : node;
+      setScheduledNodeUpdates((nodes) => nodes.concat(updateNode));
     },
     [nodes]
   );
