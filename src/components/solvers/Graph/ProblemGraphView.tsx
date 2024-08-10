@@ -349,7 +349,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                   Promise.all(
                     node.data.problemDtos.map((problemDto) =>
                       patchProblem(problemDto.typeId, problemDto.id, {
-                        state: ProblemState.READY_TO_SOLVE,
                         solverId: problemSolver.id,
                       })
                     )

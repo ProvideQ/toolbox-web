@@ -159,7 +159,6 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
     for (let problemDto of props.data.problemDtos) {
       patchProblem(problemDto.typeId, problemDto.id, {
         solverId: "",
-        state: ProblemState.NEEDS_CONFIGURATION,
       }).then((dto) => {
         updateProblem(dto.id);
       });

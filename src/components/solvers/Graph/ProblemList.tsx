@@ -156,7 +156,6 @@ export const ProblemList = (props: {
             onChange={(e) => {
               patchProblem(problemDto.typeId, problemDto.id, {
                 solverId: e.target.value,
-                state: ProblemState.READY_TO_SOLVE,
               }).then((dto) => {
                 updateProblem(dto.id);
               });
