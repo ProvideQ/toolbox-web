@@ -371,20 +371,21 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           {props.data.problemDtos.some(
             (dto) => dto.state === ProblemState.SOLVING
           ) && (
-            <Text
-              background="kitGreenAlpha"
-              textColor="white"
-              fontWeight="bold"
-              fontSize="small"
-              align="center"
-              className="hover:#AAAAAAAA"
+            <HStack
               border="1px"
               borderColor="black"
               borderRadius="0.25rem"
-              paddingY="1px"
+              background="kitGreenAlpha"
+              className="hover:#AAAAAAAA"
+              textColor="white"
+              align="center"
+              justifyContent="center"
             >
-              Solving
-            </Text>
+              <Text fontWeight="bold" fontSize="small" paddingY="1px">
+                Solving
+              </Text>
+              <Spinner speed="1s" width="10px" height="10px" thickness="1px" />
+            </HStack>
           )}
 
           {/*Solved*/}
