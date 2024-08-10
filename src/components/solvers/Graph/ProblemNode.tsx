@@ -33,7 +33,7 @@ import {
   FaQuestion,
   FaQuestionCircle,
 } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
+import { FaGears, FaXmark } from "react-icons/fa6";
 import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import { MdError } from "react-icons/md";
@@ -41,7 +41,9 @@ import { Handle, NodeProps, Position } from "reactflow";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
+import { patchProblem } from "../../../api/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
+import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
 import { useSolvers } from "./SolverProvider";
 import Color = Property.Color;
@@ -144,6 +146,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const nodeColor = getStatusColor(props.data.problemDtos);
 
   const { solvers, getSolvers } = useSolvers();
+  const { updateProblem } = useGraphUpdates();
 
   // Type id is the same for all problems
   const typeId = props.data.problemDtos[0].typeId;
@@ -155,7 +158,16 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
 
   const extended = solverId !== undefined;
 
-  console.log("ProblemNode", props.data.problemDtos);
+  function disconnect() {
+    for (let problemDto of props.data.problemDtos) {
+      patchProblem(problemDto.typeId, problemDto.id, {
+        solverId: "",
+        state: ProblemState.NEEDS_CONFIGURATION,
+      }).then((dto) => {
+        updateProblem(dto.id);
+      });
+    }
+  }
 
   return (
     <VStack
@@ -170,6 +182,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
     >
       {topHandle && <Handle type="target" position={Position.Top} />}
       {bottomHandle && <Handle type="source" position={Position.Bottom} />}
+
       <Box
         bg="red"
         border="1px"
@@ -180,28 +193,40 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         fontSize="xs"
         position="relative"
         zIndex="2"
-        css={{
-          "&::before, &::after": {
-            content: '""',
+      >
+        <div
+          style={{
             position: "absolute",
             left: "50%",
-            bottom: "-10px",
-            width: "15px",
-            height: "15px",
+            bottom: "-7.5px",
+            width: "14px",
+            height: "14px",
+            transform: "translate(calc(-50% + 50px))",
+            zIndex: 10,
             background: "white",
             border: "1px solid black",
             borderRadius: "5px",
-            zIndex: 1,
-          },
-          // TODO: add x button to connection point in case there is a solver connect to deconnect it and set solver id to ""
-          "&::before": {
+          }}
+        >
+          {extended && <FaXmark color="red" onClick={disconnect} />}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            bottom: "-7.5px",
+            width: "14px",
+            height: "14px",
             transform: "translate(calc(-50% - 50px))",
-          },
-          "&::after": {
-            transform: "translate(calc(-50% + 50px))",
-          },
-        }}
-      >
+            zIndex: 10,
+            background: "white",
+            border: "1px solid black",
+            borderRadius: "5px",
+          }}
+        >
+          {extended && <FaXmark color="red" onClick={disconnect} />}
+        </div>
+
         <HStack align="start" maxW="10rem" padding="0.5rem">
           <Tooltip hasArrow label="Problem" placement="bottom">
             <div style={{ height: "20px" }}>
