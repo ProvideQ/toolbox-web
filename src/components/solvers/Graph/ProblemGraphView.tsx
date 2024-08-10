@@ -216,8 +216,14 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       const parentNodeId = getParentNodeId(node.id);
       const parentNode = nodes.find((n) => n.id === parentNodeId);
 
-      const updateNode = parentNode ? parentNode : node;
-      setScheduledNodeUpdates((nodes) => nodes.concat(updateNode));
+      if (parentNode) {
+        setScheduledNodeUpdates((nodes) => nodes.concat(parentNode));
+      } else {
+        fetchProblem(node.data.problemDtos[0].typeId, problemId).then((dto) => {
+          node.data.problemDtos = [dto];
+          setScheduledNodeUpdates((nodes) => nodes.concat(node));
+        });
+      }
     },
     [nodes]
   );
