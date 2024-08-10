@@ -270,13 +270,16 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         </HStack>
 
         {props.data.problemDtos.length > 1 && (
-          <VStack borderTop={dropdownOpen ? "1px" : "0px"} position="relative">
+          <VStack
+            top="10px"
+            borderTop={dropdownOpen ? "1px" : "0px"}
+            position="relative"
+          >
             <Box
               position="absolute"
               bg={nodeColor}
               borderRadius={10}
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              top={0}
               left="50%"
               transform="translate(-50%, -50%)"
             >
