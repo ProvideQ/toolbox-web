@@ -219,7 +219,12 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           )
         )}
 
-        <HStack align="start" maxW="10rem" padding="0.5rem">
+        <HStack
+          align="center"
+          justifyContent="space-between"
+          maxW="10rem"
+          padding="0.5rem"
+        >
           <Tooltip hasArrow label="Problem" placement="bottom">
             <div style={{ height: "20px" }}>
               <BsDatabaseFillGear size="1.5rem" />
