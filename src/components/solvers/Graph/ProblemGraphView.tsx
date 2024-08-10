@@ -65,6 +65,23 @@ function getParentNodeId(nodeId: string): string {
   return nodeId.substring(0, nodeId.lastIndexOf("|"));
 }
 
+function getChildNodes(
+  nodes: Node[],
+  parentNode: Node,
+  typeId?: string
+): Node[] {
+  return nodes.filter((n) => {
+    if (n.type !== "problemNode") return false;
+    if (!n.id.startsWith(parentNode.id)) return false;
+
+    const subString = n.id.substring(parentNode.id.length + 1);
+    return (
+      subString.indexOf("|") === -1 &&
+      (typeId == undefined || subString.startsWith(typeId))
+    );
+  });
+}
+
 /**
  * Edge identifiers are determined by the source and target node identifiers.
  * @param to The target sub-routine definition
@@ -227,6 +244,13 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           // Create sub problem nodes per used solver
           const problemsPerSolver = groupBySolver(subProblemDtos);
 
+          // Keep a list of all existing child nodes to remove the ones that are not needed anymore
+          let childNodes = getChildNodes(
+            nodes,
+            node,
+            subProblem.subRoutine.typeId
+          );
+
           let entries = Array.from(problemsPerSolver.entries());
           for (let j = 0; j < entries.length; j++) {
             let [solverId, problemDtos] = entries[j];
@@ -238,6 +262,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
             const subNodeId = getNodeId(problemNodeIdentifier, node);
             const edgeId = getEdgeId(problemNodeIdentifier, node);
+            // remove node with subNodeId from childNodes
+            childNodes = childNodes.filter((n) => n.id !== subNodeId);
 
             const subNode = nodes.find((n) => n.id === subNodeId);
 
@@ -300,6 +326,17 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               let subNode = createProblemNode(subNodeId, nodeData);
               scheduleNodeUpdate(subNode);
             }
+          }
+
+          // Remove all remaining child nodes that are not referenced anymore
+          for (let childNode of childNodes) {
+            removeSolverNodes(childNode);
+            setNodes((previousNodes) =>
+              previousNodes.filter((n) => n.id !== childNode.id)
+            );
+            setEdges((edges) =>
+              edges.filter((e) => !e.id.startsWith(childNode.id))
+            );
           }
         });
       }
