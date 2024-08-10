@@ -380,8 +380,6 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                   paddingY="1px"
                   onClick={() => {
                     for (let problemDto of props.data.problemDtos) {
-                      // props.data.solveCallback(problemDto);
-
                       patchProblem(problemDto.typeId, problemDto.id, {
                         state: ProblemState.SOLVING,
                       }).then((dto) => {
