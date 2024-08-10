@@ -210,12 +210,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       updateSolverNodes(node);
 
       // Update node data
-      updateNodeData(node.id, (n) => node);
+      updateNodeData(node.id, (_) => node);
 
-      // Solver id and thus sub problems are the same for all problems
+      // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       const subProblems = node.data.problemDtos[0].subProblems;
 
-      // Update sub-routine nodes
+      // Update sub-problem nodes
       for (let i = 0; i < subProblems.length; i++) {
         const subProblem = subProblems[i];
 
@@ -226,7 +226,11 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         ).then((subProblemDtos) => {
           // Create sub problem nodes per used solver
           const problemsPerSolver = groupBySolver(subProblemDtos);
-          problemsPerSolver.forEach((problemDtos, solverId) => {
+
+          let entries = Array.from(problemsPerSolver.entries());
+          for (let j = 0; j < entries.length; j++) {
+            let [solverId, problemDtos] = entries[j];
+
             const problemNodeIdentifier: ProblemNodeIdentifier = {
               subRoutineDefinitionDto: subProblem.subRoutine,
               solverId: solverId,
@@ -241,8 +245,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               problemDtos: problemDtos,
               level: node.data.level + 1,
               levelInfo: {
-                index: i,
-                count: subProblems.length,
+                index: j,
+                count: entries.length,
               },
               solveCallback: (problemDto) => {
                 patchProblem(problemDto.typeId, problemDto.id, {
@@ -296,7 +300,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               let subNode = createProblemNode(subNodeId, nodeData);
               scheduleNodeUpdate(subNode);
             }
-          });
+          }
         });
       }
 
