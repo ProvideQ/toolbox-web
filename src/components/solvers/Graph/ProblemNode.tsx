@@ -83,7 +83,7 @@ function getNodeType(data: ProblemNodeData): {
 
   let bottomHandle =
     data.problemDtos[0].solverId === undefined ||
-    data.problemDtos.every((dto) => canProblemSolverBeUpdated(dto));
+    data.problemDtos.some((dto) => !canProblemSolverBeUpdated(dto));
 
   return {
     topHandle: topHandle,
