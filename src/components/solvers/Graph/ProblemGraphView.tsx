@@ -251,7 +251,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           const problemsPerSolver = groupBySolver(subProblemDtos);
 
           // Keep a list of all existing child nodes to remove the ones that are not needed anymore
-          let childNodes = getChildNodes(
+          let unusedChildNodes = getChildNodes(
             nodes,
             node,
             subProblem.subRoutine.typeId
@@ -268,8 +268,11 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
             const subNodeId = getNodeId(problemNodeIdentifier, node);
             const edgeId = getEdgeId(problemNodeIdentifier, node);
-            // remove node with subNodeId from childNodes
-            childNodes = childNodes.filter((n) => n.id !== subNodeId);
+
+            // Remove child node from unused list
+            unusedChildNodes = unusedChildNodes.filter(
+              (n) => n.id !== subNodeId
+            );
 
             const subNode = nodes.find((n) => n.id === subNodeId);
 
@@ -335,7 +338,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           }
 
           // Remove all remaining child nodes that are not referenced anymore
-          for (let childNode of childNodes) {
+          for (let childNode of unusedChildNodes) {
             removeSolverNodes(childNode);
             setNodes((previousNodes) =>
               previousNodes.filter((n) => n.id !== childNode.id)
