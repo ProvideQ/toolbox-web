@@ -227,7 +227,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       updateSolverNodes(node);
 
       // Update node data
-      updateNodeData(node.id, (_) => node);
+      updateNodeData(node.id, node);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       const subProblems = node.data.problemDtos[0].subProblems;
@@ -437,13 +437,13 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
       function updateNodeData(
         nodeId: string,
-        update: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>
+        updatedNode: Node<ProblemNodeData>
       ) {
         setNodes((previousNodes) =>
           previousNodes.map((node) => {
             if (node.id !== nodeId) return node;
 
-            return update(node);
+            return updatedNode;
           })
         );
       }
