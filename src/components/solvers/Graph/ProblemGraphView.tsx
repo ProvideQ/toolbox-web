@@ -358,8 +358,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                 problemTypeId: node.data.problemDtos[0].typeId,
                 problemSolver: solvers[i],
                 selectCallback: (problemSolver) => {
-                  // todo update visuals here too
-
                   let edge = edges.find((e) =>
                     e.target.startsWith(node.id + solverEdgeIdentifier)
                   );
