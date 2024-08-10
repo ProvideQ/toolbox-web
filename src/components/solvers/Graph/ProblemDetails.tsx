@@ -15,8 +15,8 @@ import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionView } from "../SolutionView";
 import { useSolvers } from "./SolverProvider";
 
-function getHumanReadableState(status: ProblemState) {
-  switch (status) {
+function getHumanReadableState(state: ProblemState) {
+  switch (state) {
     case ProblemState.NEEDS_CONFIGURATION:
       return "Needs Configuration";
     case ProblemState.READY_TO_SOLVE:
