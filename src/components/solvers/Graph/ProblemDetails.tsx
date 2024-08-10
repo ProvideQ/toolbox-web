@@ -52,9 +52,7 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
 
   return (
     <VStack gap="20px" align="start">
-      <Textarea readOnly resize="both">
-        {props.problemDto.input}
-      </Textarea>
+      <Textarea readOnly resize="vertical" value={props.problemDto.input} />
       <Text>
         <b>Status:</b> {getHumanReadableState(props.problemDto.state)}
       </Text>
