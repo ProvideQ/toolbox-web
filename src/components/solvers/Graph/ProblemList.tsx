@@ -13,6 +13,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useState } from "react";
+import { BiPlay } from "react-icons/bi";
 import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
 import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
@@ -27,28 +28,6 @@ import { patchProblem } from "../../../api/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
-
-function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
-  switch (problemDto.state) {
-    case ProblemState.NEEDS_CONFIGURATION:
-      return <FaQuestion color="red" />;
-    case ProblemState.READY_TO_SOLVE:
-      return <ImCheckmark color="cornflowerblue" />;
-    case ProblemState.SOLVING:
-      return <Spinner speed="1s" width="10px" height="10px" thickness="1px" />;
-    case ProblemState.SOLVED:
-      switch (problemDto.solution.status) {
-        case SolutionStatus.INVALID:
-          return <MdError color="red" />;
-        case SolutionStatus.COMPUTING:
-          return <GrInProgress />;
-        case SolutionStatus.SOLVED:
-          return <ImCheckmark color="teal" />;
-        case SolutionStatus.ERROR:
-          return <MdError color="red" />;
-      }
-  }
-}
 
 export const ProblemList = (props: {
   problemDtos: ProblemDto<any>[];
@@ -66,6 +45,41 @@ export const ProblemList = (props: {
 
   const typeId = props.problemDtos[0].typeId;
   const solverId = props.problemDtos[0].solverId;
+
+  function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
+    switch (problemDto.state) {
+      case ProblemState.NEEDS_CONFIGURATION:
+        return <FaQuestion color="red" />;
+      case ProblemState.READY_TO_SOLVE:
+        return (
+          <BiPlay
+            color="green"
+            onClick={() => {
+              patchProblem(problemDto.typeId, problemDto.id, {
+                state: ProblemState.SOLVING,
+              }).then((dto) => {
+                updateProblem(dto.id);
+              });
+            }}
+          />
+        );
+      case ProblemState.SOLVING:
+        return (
+          <Spinner speed="1s" width="10px" height="10px" thickness="1px" />
+        );
+      case ProblemState.SOLVED:
+        switch (problemDto.solution.status) {
+          case SolutionStatus.INVALID:
+            return <MdError color="red" />;
+          case SolutionStatus.COMPUTING:
+            return <GrInProgress />;
+          case SolutionStatus.SOLVED:
+            return <ImCheckmark color="teal" />;
+          case SolutionStatus.ERROR:
+            return <MdError color="red" />;
+        }
+    }
+  }
 
   function handleClick(
     e: React.MouseEvent<HTMLDivElement>,
