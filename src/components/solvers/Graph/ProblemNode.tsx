@@ -194,38 +194,27 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         position="relative"
         zIndex="2"
       >
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            bottom: "-7.5px",
-            width: "14px",
-            height: "14px",
-            transform: "translate(calc(-50% + 50px))",
-            zIndex: 10,
-            background: "white",
-            border: "1px solid black",
-            borderRadius: "5px",
-          }}
-        >
-          {extended && <FaXmark color="red" onClick={disconnect} />}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            bottom: "-7.5px",
-            width: "14px",
-            height: "14px",
-            transform: "translate(calc(-50% - 50px))",
-            zIndex: 10,
-            background: "white",
-            border: "1px solid black",
-            borderRadius: "5px",
-          }}
-        >
-          {extended && <FaXmark color="red" onClick={disconnect} />}
-        </div>
+        {["translate(calc(-50% + 50px))", "translate(calc(-50% + -50px))"].map(
+          (transform, index) => (
+            <div
+              key={index}
+              style={{
+                position: "absolute",
+                left: "50%",
+                bottom: "-7.5px",
+                width: "14px",
+                height: "14px",
+                transform: transform,
+                zIndex: 10,
+                background: "white",
+                border: "1px solid black",
+                borderRadius: "5px",
+              }}
+            >
+              {extended && <FaXmark color="red" onClick={disconnect} />}
+            </div>
+          )
+        )}
 
         <HStack align="start" maxW="10rem" padding="0.5rem">
           <Tooltip hasArrow label="Problem" placement="bottom">
