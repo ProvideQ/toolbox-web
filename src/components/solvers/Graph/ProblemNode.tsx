@@ -366,7 +366,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               >
                 <Button
                   bg="kitGreen"
-                  width="1000px"
+                  width="100%"
                   height="25px"
                   textColor="white"
                   fontWeight="bold"
