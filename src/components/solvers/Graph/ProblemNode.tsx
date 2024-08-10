@@ -224,6 +224,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           justifyContent="space-between"
           maxW="10rem"
           padding="0.5rem"
+          marginBottom={props.data.problemDtos.length > 1 ? "0px" : "10px"}
         >
           <Tooltip hasArrow label="Problem" placement="bottom">
             <div style={{ height: "20px" }}>
