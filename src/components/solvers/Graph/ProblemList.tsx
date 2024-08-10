@@ -143,6 +143,10 @@ export const ProblemList = (props: {
             {typeId} {index + 1}
           </Text>
           <Select
+            disabled={
+              problemDto.state === ProblemState.SOLVING ||
+              problemDto.state === ProblemState.SOLVED
+            }
             variant="unstyled"
             key={problemDto.id}
             padding="0px"
