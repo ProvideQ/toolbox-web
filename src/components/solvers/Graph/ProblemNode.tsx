@@ -38,7 +38,10 @@ import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import { MdError } from "react-icons/md";
 import { Handle, NodeProps, Position } from "reactflow";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
+import {
+  canProblemSolverBeUpdated,
+  ProblemDto,
+} from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
 import { patchProblem } from "../../../api/ToolboxAPI";
@@ -80,10 +83,7 @@ function getNodeType(data: ProblemNodeData): {
 
   let bottomHandle =
     data.problemDtos[0].solverId === undefined ||
-    data.problemDtos.some(
-      (dto) =>
-        dto.state === ProblemState.SOLVED || dto.state === ProblemState.SOLVING
-    );
+    data.problemDtos.every((dto) => canProblemSolverBeUpdated(dto));
 
   return {
     topHandle: topHandle,
@@ -212,10 +212,8 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               }}
             >
               {extended &&
-                props.data.problemDtos.every(
-                  (dto) =>
-                    dto.state !== ProblemState.SOLVING &&
-                    dto.state !== ProblemState.SOLVED
+                props.data.problemDtos.every((dto) =>
+                  canProblemSolverBeUpdated(dto)
                 ) && <FaXmark color="red" onClick={disconnect} />}
             </div>
           )

@@ -17,7 +17,10 @@ import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
 import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import { MdError } from "react-icons/md";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
+import {
+  canProblemSolverBeUpdated,
+  ProblemDto,
+} from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
 import { patchProblem } from "../../../api/ToolboxAPI";
@@ -143,10 +146,7 @@ export const ProblemList = (props: {
             {typeId} {index + 1}
           </Text>
           <Select
-            disabled={
-              problemDto.state === ProblemState.SOLVING ||
-              problemDto.state === ProblemState.SOLVED
-            }
+            disabled={!canProblemSolverBeUpdated(problemDto)}
             variant="unstyled"
             key={problemDto.id}
             padding="0px"

@@ -25,3 +25,10 @@ export function getInvalidProblemDto<T>(): ProblemDto<T> {
     typeId: "",
   };
 }
+
+export function canProblemSolverBeUpdated(problem: ProblemDto<any>): boolean {
+  return (
+    problem.state === ProblemState.NEEDS_CONFIGURATION ||
+    problem.state === ProblemState.READY_TO_SOLVE
+  );
+}
