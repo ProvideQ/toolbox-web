@@ -384,6 +384,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                 borderRadius="0.25rem"
                 paddingY="1px"
                 onClick={() => {
+                  // Set state to solving manually so the ui updates instantly
+                  setNodeState(ProblemState.SOLVING);
+
                   for (let problemDto of props.data.problemDtos) {
                     patchProblem(problemDto.typeId, problemDto.id, {
                       state: ProblemState.SOLVING,
