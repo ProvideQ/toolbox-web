@@ -261,6 +261,20 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           for (let j = 0; j < entries.length; j++) {
             let [solverId, problemDtos] = entries[j];
 
+            // Schedule update for unsolved base node if all subproblems were solved
+            if (
+              node.data.problemDtos.some(
+                (dto) => dto.state === ProblemState.SOLVING
+              ) &&
+              problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
+            ) {
+              console.log(
+                "All problems are solved, updating parent node",
+                node
+              );
+              updateProblem(node.id);
+            }
+
             const problemNodeIdentifier: ProblemNodeIdentifier = {
               subRoutineDefinitionDto: subProblem.subRoutine,
               solverId: solverId,
