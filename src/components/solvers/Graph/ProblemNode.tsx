@@ -311,15 +311,13 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           position="relative"
           marginTop="-10px"
         >
-          <HStack align="start" maxW="10rem">
+          <HStack align="start" maxW="10rem" justifyContent="space-between">
             <Tooltip hasArrow label="Solver" placement="bottom">
               <div>
                 <FaGears size="2rem" />
               </div>
             </Tooltip>
-            <Text padding=".5rem" fontWeight="semibold">
-              {solverName}
-            </Text>
+            <Text fontWeight="semibold">{solverName}</Text>
 
             <Popover>
               <PopoverTrigger>
