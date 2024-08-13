@@ -151,7 +151,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   const [scheduledNodeUpdates, setScheduledNodeUpdates] = useState<Node[]>([]);
 
   const scheduleNodeUpdate = useCallback((updateNode: Node) => {
-    setScheduledNodeUpdates((nodes) => nodes.concat(updateNode));
+    setScheduledNodeUpdates((nodes) =>
+      nodes.filter((n) => n.id != updateNode.id).concat(updateNode)
+    );
   }, []);
 
   const addNode = useCallback(
@@ -217,11 +219,11 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       const parentNode = nodes.find((n) => n.id === parentNodeId);
 
       if (parentNode) {
-        setScheduledNodeUpdates((nodes) => nodes.concat(parentNode));
+        scheduleNodeUpdate(parentNode);
       } else {
         fetchProblem(node.data.problemDtos[0].typeId, problemId).then((dto) => {
           node.data.problemDtos = [dto];
-          setScheduledNodeUpdates((nodes) => nodes.concat(node));
+          scheduleNodeUpdate(node);
         });
       }
     },
