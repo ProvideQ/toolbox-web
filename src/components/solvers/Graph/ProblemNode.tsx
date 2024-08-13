@@ -382,6 +382,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                       }).then((dto) => {
                         updateProblem(dto.id);
                       });
+                      updateProblem(problemDto.id);
                     }
                   }}
                 >
