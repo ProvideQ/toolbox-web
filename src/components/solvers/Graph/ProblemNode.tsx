@@ -134,10 +134,25 @@ function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
   }
 }
 
+function getState(problemDtos: ProblemDto<any>[]): ProblemState {
+  if (problemDtos.some((dto) => canProblemSolverBeUpdated(dto))) {
+    return ProblemState.READY_TO_SOLVE;
+  } else if (problemDtos.some((dto) => dto.state === ProblemState.SOLVING)) {
+    return ProblemState.SOLVING;
+  } else if (problemDtos.every((dto) => dto.state === ProblemState.SOLVED)) {
+    return ProblemState.SOLVED;
+  } else {
+    return ProblemState.NEEDS_CONFIGURATION;
+  }
+}
+
 export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedProblemIds, setSelectedProblemIds] = useState<string[]>([]);
+  const [nodeState, setNodeState] = useState<ProblemState>(
+    getState(props.data.problemDtos)
+  );
 
   const { topHandle, bottomHandle } = getNodeType(props.data);
   const nodeColor = getStatusColor(props.data.problemDtos);
@@ -346,55 +361,46 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </HStack>
 
           {/*Solve Button*/}
-          {props.data.problemDtos.some(
-            (dto) =>
-              dto.state === ProblemState.NEEDS_CONFIGURATION ||
-              dto.state === ProblemState.READY_TO_SOLVE
-          ) &&
-            props.data.problemDtos.every(
-              (dto) => dto.state !== ProblemState.SOLVING
-            ) && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "0.5rem",
+          {nodeState === ProblemState.READY_TO_SOLVE && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "0.5rem",
+              }}
+            >
+              <Button
+                bg="kitGreen"
+                width="100%"
+                height="25px"
+                textColor="white"
+                fontWeight="bold"
+                fontSize="small"
+                _hover={{
+                  bg: "kitGreenAlpha",
+                }}
+                border="1px"
+                borderColor="black"
+                borderRadius="0.25rem"
+                paddingY="1px"
+                onClick={() => {
+                  for (let problemDto of props.data.problemDtos) {
+                    patchProblem(problemDto.typeId, problemDto.id, {
+                      state: ProblemState.SOLVING,
+                    }).then((dto) => {
+                      updateProblem(dto.id);
+                    });
+                    updateProblem(problemDto.id);
+                  }
                 }}
               >
-                <Button
-                  bg="kitGreen"
-                  width="100%"
-                  height="25px"
-                  textColor="white"
-                  fontWeight="bold"
-                  fontSize="small"
-                  _hover={{
-                    bg: "kitGreenAlpha",
-                  }}
-                  border="1px"
-                  borderColor="black"
-                  borderRadius="0.25rem"
-                  paddingY="1px"
-                  onClick={() => {
-                    for (let problemDto of props.data.problemDtos) {
-                      patchProblem(problemDto.typeId, problemDto.id, {
-                        state: ProblemState.SOLVING,
-                      }).then((dto) => {
-                        updateProblem(dto.id);
-                      });
-                      updateProblem(problemDto.id);
-                    }
-                  }}
-                >
-                  Solve
-                </Button>
-              </div>
-            )}
+                Solve
+              </Button>
+            </div>
+          )}
 
           {/*Solving*/}
-          {props.data.problemDtos.some(
-            (dto) => dto.state === ProblemState.SOLVING
-          ) && (
+          {nodeState === ProblemState.SOLVING && (
             <HStack
               border="1px"
               borderColor="black"
@@ -413,9 +419,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           )}
 
           {/*Solved*/}
-          {props.data.problemDtos.every(
-            (dto) => dto.state === ProblemState.SOLVED
-          ) && (
+          {nodeState === ProblemState.SOLVED && (
             <Text
               background="kitGreenAlpha"
               textColor="white"
