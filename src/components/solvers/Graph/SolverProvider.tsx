@@ -6,6 +6,9 @@ interface SolversMap {
   [key: string]: ProblemSolverInfo[];
 }
 
+// This is a React context that globally gives access to the solvers that are available for a given problem type
+// Using the useSolvers() context hook in a component will give you access to the solvers and a function
+// to fetch them for the first time - they will be cached in the context for future use
 const SolverContext = createContext<{
   solvers: SolversMap;
   getSolvers: (problemTypeId: string) => Promise<ProblemSolverInfo[]>;
