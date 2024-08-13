@@ -154,6 +154,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   getSolvers(typeId);
 
   const extended = solverId !== undefined;
+  const multiProblem = props.data.problemDtos.length > 1;
 
   function disconnect() {
     for (let problemDto of props.data.problemDtos) {
@@ -220,7 +221,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           justifyContent="space-between"
           maxW="10rem"
           padding="0.5rem"
-          marginBottom={props.data.problemDtos.length > 1 ? "0px" : "10px"}
+          marginBottom={multiProblem ? "0px" : "10px"}
         >
           <Tooltip hasArrow label="Problem" placement="bottom">
             <div style={{ height: "20px" }}>
@@ -229,9 +230,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </Tooltip>
           <VStack>
             <Text fontWeight="semibold">
-              {props.data.problemDtos.length > 1
-                ? props.data.problemDtos.length + "x "
-                : ""}
+              {multiProblem ? props.data.problemDtos.length + "x " : ""}
               {props.data.problemDtos[0].typeId}
             </Text>
           </VStack>
@@ -263,7 +262,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </Modal>
         </HStack>
 
-        {props.data.problemDtos.length > 1 && (
+        {multiProblem && (
           <VStack
             top="10px"
             borderTop={dropdownOpen ? "1px" : "0px"}
