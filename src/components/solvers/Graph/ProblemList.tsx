@@ -155,7 +155,7 @@ export const ProblemList = (props: {
           }
           onClick={(e) => handleClick(e, problemDto)}
         >
-          <Text width=".75rem">{getStatusIcon(problemDto)}</Text>
+          <Flex width=".75rem">{getStatusIcon(problemDto)}</Flex>
           <Text width="3rem">
             {typeId} {index + 1}
           </Text>
