@@ -30,7 +30,7 @@ function getHumanReadableState(state: ProblemState) {
 
 function getAccordionItem(label: string, content: ReactNode) {
   return (
-    <AccordionItem>
+    <AccordionItem key={label}>
       <h2>
         <AccordionButton>
           <Box as="span" flex="1" textAlign="left">
