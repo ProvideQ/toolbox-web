@@ -5,7 +5,8 @@ import { useState } from "react";
 import { baseUrl } from "../../api/ToolboxAPI";
 import { Layout } from "../../components/layout/Layout";
 import { EditorControls } from "../../components/solvers/EditorControls";
-import { TextArea } from "../../components/solvers/SAT/TextArea";
+import { SAT_language } from "../../components/solvers/SAT/prism-SAT";
+import { SyntaxHighlightedTextarea } from "../../components/solvers/SAT/SyntaxHighlightedTextarea";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { LogicalExpressionValidator } from "../../converter/dimacs/LogicalExpressionValidator";
 
@@ -41,7 +42,9 @@ const SAT: NextPage = () => {
         editorContent={logicalExpressionString}
         documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/sat`}
       />
-      <TextArea
+      <SyntaxHighlightedTextarea
+        grammar={SAT_language}
+        language="SAT_language"
         problemString={logicalExpressionString}
         setProblemString={(value) => {
           setLogicalExpressionString(value);
