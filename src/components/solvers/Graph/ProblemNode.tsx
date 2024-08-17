@@ -20,13 +20,9 @@ import { BsDatabaseFillGear } from "react-icons/bs";
 import {
   FaChevronCircleDown,
   FaChevronCircleUp,
-  FaQuestion,
   FaQuestionCircle,
 } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
-import { GrInProgress } from "react-icons/gr";
-import { ImCheckmark } from "react-icons/im";
-import { MdError } from "react-icons/md";
 import { Handle, NodeProps, Position } from "reactflow";
 import {
   canProblemSolverBeUpdated,
@@ -101,28 +97,6 @@ function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
 
   // Otherwise if any dto is ready to solve or solving, the whole node should have the ready to solve color
   return "cornflowerblue";
-}
-
-function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
-  switch (problemDto.state) {
-    case ProblemState.NEEDS_CONFIGURATION:
-      return <FaQuestion color="red" />;
-    case ProblemState.READY_TO_SOLVE:
-      return <ImCheckmark color="cornflowerblue" />;
-    case ProblemState.SOLVING:
-      return <Spinner speed="1s" width="10px" height="10px" thickness="1px" />;
-    case ProblemState.SOLVED:
-      switch (problemDto.solution.status) {
-        case SolutionStatus.INVALID:
-          return <MdError color="red" />;
-        case SolutionStatus.COMPUTING:
-          return <GrInProgress />;
-        case SolutionStatus.SOLVED:
-          return <ImCheckmark color="teal" />;
-        case SolutionStatus.ERROR:
-          return <MdError color="red" />;
-      }
-  }
 }
 
 function getState(problemDtos: ProblemDto<any>[]): ProblemState {
