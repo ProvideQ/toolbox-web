@@ -549,6 +549,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           </ReactFlow>
         </div>
         {nodes.length > 0 &&
+          nodes[0].data.problemDtos?.length > 0 &&
           nodes[0].data.problemDtos[0].state === ProblemState.SOLVED && (
             <SolutionView solution={nodes[0].data.problemDtos[0].solution} />
           )}
