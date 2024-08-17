@@ -6,6 +6,7 @@ import { baseUrl } from "../../api/ToolboxAPI";
 import { Layout } from "../../components/layout/Layout";
 import { EditorControls } from "../../components/solvers/EditorControls";
 import { TextArea } from "../../components/solvers/SAT/TextArea";
+import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { LogicalExpressionValidator } from "../../converter/dimacs/LogicalExpressionValidator";
 
 const SAT: NextPage = () => {
@@ -56,7 +57,13 @@ const SAT: NextPage = () => {
           }
         }}
       />
+
       <Divider />
+
+      <SolverConfiguration
+        problemTypeId="sat"
+        problemInput={logicalExpressionString}
+      />
     </Layout>
   );
 };

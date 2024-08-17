@@ -1,8 +1,9 @@
-import { Code, Divider, Heading, Spacer, Text } from "@chakra-ui/react";
+import { Code, Heading, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
+import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const QUBO: NextPage = () => {
@@ -33,7 +34,8 @@ const QUBO: NextPage = () => {
         setText={setQuboTerm}
         textPlaceholder={"Enter your QUBO problem in LP format"}
       />
-      <Divider />
+
+      <SolverConfiguration problemTypeId="qubo" problemInput={quboTerm} />
     </Layout>
   );
 };

@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
 import { Layout } from "../../components/layout/Layout";
+import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const anomalies: Option[] = [
@@ -56,6 +57,15 @@ const FeatureModelAnomaly: NextPage = () => {
           </Box>
         }
       />
+
+      {selectedAnomalies.map((option) => (
+        <SolverConfiguration
+          key={option.value}
+          problemTypeId={option.value}
+          problemTypeName={option.label}
+          problemInput={uvl}
+        />
+      ))}
     </Layout>
   );
 };

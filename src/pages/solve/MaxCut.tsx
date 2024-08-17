@@ -14,6 +14,7 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
 import { GMLGraphView } from "../../components/solvers/Graph/GMLGraphView";
+import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const MaxCut: NextPage = () => {
@@ -57,6 +58,8 @@ const MaxCut: NextPage = () => {
           </Accordion>
         }
       />
+
+      <SolverConfiguration problemTypeId="max-cut" problemInput={graphString} />
     </Layout>
   );
 };
