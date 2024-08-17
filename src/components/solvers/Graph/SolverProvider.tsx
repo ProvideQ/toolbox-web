@@ -14,7 +14,7 @@ const SolverContext = createContext<{
   getSolvers: (problemTypeId: string) => Promise<ProblemSolverInfo[]>;
 }>({
   solvers: {},
-  getSolvers: (x) => Promise.resolve([]),
+  getSolvers: () => Promise.resolve([]),
 });
 
 export const useSolvers = () => useContext(SolverContext);

@@ -24,7 +24,7 @@ import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefin
 import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
 import { SolutionView } from "../SolutionView";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
-import { SolverNode, SolverNodeData } from "./SolverNode";
+import { SolverNode } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
 
 interface ProblemEdgeData {
@@ -146,7 +146,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     ReactFlowInstance | undefined
   >(undefined);
 
-  const { solvers, getSolvers } = useSolvers();
+  const { getSolvers } = useSolvers();
 
   /**
    * Node updates are scheduled in order to provide an asynchronous update mechanism.
@@ -238,7 +238,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       updateSolverNodes(node);
 
       // Update node data
-      updateNodeData(node.id, node);
+      updateNodeData(node.id, () => node);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       const subProblems = node.data.problemDtos[0].subProblems;
@@ -273,10 +273,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               ) &&
               problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
             ) {
-              console.log(
-                "All problems are solved, updating parent node",
-                node
-              );
               updateProblem(node.id);
             }
 
@@ -350,10 +346,11 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       function createSolverNodes(node: Node<ProblemNodeData>) {
         getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
           for (let i = 0; i < solvers.length; i++) {
-            let solverId = solvers[i].id.toString();
-            let solverNodeId = node.id + solverNodeIdentifier + solverId;
-            let solverNode: Node<SolverNodeData> = {
-              id: solverNodeId,
+            let solverId =
+              node.id + solverNodeIdentifier + solvers[i].id.toString();
+
+            addNode({
+              id: solverId,
               data: {
                 problemTypeId: node.data.problemDtos[0].typeId,
                 problemSolver: solvers[i],
@@ -398,15 +395,13 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                 y: getNodePositionY(node.data.level + 1),
               },
               type: "solverNode",
-            };
-
-            addNode(solverNode);
+            });
 
             addEdge({
-              id: node.id + solverEdgeIdentifier + solverNode.id,
+              id: node.id + solverEdgeIdentifier + solverId,
               type: "step",
               source: node.id,
-              target: solverNode.id,
+              target: solverId,
             });
           }
         });
@@ -428,10 +423,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
       function removeSolverNodes(node: Node<ProblemNodeData>) {
         setNodes((previousNodes) =>
-          previousNodes.filter((n) => {
-            let x = n.id.startsWith(node.id + solverNodeIdentifier);
-            return !x;
-          })
+          previousNodes.filter(
+            (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
+          )
         );
         setEdges((edges) =>
           edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
@@ -440,13 +434,13 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
       function updateNodeData(
         nodeId: string,
-        updatedNode: Node<ProblemNodeData>
+        updateNode: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>
       ) {
         setNodes((previousNodes) =>
           previousNodes.map((node) => {
             if (node.id !== nodeId) return node;
 
-            return updatedNode;
+            return updateNode(node);
           })
         );
       }
