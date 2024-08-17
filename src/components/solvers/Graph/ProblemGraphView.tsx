@@ -518,21 +518,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     setNodes,
   ]);
 
-  // Update graph every second
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     let rootNode = nodes.find((node) => node.id == props.problemId);
-  //     if (rootNode === undefined) {
-  //       return;
-  //     }
-  //     console.log("update node after one second");
-  //
-  //     updateNode(rootNode);
-  //   }, 1000);
-  //
-  //   return () => clearInterval(interval);
-  // }, [nodes, props.problemId, updateNode]);
-
   // Fit view when nodes change
   // useEffect(() => {
   //   graphInstance?.fitView({
