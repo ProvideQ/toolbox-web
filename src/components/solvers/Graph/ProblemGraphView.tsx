@@ -139,6 +139,7 @@ const GraphUpdateContext = createContext<GraphUpdateProps>({
 export const useGraphUpdates = () => useContext(GraphUpdateContext);
 
 export const ProblemGraphView = (props: ProblemGraphViewProps) => {
+  const [nodeIds, setNodeIds] = useState<string[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<ProblemEdgeData>([]);
   const [graphInstance, setGraphInstance] = useState<
@@ -519,13 +520,23 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     setNodes,
   ]);
 
+  // Update node ids when nodes change
+  useEffect(() => {
+    let ids = nodes.sort((a, b) => a.id.localeCompare(b.id)).map((n) => n.id);
+    if (ids.join(",") !== nodeIds.join(",")) {
+      setNodeIds(ids);
+    }
+  }, [graphInstance, nodeIds, nodes]);
+
   // Fit view when nodes change
-  // useEffect(() => {
-  //   graphInstance?.fitView({
-  //     duration: 500,
-  //     nodes: nodes,
-  //   });
-  // }, [graphInstance, nodes]);
+  useEffect(() => {
+    graphInstance?.fitView({
+      duration: 500,
+      nodes: nodeIds.map((id) => ({
+        id: id,
+      })),
+    });
+  }, [graphInstance, nodeIds]);
 
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
