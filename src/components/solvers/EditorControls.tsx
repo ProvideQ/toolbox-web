@@ -5,7 +5,7 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { TbDownload, TbHelp, TbUpload } from "react-icons/tb";
+import { TbDownload, TbHelp, TbTrash, TbUpload } from "react-icons/tb";
 import { baseUrl } from "../../api/ToolboxAPI";
 import { chooseFile } from "./FileInput";
 
@@ -91,6 +91,13 @@ export const EditorControls = (props: EditorControlsProps) => {
             aria-label="Upload"
             icon={<TbUpload />}
             onClick={() => upload(props.setEditorContent)}
+          />
+        </Tooltip>
+        <Tooltip label="Reset the problem">
+          <IconButton
+            aria-label="Reset"
+            icon={<TbTrash />}
+            onClick={() => props.setEditorContent("")}
           />
         </Tooltip>
         <Tooltip label="Open the documentation">
