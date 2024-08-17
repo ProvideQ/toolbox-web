@@ -29,7 +29,8 @@ const QUBO: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        onTextChanged={setQuboTerm}
+        text={quboTerm}
+        setText={setQuboTerm}
         textPlaceholder={"Enter your QUBO problem in LP format"}
       />
       <Divider />

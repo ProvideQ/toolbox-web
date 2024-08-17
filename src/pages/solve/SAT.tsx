@@ -36,7 +36,7 @@ const SAT: NextPage = () => {
       <EditorControls
         idleText={'Try "a and (not a or not b)" 👇'}
         errorText={errorString}
-        onUpload={setLogicalExpressionString}
+        setEditorContent={setLogicalExpressionString}
         editorContent={logicalExpressionString}
         documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/sat`}
       />

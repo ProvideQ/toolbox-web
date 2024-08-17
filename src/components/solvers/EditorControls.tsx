@@ -25,9 +25,9 @@ export interface EditorControlsProps {
    */
   editorContent: string;
   /**
-   * Contents of uploaded problem files will be sent to this handler.
+   * Function to set the contents of the editor that these controls relate to.
    */
-  onUpload: (uploadContent: string) => void;
+  setEditorContent: (newContent: string) => void;
 
   /**
    * Link to the documentation for the problem type that is being edited.
@@ -90,7 +90,7 @@ export const EditorControls = (props: EditorControlsProps) => {
           <IconButton
             aria-label="Upload"
             icon={<TbUpload />}
-            onClick={() => upload(props.onUpload)}
+            onClick={() => upload(props.setEditorContent)}
           />
         </Tooltip>
         <Tooltip label="Open the documentation">

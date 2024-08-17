@@ -6,18 +6,17 @@ import { EditorControls } from "./EditorControls";
 
 export interface TextInputMaskProperties {
   textPlaceholder: string;
-  onTextChanged: (text: string) => void;
+  text: string;
+  setText: (text: string) => void;
   body?: ReactElement;
 }
 
 export const TextInputMask = (props: TextInputMaskProperties) => {
-  const [text, setText] = useState<string>("");
   const [errorString, setErrorString] = useState("");
 
-  function onTextChanged(text: string): void {
+  function onTextChanged(newText: string): void {
     try {
-      setText(text);
-      props.onTextChanged(text);
+      props.setText(newText);
 
       setErrorString("");
     } catch (e: any) {
@@ -37,20 +36,20 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
       <EditorControls
         errorText={errorString}
         idleText={props.textPlaceholder + " 👇"}
-        onUpload={onTextChanged}
-        editorContent={text}
+        setEditorContent={onTextChanged}
+        editorContent={props.text}
       />
       <Textarea
         placeholder={props.textPlaceholder}
-        value={text}
+        value={props.text}
         minHeight="10rem"
         isInvalid={errorString != ""}
         onChange={(x) => onTextChanged(x.target.value)}
       />
 
-      <Divider />
-
       {props.body}
+
+      <Divider />
     </Container>
   );
 };

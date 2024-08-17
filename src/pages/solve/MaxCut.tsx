@@ -40,7 +40,8 @@ const MaxCut: NextPage = () => {
 
       <TextInputMask
         textPlaceholder="Enter your graph in GML format"
-        onTextChanged={setGraphString}
+        text={graphString}
+        setText={setGraphString}
         body={
           <Accordion width="100%" allowMultiple>
             <AccordionItem>

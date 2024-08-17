@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  Heading,
-  ListItem,
-  Text,
-  UnorderedList,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { MultiSelect, Option } from "react-multi-select-component";
@@ -51,20 +43,17 @@ const FeatureModelAnomaly: NextPage = () => {
 
       <TextInputMask
         textPlaceholder="Enter your feature model in UVL format"
-        onTextChanged={setUvl}
+        text={uvl}
+        setText={setUvl}
         body={
-          <VStack>
-            <Box width="300px">
-              <MultiSelect
-                options={anomalies}
-                value={selectedAnomalies}
-                onChange={setSelectedAnomalies}
-                labelledBy="Select anomalies"
-              />
-            </Box>
-
-            <Divider />
-          </VStack>
+          <Box width="300px">
+            <MultiSelect
+              options={anomalies}
+              value={selectedAnomalies}
+              onChange={setSelectedAnomalies}
+              labelledBy="Select anomalies"
+            />
+          </Box>
         }
       />
     </Layout>
