@@ -4,7 +4,6 @@ import Head from "next/head";
 import { baseUrl } from "../api/ToolboxAPI";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";
-import { TestGraphDisplay } from "../components/solvers/Graph/TestGraphDisplay";
 
 const Home: NextPage = () => {
   return (
@@ -15,7 +14,6 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
         {/* TODO: replace favicon */}
       </Head>
-      <TestGraphDisplay />
       <Text color="text" align="justify" as="b">
         Welcome to the ProvideQ Toolbox!
       </Text>
