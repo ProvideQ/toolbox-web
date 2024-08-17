@@ -1,3 +1,4 @@
+import { VStack } from "@chakra-ui/react";
 import type { XYPosition } from "@reactflow/core/dist/esm/types";
 import {
   createContext,
@@ -21,6 +22,7 @@ import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
 import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
+import { SolutionView } from "../SolutionView";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
 import { SolverNode, SolverNodeData } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
@@ -541,24 +543,30 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
-      <div
-        style={{
-          width: "50vw",
-          height: "50vh",
-        }}
-      >
-        <ReactFlow
-          onInit={(reactFlowInstance) => setGraphInstance(reactFlowInstance)}
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          nodeTypes={nodeTypes}
-          fitView
+      <VStack>
+        <div
+          style={{
+            width: "50vw",
+            height: "50vh",
+          }}
         >
-          <Controls />
-        </ReactFlow>
-      </div>
+          <ReactFlow
+            onInit={(reactFlowInstance) => setGraphInstance(reactFlowInstance)}
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            nodeTypes={nodeTypes}
+            fitView
+          >
+            <Controls />
+          </ReactFlow>
+        </div>
+        {nodes.length > 0 &&
+          nodes[0].data.problemDtos[0].state === ProblemState.SOLVED && (
+            <SolutionView solution={nodes[0].data.problemDtos[0].solution} />
+          )}
+      </VStack>
     </GraphUpdateContext.Provider>
   );
 };
