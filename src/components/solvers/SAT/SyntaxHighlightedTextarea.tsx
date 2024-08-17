@@ -1,27 +1,50 @@
 import { Box } from "@chakra-ui/react";
 import { Grammar, highlight } from "prismjs";
 import "prismjs/themes/prism-solarizedlight.css"; //TODO: use custom styling
-import React from "react";
 import Editor from "react-simple-code-editor";
 
-interface TextAreaProps {
-  problemString: string;
-  setProblemString: React.Dispatch<React.SetStateAction<string>>;
+interface SyntaxHighlightedTextareaProps {
+  text: string;
+  setText: (value: string) => void;
+  placeholder?: string;
+  isInvalid?: boolean;
+  grammar?: GrammarSettings;
+}
+
+export interface GrammarSettings {
   grammar: Grammar;
   language: string;
 }
 
-export const SyntaxHighlightedTextarea = (props: TextAreaProps) => {
+export const SyntaxHighlightedTextarea = (
+  props: SyntaxHighlightedTextareaProps
+) => {
   return (
-    <Box border="1px" borderColor="#AAAAAA" borderRadius="10px">
+    <Box
+      border="2px"
+      borderColor={props.isInvalid ? "tomato" : "#AAAAAA"}
+      borderRadius="10px"
+      width="100%"
+      maxHeight="50rem"
+      overflowX="hidden"
+    >
       <Editor
-        value={props.problemString}
-        onValueChange={(code) => props.setProblemString(code)}
-        highlight={(code) => highlight(code, props.grammar, props.language)}
+        value={props.text}
+        onValueChange={(code) => props.setText(code)}
+        highlight={(code) => {
+          if (props.grammar) {
+            return highlight(
+              code,
+              props.grammar.grammar,
+              props.grammar.language
+            );
+          }
+          return code;
+        }}
         padding={10}
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 24,
+          fontSize: 16,
         }}
       />
     </Box>

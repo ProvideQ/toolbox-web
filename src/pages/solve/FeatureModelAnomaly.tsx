@@ -43,6 +43,7 @@ const FeatureModelAnomaly: NextPage = () => {
       </UnorderedList>
 
       <TextInputMask
+        problemTypeId=""
         textPlaceholder="Enter your feature model in UVL format"
         text={uvl}
         setText={setUvl}

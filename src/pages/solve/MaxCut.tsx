@@ -40,6 +40,7 @@ const MaxCut: NextPage = () => {
       <Spacer />
 
       <TextInputMask
+        problemTypeId="max-cut"
         textPlaceholder="Enter your graph in GML format"
         text={graphString}
         setText={setGraphString}

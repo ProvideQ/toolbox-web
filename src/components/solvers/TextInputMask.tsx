@@ -1,13 +1,21 @@
-import { Divider, Textarea } from "@chakra-ui/react";
+import { Divider } from "@chakra-ui/react";
 import Head from "next/head";
 import { ReactElement, useState } from "react";
+import { baseUrl } from "../../api/ToolboxAPI";
 import { Container } from "../Container";
 import { EditorControls } from "./EditorControls";
+import {
+  GrammarSettings,
+  SyntaxHighlightedTextarea,
+} from "./SAT/SyntaxHighlightedTextarea";
 
 export interface TextInputMaskProperties {
+  problemTypeId: string;
   textPlaceholder: string;
   text: string;
   setText: (text: string) => void;
+  validate?: (text: string) => string[] | null;
+  grammar?: GrammarSettings;
   body?: ReactElement;
 }
 
@@ -18,7 +26,12 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
     try {
       props.setText(newText);
 
-      setErrorString("");
+      let errors = props.validate?.(newText);
+      if (errors) {
+        setErrorString(errors.toString());
+      } else {
+        setErrorString("");
+      }
     } catch (e: any) {
       setErrorString(e.message);
     }
@@ -38,13 +51,17 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
         idleText={props.textPlaceholder + " 👇"}
         setEditorContent={onTextChanged}
         editorContent={props.text}
+        documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/${
+          props.problemTypeId
+        }`}
       />
-      <Textarea
+
+      <SyntaxHighlightedTextarea
+        text={props.text}
+        setText={onTextChanged}
         placeholder={props.textPlaceholder}
-        value={props.text}
-        minHeight="10rem"
         isInvalid={errorString != ""}
-        onChange={(x) => onTextChanged(x.target.value)}
+        grammar={props.grammar}
       />
 
       {props.body}

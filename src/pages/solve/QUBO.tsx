@@ -30,6 +30,7 @@ const QUBO: NextPage = () => {
       <Spacer />
 
       <TextInputMask
+        problemTypeId="qubo"
         text={quboTerm}
         setText={setQuboTerm}
         textPlaceholder={"Enter your QUBO problem in LP format"}

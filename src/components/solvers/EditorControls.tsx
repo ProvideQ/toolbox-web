@@ -80,7 +80,7 @@ export const EditorControls = (props: EditorControlsProps) => {
   return (
     <HStack justifyContent={"space-between"} width="100%">
       {props.errorText ? (
-        <Text backgroundColor="tomato">{props.errorText}</Text>
+        <Text textColor="tomato">{props.errorText}</Text>
       ) : (
         <Text as="i">{props.idleText}</Text>
       )}
