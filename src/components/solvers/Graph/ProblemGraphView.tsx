@@ -229,7 +229,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         });
       }
     },
-    [nodes]
+    [nodes, scheduleNodeUpdate]
   );
 
   const updateNode = useCallback(
@@ -474,6 +474,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       scheduleNodeUpdate,
       setEdges,
       setNodes,
+      updateProblem,
     ]
   );
 
