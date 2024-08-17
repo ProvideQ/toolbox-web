@@ -1,7 +1,10 @@
 import {
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Center,
   Code,
-  Divider,
   Heading,
   Link,
   Spacer,
@@ -9,7 +12,6 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import { Container } from "../../components/Container";
 import { Layout } from "../../components/layout/Layout";
 import { GMLGraphView } from "../../components/solvers/Graph/GMLGraphView";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
@@ -40,13 +42,18 @@ const MaxCut: NextPage = () => {
         textPlaceholder="Enter your graph in GML format"
         onTextChanged={setGraphString}
         body={
-          <Container>
-            <Center>
-              <GMLGraphView gml={graphString} />
-            </Center>
-
-            <Divider />
-          </Container>
+          <Accordion width="100%" allowMultiple>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>Preview</AccordionButton>
+              </h2>
+              <AccordionPanel>
+                <Center>
+                  <GMLGraphView gml={graphString} />
+                </Center>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
         }
       />
     </Layout>
