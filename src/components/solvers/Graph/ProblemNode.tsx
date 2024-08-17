@@ -15,7 +15,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Property } from "csstype";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsDatabaseFillGear } from "react-icons/bs";
 import {
   FaChevronCircleDown,
@@ -144,6 +144,11 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const [nodeState, setNodeState] = useState<ProblemState>(
     getState(props.data.problemDtos)
   );
+
+  // Update node state when problems change
+  useEffect(() => {
+    setNodeState(getState(props.data.problemDtos));
+  }, [props.data.problemDtos]);
 
   const { topHandle, bottomHandle } = getNodeType(props.data);
   const nodeColor = getStatusColor(props.data.problemDtos);
