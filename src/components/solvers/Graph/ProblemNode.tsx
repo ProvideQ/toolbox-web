@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Divider,
   HStack,
   Modal,
@@ -9,15 +8,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
   Spinner,
   Text,
   Tooltip,
@@ -33,7 +23,7 @@ import {
   FaQuestion,
   FaQuestionCircle,
 } from "react-icons/fa";
-import { FaGears, FaXmark } from "react-icons/fa6";
+import { FaXmark } from "react-icons/fa6";
 import { GrInProgress } from "react-icons/gr";
 import { ImCheckmark } from "react-icons/im";
 import { MdError } from "react-icons/md";
@@ -48,6 +38,7 @@ import { patchProblem } from "../../../api/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
+import { SolverNodeContent } from "./SolverNodeContent";
 import { useSolvers } from "./SolverProvider";
 import Color = Property.Color;
 
@@ -168,7 +159,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   // Fetch solvers for type if necessary
   getSolvers(typeId);
 
-  const extended = solverId !== undefined;
+  const extended = solverId && solverName;
   const multiProblem = props.data.problemDtos.length > 1;
 
   function disconnect() {
@@ -326,118 +317,52 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           position="relative"
           marginTop="-10px"
         >
-          <HStack align="start" maxW="10rem" justifyContent="space-between">
-            <Tooltip hasArrow label="Solver" placement="bottom">
-              <div>
-                <FaGears size="2rem" />
-              </div>
-            </Tooltip>
-            <Text fontWeight="semibold">{solverName}</Text>
+          <SolverNodeContent
+            problemTypeId={typeId}
+            solver={{
+              id: solverId,
+              name: solverName,
+            }}
+            button={
+              nodeState === ProblemState.READY_TO_SOLVE
+                ? // Ready to solve
+                  {
+                    label: "Solve",
+                    callback: () => {
+                      // Set state to solving manually so the ui updates instantly
+                      setNodeState(ProblemState.SOLVING);
 
-            <Popover>
-              <PopoverTrigger>
-                <div>
-                  <FaQuestionCircle size="1rem" />
-                </div>
-              </PopoverTrigger>
-              <Portal>
-                <PopoverContent>
-                  <PopoverArrow />
-                  <PopoverCloseButton />
-                  <PopoverHeader>
-                    <Text fontWeight="semibold">{solverName}</Text>
-                  </PopoverHeader>
-                  <PopoverBody>
-                    <Text>Solves {typeId}</Text>
-                    Additional Info:
-                    <Button colorScheme="blue">10x Quantum Speedup</Button>
-                  </PopoverBody>
-                  <PopoverFooter>
-                    <Text fontSize="xs">{solverId}</Text>
-                  </PopoverFooter>
-                </PopoverContent>
-              </Portal>
-            </Popover>
-          </HStack>
-
-          {/*Solve Button*/}
-          {nodeState === ProblemState.READY_TO_SOLVE && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "0.5rem",
-              }}
-            >
-              <Button
-                bg="kitGreen"
-                width="100%"
-                height="25px"
-                textColor="white"
-                fontWeight="bold"
-                fontSize="small"
-                _hover={{
-                  bg: "kitGreenAlpha",
-                }}
-                border="1px"
-                borderColor="black"
-                borderRadius="0.25rem"
-                paddingY="1px"
-                onClick={() => {
-                  // Set state to solving manually so the ui updates instantly
-                  setNodeState(ProblemState.SOLVING);
-
-                  for (let problemDto of props.data.problemDtos) {
-                    patchProblem(problemDto.typeId, problemDto.id, {
-                      state: ProblemState.SOLVING,
-                    }).then((dto) => {
-                      updateProblem(dto.id);
-                    });
-                    updateProblem(problemDto.id);
+                      for (let problemDto of props.data.problemDtos) {
+                        patchProblem(problemDto.typeId, problemDto.id, {
+                          state: ProblemState.SOLVING,
+                        }).then((dto) => {
+                          updateProblem(dto.id);
+                        });
+                        updateProblem(problemDto.id);
+                      }
+                    },
                   }
-                }}
-              >
-                Solve
-              </Button>
-            </div>
-          )}
-
-          {/*Solving*/}
-          {nodeState === ProblemState.SOLVING && (
-            <HStack
-              border="1px"
-              borderColor="black"
-              borderRadius="0.25rem"
-              background="kitGreenAlpha"
-              className="hover:#AAAAAAAA"
-              textColor="white"
-              align="center"
-              justifyContent="center"
-            >
-              <Text fontWeight="bold" fontSize="small" paddingY="1px">
-                Solving
-              </Text>
-              <Spinner speed="1s" width="10px" height="10px" thickness="1px" />
-            </HStack>
-          )}
-
-          {/*Solved*/}
-          {nodeState === ProblemState.SOLVED && (
-            <Text
-              background="kitGreenAlpha"
-              textColor="white"
-              fontWeight="bold"
-              fontSize="small"
-              align="center"
-              className="hover:#AAAAAAAA"
-              border="1px"
-              borderColor="black"
-              borderRadius="0.25rem"
-              paddingY="1px"
-            >
-              Solved
-            </Text>
-          )}
+                : nodeState === ProblemState.SOLVING
+                ? // Solving
+                  {
+                    label: (
+                      <HStack gap="1rem">
+                        <Text fontWeight="bold" fontSize="small" paddingY="1px">
+                          Solving
+                        </Text>
+                        <Spinner
+                          speed="1s"
+                          width="10px"
+                          height="10px"
+                          thickness="1px"
+                        />
+                      </HStack>
+                    ),
+                  }
+                : // Solved
+                  { label: "Solved" }
+            }
+          />
         </Box>
       )}
     </VStack>

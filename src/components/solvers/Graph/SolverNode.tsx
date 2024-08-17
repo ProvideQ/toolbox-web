@@ -1,24 +1,7 @@
-import {
-  Box,
-  Button,
-  HStack,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
-  Text,
-  Tooltip,
-  VStack,
-} from "@chakra-ui/react";
-import { FaQuestionCircle } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
+import { Box, VStack } from "@chakra-ui/react";
 import { Handle, NodeProps, Position } from "reactflow";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
+import { SolverNodeContent } from "./SolverNodeContent";
 
 export interface SolverNodeData {
   problemTypeId: string;
@@ -60,72 +43,16 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
     >
       <Handle type="target" position={Position.Top} />
       <VStack gap="0px">
-        <HStack align="start" maxW="10rem">
-          <Tooltip hasArrow label="Solver" placement="bottom">
-            <div>
-              <FaGears size="2rem" />
-            </div>
-          </Tooltip>
-          <Text padding=".5rem" fontWeight="semibold">
-            {props.data.problemSolver.name}
-          </Text>
-
-          <Popover>
-            <PopoverTrigger>
-              <div>
-                <FaQuestionCircle size="1rem" />
-              </div>
-            </PopoverTrigger>
-            <Portal>
-              <PopoverContent>
-                <PopoverArrow />
-                <PopoverCloseButton />
-                <PopoverHeader>
-                  <Text fontWeight="semibold">
-                    {props.data.problemSolver.name}
-                  </Text>
-                </PopoverHeader>
-                <PopoverBody>
-                  <Text>Solves {props.data.problemTypeId}</Text>
-                  Additional Info:
-                  <Button colorScheme="blue">10x Quantum Speedup</Button>
-                </PopoverBody>
-                <PopoverFooter>
-                  <Text fontSize="xs">{props.data.problemSolver.id}</Text>
-                </PopoverFooter>
-              </PopoverContent>
-            </Portal>
-          </Popover>
-        </HStack>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "0.5rem",
-          }}
-        >
-          <Button
-            bg="kitGreen"
-            height="25px"
-            textColor="white"
-            fontWeight="bold"
-            fontSize="small"
-            _hover={{
-              bg: "kitGreenAlpha",
-            }}
-            border="1px"
-            borderColor="black"
-            borderRadius="0.25rem"
-            paddingX="3rem"
-            paddingY="1px"
-            onClick={() => {
+        <SolverNodeContent
+          problemTypeId={props.data.problemTypeId}
+          solver={props.data.problemSolver}
+          button={{
+            label: "Select",
+            callback: () => {
               props.data.selectCallback(props.data.problemSolver);
-            }}
-          >
-            Select
-          </Button>
-        </div>
+            },
+          }}
+        />
       </VStack>
     </Box>
   );
