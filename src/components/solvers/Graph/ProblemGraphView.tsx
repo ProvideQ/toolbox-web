@@ -19,6 +19,7 @@ import {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
+import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
 import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
@@ -354,7 +355,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               data: {
                 problemTypeId: node.data.problemDtos[0].typeId,
                 problemSolver: solvers[i],
-                selectCallback: (problemSolver) => {
+                selectCallback: (problemSolver: ProblemSolverInfo) => {
                   let edge = edges.find((e) =>
                     e.target.startsWith(node.id + solverEdgeIdentifier)
                   );
