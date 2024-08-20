@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { Grammar, highlight } from "prismjs";
-import "prismjs/themes/prism-solarizedlight.css"; //TODO: use custom styling
+import "prismjs/themes/prism-solarizedlight.css";
 import Editor from "react-simple-code-editor";
 
 interface SyntaxHighlightedTextareaProps {
@@ -29,6 +29,7 @@ export const SyntaxHighlightedTextarea = (
       overflowX="hidden"
     >
       <Editor
+        placeholder={props.placeholder}
         value={props.text}
         onValueChange={(code) => props.setText(code)}
         highlight={(code) => {
