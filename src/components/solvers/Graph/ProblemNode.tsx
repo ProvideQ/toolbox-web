@@ -151,6 +151,42 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
     }
   }
 
+  function problemButton() {
+    switch (nodeState) {
+      case ProblemState.READY_TO_SOLVE:
+      case ProblemState.NEEDS_CONFIGURATION:
+        return {
+          label: "Solve",
+          callback: () => {
+            // Set state to solving manually so the ui updates instantly
+            setNodeState(ProblemState.SOLVING);
+
+            for (let problemDto of props.data.problemDtos) {
+              patchProblem(problemDto.typeId, problemDto.id, {
+                state: ProblemState.SOLVING,
+              }).then((dto) => {
+                updateProblem(dto.id);
+              });
+              updateProblem(problemDto.id);
+            }
+          },
+        };
+      case ProblemState.SOLVING:
+        return {
+          label: (
+            <HStack gap="1rem">
+              <Text fontWeight="bold" fontSize="small" paddingY="1px">
+                Solving
+              </Text>
+              <Spinner speed="1s" width="10px" height="10px" thickness="1px" />
+            </HStack>
+          ),
+        };
+      case ProblemState.SOLVED:
+        return { label: "Solved" };
+    }
+  }
+
   return (
     <VStack
       width="10rem"
@@ -177,9 +213,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         zIndex="2"
       >
         {["translate(calc(-50% + 50px))", "translate(calc(-50% + -50px))"].map(
-          (transform, index) => (
+          (transform) => (
             <div
-              key={index}
+              key={transform}
               style={{
                 position: "absolute",
                 left: "50%",
@@ -302,45 +338,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               id: solverId,
               name: solverName,
             }}
-            button={
-              nodeState === ProblemState.READY_TO_SOLVE
-                ? // Ready to solve
-                  {
-                    label: "Solve",
-                    callback: () => {
-                      // Set state to solving manually so the ui updates instantly
-                      setNodeState(ProblemState.SOLVING);
-
-                      for (let problemDto of props.data.problemDtos) {
-                        patchProblem(problemDto.typeId, problemDto.id, {
-                          state: ProblemState.SOLVING,
-                        }).then((dto) => {
-                          updateProblem(dto.id);
-                        });
-                        updateProblem(problemDto.id);
-                      }
-                    },
-                  }
-                : nodeState === ProblemState.SOLVING
-                ? // Solving
-                  {
-                    label: (
-                      <HStack gap="1rem">
-                        <Text fontWeight="bold" fontSize="small" paddingY="1px">
-                          Solving
-                        </Text>
-                        <Spinner
-                          speed="1s"
-                          width="10px"
-                          height="10px"
-                          thickness="1px"
-                        />
-                      </HStack>
-                    ),
-                  }
-                : // Solved
-                  { label: "Solved" }
-            }
+            button={problemButton()}
           />
         </Box>
       )}

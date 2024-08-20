@@ -204,6 +204,145 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     [addNode]
   );
 
+  const updateEdge = useCallback(
+    (edge: Edge<ProblemEdgeData>) => {
+      setEdges((edges) =>
+        edges.map((e) => {
+          if (e.id !== edge.id) return e;
+
+          return {
+            ...e,
+            animated:
+              edge.data?.sourceProblemDto.state === ProblemState.SOLVING,
+          };
+        })
+      );
+    },
+    [setEdges]
+  );
+
+  const createSolverNodes = useCallback(
+    (node: Node<ProblemNodeData>) => {
+      getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
+        for (let i = 0; i < solvers.length; i++) {
+          let solverId =
+            node.id + solverNodeIdentifier + solvers[i].id.toString();
+
+          addNode({
+            id: solverId,
+            data: {
+              problemTypeId: node.data.problemDtos[0].typeId,
+              problemSolver: solvers[i],
+              selectCallback: (problemSolver: ProblemSolverInfo) => {
+                let edge = edges.find((e) =>
+                  e.target.startsWith(node.id + solverEdgeIdentifier)
+                );
+                if (edge) {
+                  updateEdge(edge);
+                }
+
+                Promise.all(
+                  node.data.problemDtos.map((problemDto) =>
+                    patchProblem(problemDto.typeId, problemDto.id, {
+                      solverId: problemSolver.id,
+                    })
+                  )
+                ).then((dtos) => {
+                  setNodes((previousNodes) =>
+                    previousNodes.map((n) => {
+                      if (n.id !== node.id) return n;
+
+                      let updatedNode: Node<ProblemNodeData> = {
+                        ...n,
+                        data: {
+                          ...n.data,
+                          problemDtos: dtos,
+                        },
+                      };
+                      scheduleNodeUpdate(updatedNode);
+
+                      return updatedNode;
+                    })
+                  );
+                });
+              },
+            },
+            position: {
+              x:
+                node.position.x +
+                getNodePositionX({ index: i, count: solvers.length }),
+              y: getNodePositionY(node.data.level + 1),
+            },
+            type: "solverNode",
+          });
+
+          addEdge({
+            id: node.id + solverEdgeIdentifier + solverId,
+            type: "step",
+            source: node.id,
+            target: solverId,
+          });
+        }
+      });
+    },
+    [
+      addEdge,
+      addNode,
+      edges,
+      getSolvers,
+      scheduleNodeUpdate,
+      setNodes,
+      updateEdge,
+    ]
+  );
+
+  const updateSolverNodes = useCallback(
+    (node: Node<ProblemNodeData>) => {
+      // Load solver nodes when user action is required
+      if (node.data.problemDtos[0].solverId === undefined) {
+        const existingSolverNode = nodes.find((n) =>
+          n.id.startsWith(node.id + solverNodeIdentifier)
+        );
+        if (existingSolverNode === undefined) {
+          createSolverNodes(node);
+        }
+      } else {
+        removeSolverNodes(node);
+      }
+    },
+    [createSolverNodes, nodes]
+  );
+
+  const removeSolverNodes = useCallback(
+    (node: Node<ProblemNodeData>) => {
+      setNodes((previousNodes) =>
+        previousNodes.filter(
+          (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
+        )
+      );
+      setEdges((edges) =>
+        edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
+      );
+    },
+    [setEdges, setNodes]
+  );
+
+  const updateNodeData = useCallback(
+    (
+      nodeId: string,
+      updateNode: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>
+    ) => {
+      setNodes((previousNodes) =>
+        previousNodes.map((node) => {
+          if (node.id !== nodeId) return node;
+
+          return updateNode(node);
+        })
+      );
+    },
+    [setNodes]
+  );
+
   const updateProblem = useCallback(
     (problemId: string) => {
       const node = nodes.find((n) => {
@@ -245,9 +384,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       const subProblems = node.data.problemDtos[0].subProblems;
 
       // Update sub-problem nodes
-      for (let i = 0; i < subProblems.length; i++) {
-        const subProblem = subProblems[i];
-
+      for (let subProblem of subProblems) {
         Promise.all(
           subProblem.subProblemIds.map((subProblemId) =>
             fetchProblem(subProblem.subRoutine.typeId, subProblemId)
@@ -343,134 +480,20 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           }
         });
       }
-
-      function createSolverNodes(node: Node<ProblemNodeData>) {
-        getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
-          for (let i = 0; i < solvers.length; i++) {
-            let solverId =
-              node.id + solverNodeIdentifier + solvers[i].id.toString();
-
-            addNode({
-              id: solverId,
-              data: {
-                problemTypeId: node.data.problemDtos[0].typeId,
-                problemSolver: solvers[i],
-                selectCallback: (problemSolver: ProblemSolverInfo) => {
-                  let edge = edges.find((e) =>
-                    e.target.startsWith(node.id + solverEdgeIdentifier)
-                  );
-                  if (edge) {
-                    updateEdge(edge);
-                  }
-
-                  Promise.all(
-                    node.data.problemDtos.map((problemDto) =>
-                      patchProblem(problemDto.typeId, problemDto.id, {
-                        solverId: problemSolver.id,
-                      })
-                    )
-                  ).then((dtos) => {
-                    setNodes((previousNodes) =>
-                      previousNodes.map((n) => {
-                        if (n.id !== node.id) return n;
-
-                        let updatedNode: Node<ProblemNodeData> = {
-                          ...n,
-                          data: {
-                            ...n.data,
-                            problemDtos: dtos,
-                          },
-                        };
-                        scheduleNodeUpdate(updatedNode);
-
-                        return updatedNode;
-                      })
-                    );
-                  });
-                },
-              },
-              position: {
-                x:
-                  node.position.x +
-                  getNodePositionX({ index: i, count: solvers.length }),
-                y: getNodePositionY(node.data.level + 1),
-              },
-              type: "solverNode",
-            });
-
-            addEdge({
-              id: node.id + solverEdgeIdentifier + solverId,
-              type: "step",
-              source: node.id,
-              target: solverId,
-            });
-          }
-        });
-      }
-
-      function updateSolverNodes(node: Node<ProblemNodeData>) {
-        // Load solver nodes when user action is required
-        if (node.data.problemDtos[0].solverId === undefined) {
-          const existingSolverNode = nodes.find((n) =>
-            n.id.startsWith(node.id + solverNodeIdentifier)
-          );
-          if (existingSolverNode === undefined) {
-            createSolverNodes(node);
-          }
-        } else {
-          removeSolverNodes(node);
-        }
-      }
-
-      function removeSolverNodes(node: Node<ProblemNodeData>) {
-        setNodes((previousNodes) =>
-          previousNodes.filter(
-            (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
-          )
-        );
-        setEdges((edges) =>
-          edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
-        );
-      }
-
-      function updateNodeData(
-        nodeId: string,
-        updateNode: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>
-      ) {
-        setNodes((previousNodes) =>
-          previousNodes.map((node) => {
-            if (node.id !== nodeId) return node;
-
-            return updateNode(node);
-          })
-        );
-      }
-
-      function updateEdge(edge: Edge<ProblemEdgeData>) {
-        setEdges((edges) =>
-          edges.map((e) => {
-            if (e.id !== edge.id) return e;
-
-            return {
-              ...e,
-              animated:
-                edge.data?.sourceProblemDto.state === ProblemState.SOLVING,
-            };
-          })
-        );
-      }
     },
     [
       addEdge,
-      addNode,
       createProblemNode,
       edges,
-      getSolvers,
       nodes,
+      removeSolverNodes,
       scheduleNodeUpdate,
       setEdges,
       setNodes,
+      updateEdge,
+      updateNodeData,
       updateProblem,
+      updateSolverNodes,
     ]
   );
 

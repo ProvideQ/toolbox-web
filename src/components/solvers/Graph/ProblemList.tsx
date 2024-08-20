@@ -40,11 +40,10 @@ export const ProblemList = (props: {
     ProblemDto<any> | undefined
   >(undefined);
 
-  const { solvers, getSolvers } = useSolvers();
+  const { solvers } = useSolvers();
   const { updateProblem } = useGraphUpdates();
 
   const typeId = props.problemDtos[0].typeId;
-  const solverId = props.problemDtos[0].solverId;
 
   function getStatusIcon(problemDto: ProblemDto<any>): JSX.Element {
     switch (problemDto.state) {
@@ -188,6 +187,12 @@ export const ProblemList = (props: {
           </Select>
 
           <div
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setModalProblemDto(problemDto);
+                onOpen();
+              }
+            }}
             onClick={() => {
               setModalProblemDto(problemDto);
               onOpen();
