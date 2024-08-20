@@ -1,7 +1,7 @@
-import { Box, Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import { Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import { MultiSelect, Option } from "react-multi-select-component";
+import { Option } from "react-multi-select-component";
 import { Layout } from "../../components/layout/Layout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
@@ -19,8 +19,6 @@ const anomalies: Option[] = [
 
 const FeatureModelAnomaly: NextPage = () => {
   const [uvl, setUvl] = useState<string>("");
-  const [selectedAnomalies, setSelectedAnomalies] =
-    useState<Option[]>(anomalies);
 
   return (
     <Layout>
@@ -47,19 +45,9 @@ const FeatureModelAnomaly: NextPage = () => {
         textPlaceholder="Enter your feature model in UVL format"
         text={uvl}
         setText={setUvl}
-        body={
-          <Box width="300px">
-            <MultiSelect
-              options={anomalies}
-              value={selectedAnomalies}
-              onChange={setSelectedAnomalies}
-              labelledBy="Select anomalies"
-            />
-          </Box>
-        }
       />
 
-      {selectedAnomalies.map((option) => (
+      {anomalies.map((option) => (
         <SolverConfiguration
           key={option.value}
           problemTypeId={option.value}
