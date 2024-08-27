@@ -1,10 +1,11 @@
-import { VStack } from "@chakra-ui/react";
+import { Flex, VStack } from "@chakra-ui/react";
 import type { XYPosition } from "@reactflow/core/dist/esm/types";
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -146,6 +147,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   const [graphInstance, setGraphInstance] = useState<
     ReactFlowInstance | undefined
   >(undefined);
+  const solutionViewRef = useRef<HTMLDivElement>(null);
 
   const { getSolvers } = useSolvers();
 
@@ -561,6 +563,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     });
   }, [graphInstance, nodeIds]);
 
+  useEffect(() => {
+    if (solutionViewRef.current) {
+      solutionViewRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [nodes]);
+
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
       <VStack>
@@ -593,7 +601,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         {nodes.length > 0 &&
           nodes[0].data.problemDtos?.length > 0 &&
           nodes[0].data.problemDtos[0].state === ProblemState.SOLVED && (
-            <SolutionView solution={nodes[0].data.problemDtos[0].solution} />
+            <Flex width="full" ref={solutionViewRef}>
+              <SolutionView solution={nodes[0].data.problemDtos[0].solution} />
+            </Flex>
           )}
       </VStack>
     </GraphUpdateContext.Provider>
