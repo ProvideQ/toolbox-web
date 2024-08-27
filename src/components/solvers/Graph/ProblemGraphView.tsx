@@ -296,6 +296,20 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     ]
   );
 
+  const removeSolverNodes = useCallback(
+    (node: Node<ProblemNodeData>) => {
+      setNodes((previousNodes) =>
+        previousNodes.filter(
+          (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
+        )
+      );
+      setEdges((edges) =>
+        edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
+      );
+    },
+    [setEdges, setNodes]
+  );
+
   const updateSolverNodes = useCallback(
     (node: Node<ProblemNodeData>) => {
       // Load solver nodes when user action is required
@@ -310,21 +324,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         removeSolverNodes(node);
       }
     },
-    [createSolverNodes, nodes]
-  );
-
-  const removeSolverNodes = useCallback(
-    (node: Node<ProblemNodeData>) => {
-      setNodes((previousNodes) =>
-        previousNodes.filter(
-          (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
-        )
-      );
-      setEdges((edges) =>
-        edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
-      );
-    },
-    [setEdges, setNodes]
+    [createSolverNodes, nodes, removeSolverNodes]
   );
 
   const updateNodeData = useCallback(
