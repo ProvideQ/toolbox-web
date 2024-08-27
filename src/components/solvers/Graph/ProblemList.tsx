@@ -165,7 +165,7 @@ export const ProblemList = (props: {
             padding="0px"
             margin="0px"
             fontSize="2xs"
-            defaultValue={problemDto.solverId}
+            value={problemDto.solverId ?? ""}
             onChange={(e) => {
               patchProblem(problemDto.typeId, problemDto.id, {
                 solverId: e.target.value,
