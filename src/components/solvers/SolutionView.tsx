@@ -45,7 +45,7 @@ const OutputSection = (props: { title: string; content: any[] }) => (
 );
 
 export const SolutionView = (props: SolutionViewProps) => (
-  <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
+  <Accordion defaultIndex={[0]} width="100%" marginTop="2rem" allowMultiple>
     <OutputSection
       title={`Solution by ${props.solution.solverName}`}
       content={[props.solution.solutionData]}
