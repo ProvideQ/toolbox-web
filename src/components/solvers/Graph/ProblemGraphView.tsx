@@ -415,7 +415,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               ) &&
               problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
             ) {
-              updateProblem(node.id);
+              // Schedule update for parent node
+              setTimeout(() => updateProblem(node.id), 1000);
             }
 
             const problemNodeIdentifier: ProblemNodeIdentifier = {
