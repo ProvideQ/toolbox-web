@@ -378,7 +378,11 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       updateSolverNodes(node);
 
       // Update node data
-      updateNodeData(node.id, () => node);
+      updateNodeData(node.id, (n) => ({
+        ...n,
+        data: node.data,
+      }));
+      console.log(node.id, node.position.x, node.position.y);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       const subProblems = node.data.problemDtos[0].subProblems;
