@@ -167,8 +167,15 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               }).then((dto) => {
                 updateProblem(dto.id);
               });
-              updateProblem(problemDto.id);
             }
+
+            // Update the state again after a delay to attempt
+            // to ensure that the backend has updated the state
+            setTimeout(() => {
+              for (let problemDto of props.data.problemDtos) {
+                updateProblem(problemDto.id);
+              }
+            }, 500);
           },
         };
       case ProblemState.SOLVING:
