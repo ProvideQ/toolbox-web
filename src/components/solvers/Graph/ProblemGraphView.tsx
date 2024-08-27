@@ -571,6 +571,14 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           }}
         >
           <ReactFlow
+            zoomOnScroll={false}
+            onWheel={(e) => {
+              window.scrollBy({
+                behavior: "smooth",
+                top: e.deltaY,
+                left: e.deltaX,
+              });
+            }}
             onInit={(reactFlowInstance) => setGraphInstance(reactFlowInstance)}
             nodes={nodes}
             edges={edges}
