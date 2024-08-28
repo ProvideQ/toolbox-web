@@ -1,5 +1,5 @@
 import { Button, Flex, Tooltip } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getInvalidProblemDto } from "../../api/data-model/ProblemDto";
 import { postProblem } from "../../api/ToolboxAPI";
 import { ProblemGraphView } from "./Graph/ProblemGraphView";
@@ -13,6 +13,7 @@ interface SolverConfigurationProps {
 
 export const SolverConfiguration = (props: SolverConfigurationProps) => {
   const [problemId, setProblemId] = useState<string | null>(null);
+  const problemGraphViewRef = useRef<HTMLDivElement>(null);
 
   // Reset problemId when problemInput is empty
   useEffect(() => {
@@ -20,6 +21,12 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
       setProblemId(null);
     }
   }, [props.problemInput]);
+
+  useEffect(() => {
+    if (problemGraphViewRef.current) {
+      problemGraphViewRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [problemId]);
 
   return (
     <Flex alignSelf="center">
@@ -42,10 +49,12 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
         </Tooltip>
       ) : (
         <SolverProvider>
-          <ProblemGraphView
-            problemTypeId={props.problemTypeId}
-            problemId={problemId}
-          />
+          <div ref={problemGraphViewRef}>
+            <ProblemGraphView
+              problemTypeId={props.problemTypeId}
+              problemId={problemId}
+            />
+          </div>
         </SolverProvider>
       )}
     </Flex>
