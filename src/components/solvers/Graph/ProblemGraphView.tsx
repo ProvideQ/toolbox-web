@@ -567,7 +567,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     if (solutionViewRef.current) {
       solutionViewRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [nodes]);
+  }, [solutionViewRef.current]);
 
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
