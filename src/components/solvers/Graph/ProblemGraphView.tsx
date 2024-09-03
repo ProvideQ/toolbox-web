@@ -23,6 +23,7 @@ import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
+import { SubRoutineReferenceDto } from "../../../api/data-model/SubRoutineReferenceDto";
 import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
 import { SolutionView } from "../SolutionView";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
@@ -387,14 +388,44 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       console.log(node.id, node.position.x, node.position.y);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
-      const subProblems = node.data.problemDtos[0].subProblems;
+      node.data.problemDtos;
+      let subProblemsPerType: Map<
+        SubRoutineDefinitionDto,
+        SubRoutineReferenceDto[]
+      > = new Map<SubRoutineDefinitionDto, SubRoutineReferenceDto[]>();
+
+      // Collect specific sub problems of all subproblems by sub routine
+      node.data.problemDtos[0].subProblems.forEach((subRoutineReference, i) => {
+        for (let problemDto of node.data.problemDtos) {
+          const references = subProblemsPerType.get(
+            subRoutineReference.subRoutine
+          );
+          if (references) {
+            subProblemsPerType.set(
+              subRoutineReference.subRoutine,
+              references.concat(problemDto.subProblems)
+            );
+          } else {
+            subProblemsPerType.set(subRoutineReference.subRoutine, [
+              problemDto.subProblems[i],
+            ]);
+          }
+        }
+      });
 
       // Update sub-problem nodes
-      for (let subProblem of subProblems) {
+      for (let subProblems of Array.from(subProblemsPerType.values())) {
+        // This can use the first sub problem as the relevant parts
+        // (the definition and type of the sub-problem) will be the same for all
+        const subRoutineReference = subProblems[0].subRoutine;
+
+        // Fetch all sub problems to update the sub-problem nodes
         Promise.all(
-          subProblem.subProblemIds.map((subProblemId) =>
-            fetchProblem(subProblem.subRoutine.typeId, subProblemId)
-          )
+          subProblems
+            .flatMap((x) => x.subProblemIds)
+            .map((subProblemId) =>
+              fetchProblem(subRoutineReference.typeId, subProblemId)
+            )
         ).then((subProblemDtos) => {
           // Create sub problem nodes per used solver
           const problemsPerSolver = groupBySolver(subProblemDtos);
@@ -403,7 +434,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           let unusedChildNodes = getChildNodes(
             nodes,
             node,
-            subProblem.subRoutine.typeId
+            subRoutineReference.typeId
           );
 
           let entries = Array.from(problemsPerSolver.entries());
@@ -426,7 +457,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             }
 
             const problemNodeIdentifier: ProblemNodeIdentifier = {
-              subRoutineDefinitionDto: subProblem.subRoutine,
+              subRoutineDefinitionDto: subRoutineReference,
               solverId: solverId,
             };
 
