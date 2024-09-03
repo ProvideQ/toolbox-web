@@ -12,7 +12,9 @@ import {
 import { ReactNode } from "react";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
+import { SettingsView } from "../settings/SettingsView";
 import { SolutionView } from "../SolutionView";
+import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
 
 function getHumanReadableState(state: ProblemState) {
@@ -46,9 +48,14 @@ function getAccordionItem(label: string, content: ReactNode) {
 
 export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
   const { solvers, getSolvers } = useSolvers();
+  const { updateProblem } = useGraphUpdates();
 
   // Update solvers in case they are not loaded yet
   if (!solvers[props.problemDto.typeId]) getSolvers(props.problemDto.typeId);
+
+  const solver = solvers[props.problemDto.typeId]?.find(
+    (s) => s.id === props.problemDto.solverId
+  );
 
   return (
     <VStack gap="20px" align="start">
@@ -57,11 +64,19 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
         <b>Status:</b> {getHumanReadableState(props.problemDto.state)}
       </Text>
       <Text>
-        <b>Solver:</b>{" "}
-        {solvers[props.problemDto.typeId]?.find(
-          (s) => s.id === props.problemDto.solverId
-        )?.name ?? "-"}
+        <b>Solver:</b> {solver?.name ?? "-"}
       </Text>
+      {solver && (
+        <VStack width="100%" align="stretch">
+          <Text>Solver Settings:</Text>
+          <SettingsView
+            problemDto={props.problemDto}
+            settingsChanged={(settings) => {
+              updateProblem(props.problemDto.id);
+            }}
+          />
+        </VStack>
+      )}
       {props.problemDto.subProblems.length === 0 ? (
         <b>No subroutines</b>
       ) : (

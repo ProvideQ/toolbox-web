@@ -1,5 +1,6 @@
 import { ProblemState } from "./ProblemState";
 import { getInvalidSolutionObject, SolutionObject } from "./SolutionObject";
+import { SolverSetting } from "./SolverSettings";
 import { SubRoutineReferenceDto } from "./SubRoutineReferenceDto";
 
 export interface ProblemDto<T> {
@@ -9,6 +10,7 @@ export interface ProblemDto<T> {
   solution: SolutionObject;
   state: ProblemState;
   solverId?: string;
+  solverSettings: SolverSetting[];
   subProblems: SubRoutineReferenceDto[];
   error: string;
 }
@@ -20,6 +22,7 @@ export function getInvalidProblemDto<T>(): ProblemDto<T> {
     input: {} as T,
     solution: getInvalidSolutionObject(),
     solverId: "",
+    solverSettings: [],
     state: ProblemState.READY_TO_SOLVE,
     subProblems: [],
     typeId: "",

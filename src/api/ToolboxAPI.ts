@@ -1,6 +1,7 @@
 import { getInvalidProblemDto, ProblemDto } from "./data-model/ProblemDto";
 import { ProblemSolverInfo } from "./data-model/ProblemSolverInfo";
 import { ProblemState } from "./data-model/ProblemState";
+import { SolverSetting } from "./data-model/SolverSettings";
 import { SubRoutineDefinitionDto } from "./data-model/SubRoutineDefinitionDto";
 
 /**
@@ -61,11 +62,14 @@ export async function postProblem<T>(
 export async function patchProblem<T>(
   problemTypeId: string,
   problemId: string,
-  updateParameters: { input?: any; solverId?: string; state?: ProblemState }
+  updateParameters: {
+    input?: any;
+    solverId?: string;
+    state?: ProblemState;
+    solverSettings?: SolverSetting[];
+  }
 ): Promise<ProblemDto<T>> {
-  let url = `${baseUrl()}/problems/${problemTypeId}/${problemId}`;
-  console.log(url);
-  return fetch(url, {
+  return fetch(`${baseUrl()}/problems/${problemTypeId}/${problemId}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -105,9 +109,7 @@ export async function fetchSubRoutines(
   solverId: string
 ): Promise<SubRoutineDefinitionDto[]> {
   return fetch(
-    `${baseUrl()}/sub-routines/${problemTypeId}?${new URLSearchParams({
-      id: solverId,
-    })}`,
+    `${baseUrl()}/solvers/${problemTypeId}/${solverId}/sub-routines`,
     {
       method: "GET",
       headers: {
@@ -123,18 +125,20 @@ export async function fetchSubRoutines(
     });
 }
 
-// export async function fetchMetaSolverSettings(
-//   problemTypeId: string
-// ): Promise<MetaSolverSetting[]> {
-//   return fetch(`${baseUrl()}/meta-solver/settings/${problemTypeId}`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//   })
-//     .then((response) => response.json())
-//     .catch((reason) => {
-//       console.log(reason);
-//       return [];
-//     });
-// }
+export async function fetchSolverSettings(
+  problemTypeId: string,
+  solverId: string
+): Promise<[]> {
+  return fetch(`${baseUrl()}/solvers/${problemTypeId}/${solverId}/settings`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .catch((reason) => {
+      console.error(reason);
+      alert(`Could not retrieve subroutines of solver ${solverId}.`);
+      return [];
+    });
+}
