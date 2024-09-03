@@ -1,4 +1,4 @@
-import { Heading, Spacer, Text } from "@chakra-ui/react";
+import { Heading, Link, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
@@ -16,7 +16,14 @@ const VehicleRouting: NextPage = () => {
         problem that seeks to find the best set of routes for a fleet of
         vehicles to service a set of customers. The problem can be specified in
         the VRP format and all solvers will return a solution in the same
-        format.
+        format. Example VRP problems can be found in the{" "}
+        <Link
+          href="http://vrp.galgos.inf.puc-rio.br/index.php/en"
+          color={"blue.400"}
+        >
+          CVRPLib
+        </Link>
+        .
       </Text>
 
       <Spacer />

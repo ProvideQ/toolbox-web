@@ -1,4 +1,4 @@
-import { Heading, Spacer, Text } from "@chakra-ui/react";
+import { Heading, Link, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
@@ -15,7 +15,15 @@ const TSP: NextPage = () => {
         The Traveling Salesperson Problem (TSP) is a classic combinatorial
         optimization problem. Given a list of cities and the distances between
         them, the task is to find the shortest possible route that visits each
-        city exactly once and returns to the origin city.
+        city exactly once and returns to the origin city. Example TSP problems
+        can be found{" "}
+        <Link
+          href="https://github.com/ProvideQ/tsp-problems"
+          color={"blue.400"}
+        >
+          here
+        </Link>
+        .
       </Text>
 
       <Spacer />

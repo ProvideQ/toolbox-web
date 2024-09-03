@@ -1,4 +1,4 @@
-import { Heading, ListItem, Text, UnorderedList } from "@chakra-ui/react";
+import { Heading, Link, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { Option } from "react-multi-select-component";
@@ -26,7 +26,15 @@ const FeatureModelAnomaly: NextPage = () => {
       <Text color="text" align="justify">
         For a tree of features with cross tree constraints, these solvers can
         detect various anomalies. Feature Models are given in the extended
-        Universal Variablity Language (UVL).
+        Universal Variablity Language (UVL). You can find information about UVL
+        and feature model examples{" "}
+        <Link
+          href="https://universal-variability-language.github.io"
+          color={"blue.400"}
+        >
+          here
+        </Link>
+        .
       </Text>
 
       <UnorderedList>
