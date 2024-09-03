@@ -48,5 +48,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="What is the optimal set of routes for a fleet of vehicles to traverse in order to deliver to a given set of customers?"
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/TSP"
+        new={true}
+        tags={["sub-routines", "qubo"]}
+        problemName="Traveling Salesperson Problem"
+        description="Given a list of cities and the distances between them, find the shortest possible route that visits each city exactly once and returns to the origin city."
+      />
+    </GridItem>
   </Grid>
 );
