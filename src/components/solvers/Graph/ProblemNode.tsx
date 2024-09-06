@@ -256,12 +256,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               <BsDatabaseFillGear size="1.5rem" />
             </div>
           </Tooltip>
-          <VStack>
-            <Text fontWeight="semibold">
-              {multiProblem ? props.data.problemDtos.length + "x " : ""}
-              {props.data.problemDtos[0].typeId}
-            </Text>
-          </VStack>
+          <Text fontWeight="semibold">
+            {multiProblem ? props.data.problemDtos.length + "x " : ""}
+            {props.data.problemDtos[0].typeId}
+          </Text>
           <div>
             <FaQuestionCircle size="1rem" onClick={onOpen} />
           </div>
