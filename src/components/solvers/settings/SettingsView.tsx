@@ -15,7 +15,7 @@ import { TextSettingView } from "./TextSettingView";
 
 interface SettingsViewProps {
   problemDto: ProblemDto<any>;
-  settingsChanged: (newSettings: SolverSetting[]) => void;
+  settingsChanged?: (newSettings: SolverSetting[]) => void;
 }
 
 export interface Disabled {
@@ -122,7 +122,7 @@ export const SettingsView = (props: SettingsViewProps) => {
         onClick={() => {
           patchProblem(props.problemDto.typeId, props.problemDto.id, {
             solverSettings: settings,
-          }).then((r) => props.settingsChanged(r.solverSettings));
+          }).then((r) => props.settingsChanged?.(r.solverSettings));
         }}
       >
         Save
