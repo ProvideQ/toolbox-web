@@ -388,7 +388,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       console.log(node.id, node.position.x, node.position.y);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
-      node.data.problemDtos;
       let subProblemsPerType: Map<
         SubRoutineDefinitionDto,
         SubRoutineReferenceDto[]
