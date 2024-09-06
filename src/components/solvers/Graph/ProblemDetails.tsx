@@ -68,7 +68,9 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
       </Text>
       {solver && (
         <VStack width="100%" align="stretch">
-          <Text>Solver Settings:</Text>
+          <Text>
+            <b>Solver Settings:</b>{" "}
+          </Text>
           <SettingsView
             problemDto={props.problemDto}
             settingsChanged={(settings) => {
