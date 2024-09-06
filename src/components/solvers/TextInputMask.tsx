@@ -1,25 +1,37 @@
-import { Divider, Textarea } from "@chakra-ui/react";
+import { Divider } from "@chakra-ui/react";
 import Head from "next/head";
 import { ReactElement, useState } from "react";
+import { baseUrl } from "../../api/ToolboxAPI";
 import { Container } from "../Container";
 import { EditorControls } from "./EditorControls";
+import {
+  GrammarSettings,
+  SyntaxHighlightedTextarea,
+} from "./SAT/SyntaxHighlightedTextarea";
 
 export interface TextInputMaskProperties {
+  problemTypeId: string;
   textPlaceholder: string;
-  onTextChanged: (text: string) => void;
+  text: string;
+  setText: (text: string) => void;
+  validate?: (text: string) => string[] | null;
+  grammar?: GrammarSettings;
   body?: ReactElement;
 }
 
 export const TextInputMask = (props: TextInputMaskProperties) => {
-  const [text, setText] = useState<string>("");
   const [errorString, setErrorString] = useState("");
 
-  function onTextChanged(text: string): void {
+  function onTextChanged(newText: string): void {
     try {
-      setText(text);
-      props.onTextChanged(text);
+      props.setText(newText);
 
-      setErrorString("");
+      let errors = props.validate?.(newText);
+      if (errors) {
+        setErrorString(errors.toString());
+      } else {
+        setErrorString("");
+      }
     } catch (e: any) {
       setErrorString(e.message);
     }
@@ -37,20 +49,24 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
       <EditorControls
         errorText={errorString}
         idleText={props.textPlaceholder + " 👇"}
-        onUpload={onTextChanged}
-        editorContent={text}
-      />
-      <Textarea
-        placeholder={props.textPlaceholder}
-        value={text}
-        minHeight="10rem"
-        isInvalid={errorString != ""}
-        onChange={(x) => onTextChanged(x.target.value)}
+        setEditorContent={onTextChanged}
+        editorContent={props.text}
+        documentationLink={`${baseUrl()}/webjars/swagger-ui/index.html#/${
+          props.problemTypeId
+        }`}
       />
 
-      <Divider />
+      <SyntaxHighlightedTextarea
+        text={props.text}
+        setText={onTextChanged}
+        placeholder={props.textPlaceholder}
+        isInvalid={errorString != ""}
+        grammar={props.grammar}
+      />
 
       {props.body}
+
+      <Divider />
     </Container>
   );
 };

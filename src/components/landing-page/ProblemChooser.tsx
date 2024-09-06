@@ -16,7 +16,7 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/MaxCut"
         new={false}
-        tags={["QAOA", "simulated"]}
+        tags={["QAOA"]}
         problemName="MaxCut"
         description="For a given undirected, weighted graph, this algorithm finds a cut that is a maximum in some way or another."
       />
@@ -25,7 +25,7 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/FeatureModelAnomaly"
         new={false}
-        tags={["sub-routines"]}
+        tags={["sub-routines", "SAT"]}
         problemName="Feature Model Anomaly"
         description="Check whether a given feature model in the UVL format is void or if it has dead features."
       />
@@ -34,9 +34,27 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/QUBO"
         new={true}
-        tags={["QAOA"]}
+        tags={["QAOA", "Annealing"]}
         problemName="QUBO"
         description="For a quadratic term with binary decision variables, find the variable assignment minimizing the term."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/VehicleRouting"
+        new={true}
+        tags={["sub-routines", "QUBO", "Clustering"]}
+        problemName="Vehicle Routing"
+        description="What is the optimal set of routes for a fleet of vehicles to traverse in order to deliver to a given set of customers?"
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/TSP"
+        new={true}
+        tags={["sub-routines", "qubo"]}
+        problemName="Traveling Salesperson Problem"
+        description="Given a list of cities and the distances between them, find the shortest possible route that visits each city exactly once and returns to the origin city."
       />
     </GridItem>
   </Grid>
