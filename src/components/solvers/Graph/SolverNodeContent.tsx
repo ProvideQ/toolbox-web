@@ -31,13 +31,13 @@ export interface SolverNodeContentProps {
 export const SolverNodeContent = (props: SolverNodeContentProps) => {
   return (
     <VStack gap="0px">
-      <HStack align="start" maxW="10rem" justifyContent="space-between">
+      <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
         <Tooltip hasArrow label="Solver" placement="bottom">
           <div>
             <FaGears size="2rem" />
           </div>
         </Tooltip>
-        <Text padding=".5rem" fontWeight="semibold">
+        <Text padding=".25rem" fontWeight="semibold">
           {props.solver.name}
         </Text>
 
