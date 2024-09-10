@@ -57,5 +57,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="Given a list of cities and the distances between them, find the shortest possible route that visits each city exactly once and returns to the origin city."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/Knapsack"
+        new={true}
+        tags={["QUBO"]}
+        problemName={"Knapsack"}
+        description="Maximize the total value of items in a knapsack without exceeding the capacity of the knapsack."
+      />
+    </GridItem>
   </Grid>
 );
