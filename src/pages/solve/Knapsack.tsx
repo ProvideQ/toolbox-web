@@ -13,13 +13,12 @@ const Knapsack: NextPage = () => {
       <Heading as="h1">Knapsack Solver</Heading>
 
       <Text color="text" align="justify">
-        The Knapsack problem is a combinatorial optimization problem that
-        seeks to maximize the total value of items in a knapsack without
-        exceeding the capacity of the knapsack.
-        You can enter a problem in the following format, all integers:
-        a line containing the amount of items,
-        lines containing the items in format &quot;id value weight&quot;
-        and a line containing the capacity of the knapsack.
+        The Knapsack problem is a combinatorial optimization problem that seeks
+        to maximize the total value of items in a knapsack without exceeding the
+        capacity of the knapsack. You can enter a problem in the following
+        format, all integers: a line containing the amount of items, lines
+        containing the items in format &quot;id value weight&quot; and a line
+        containing the capacity of the knapsack.
       </Text>
 
       <TextInputMask
