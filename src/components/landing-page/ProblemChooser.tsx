@@ -61,7 +61,7 @@ export const ProblemChooser = (props: GridProps) => (
       <ProblemCard
         href="solve/Knapsack"
         new={true}
-        tags={["QUBO"]}
+        tags={["QAOA"]}
         problemName={"Knapsack"}
         description="Maximize the total value of items in a knapsack without exceeding the capacity of the knapsack."
       />
