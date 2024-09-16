@@ -1,4 +1,4 @@
-import { Heading, Text } from "@chakra-ui/react";
+import { Heading, Link, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { Layout } from "../../components/layout/Layout";
@@ -13,12 +13,18 @@ const Knapsack: NextPage = () => {
       <Heading as="h1">Knapsack Solver</Heading>
 
       <Text color="text" align="justify">
-        The Knapsack problem is a combinatorial optimization problem that seeks
-        to maximize the total value of items in a knapsack without exceeding the
-        capacity of the knapsack. You can enter a problem in the following
-        format, all integers: a line containing the amount of items, lines
-        containing the items in format &quot;id value weight&quot; and a line
-        containing the capacity of the knapsack.
+        In the 0-1 knapsack problem, we are given a list of items, each with a
+        weight and a value, and the maximum weight that the knapsack can hold.
+        The goal is to find the subset of items that maximizes the total value
+        while keeping the total weight below the maximum weight. Example
+        problems and an explanation of the input format can be found{" "}
+        <Link
+          href="https://github.com/ProvideQ/knapsack-problems"
+          color={"blue.400"}
+        >
+          here
+        </Link>
+        .
       </Text>
 
       <TextInputMask

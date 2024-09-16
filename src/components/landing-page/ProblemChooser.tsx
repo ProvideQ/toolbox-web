@@ -63,7 +63,7 @@ export const ProblemChooser = (props: GridProps) => (
         new={true}
         tags={["QAOA"]}
         problemName={"Knapsack"}
-        description="Maximize the total value of items in a knapsack without exceeding the capacity of the knapsack."
+        description="Given a list of items with weights and values, find a subset of items with the highest total value up to a certain weight limit."
       />
     </GridItem>
   </Grid>
