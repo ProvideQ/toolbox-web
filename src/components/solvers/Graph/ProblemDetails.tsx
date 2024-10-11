@@ -68,9 +68,7 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
       </Text>
       {solver && (
         <VStack width="100%" align="stretch">
-          <Text>
-            <b>Solver Settings:</b>{" "}
-          </Text>
+          <Text fontWeight="bold">Solver Settings:</Text>
           <SettingsView
             problemDto={props.problemDto}
             settingsChanged={(settings) => {
@@ -83,7 +81,7 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
         <b>No subroutines</b>
       ) : (
         <VStack width="100%" align="stretch">
-          <Text>Sub Routines:</Text>
+          <Text fontWeight="bold">Sub Routines:</Text>
           <Accordion>
             {props.problemDto.subProblems.map((subProblem) =>
               getAccordionItem(
@@ -95,7 +93,10 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
         </VStack>
       )}
       {props.problemDto.solution !== null && (
-        <SolutionView solution={props.problemDto.solution} />
+        <VStack width="100%" align="stretch">
+          <Text fontWeight="bold">Solution:</Text>
+          <SolutionView solution={props.problemDto.solution} />
+        </VStack>
       )}
     </VStack>
   );
