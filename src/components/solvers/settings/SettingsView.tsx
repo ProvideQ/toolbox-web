@@ -24,7 +24,7 @@ export interface Disabled {
 
 export type OptionalSolverSetting = SolverSetting & Disabled;
 
-const settingComponentMap: {
+export const settingComponentMap: {
   [key in SolverSettingType]: FC<SettingProps<any>>;
 } = {
   [SolverSettingType.INTEGER]: IntegerSettingView,
