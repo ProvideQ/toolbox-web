@@ -59,7 +59,7 @@ export const ProblemChooser = (props: GridProps) => (
         href="solve/Knapsack"
         new={true}
         tags={["QAOA"]}
-        problemName={"Knapsack"}
+        title={"Knapsack"}
         description="Given a list of items with weights and values, find a subset of items with the highest total value up to a certain weight limit."
       />
     </GridItem>
