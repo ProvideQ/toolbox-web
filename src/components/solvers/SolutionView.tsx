@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Accordion,
   AccordionButton,
@@ -7,14 +6,11 @@ import {
   AccordionPanel,
   Box,
   Code,
-  Spinner,
 } from "@chakra-ui/react";
-import { Container } from "../Container";
-import { Solution } from "../../api/data-model/Solution";
+import { SolutionObject } from "../../api/data-model/SolutionObject";
 
 export interface SolutionViewProps {
-  finished: boolean;
-  solution: Solution | undefined;
+  solution: SolutionObject;
 }
 
 const OutputSection = (props: { title: string; content: any[] }) => (
@@ -48,41 +44,25 @@ const OutputSection = (props: { title: string; content: any[] }) => (
   </AccordionItem>
 );
 
-export const SolutionView = (props: SolutionViewProps) => {
-  if (props.finished && props.solution) {
-    return (
-      <Accordion defaultIndex={[0]} width="100%" marginTop="2rem">
-        <OutputSection
-          title={`Solution by ${props.solution.solverName}`}
-          content={[props.solution.solutionData]}
-        />
-        <OutputSection
-          title="Meta Data"
-          content={[
-            `Problem ID: ${props.solution.id}`,
-            `Solver: ${props.solution.solverName}`,
-            `Execution time: ${props.solution.executionMilliseconds / 1000}s`,
-            `Additional meta data: ${props.solution.metaData}`,
-          ]}
-        />
-        <OutputSection
-          title="Debugging Info"
-          content={[props.solution.debugData]}
-        />
-        <OutputSection title="Error" content={[props.solution.error]} />
-      </Accordion>
-    );
-  } else {
-    return (
-      <Container>
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="teal.500"
-          size="xl"
-        />
-      </Container>
-    );
-  }
-};
+export const SolutionView = (props: SolutionViewProps) => (
+  <Accordion defaultIndex={[0]} width="100%" marginTop="2rem" allowMultiple>
+    <OutputSection
+      title={`Solution by ${props.solution.solverName}`}
+      content={[props.solution.solutionData]}
+    />
+    <OutputSection
+      title="Meta Data"
+      content={[
+        `Problem ID: ${props.solution.id}`,
+        `Solver: ${props.solution.solverName}`,
+        `Execution time: ${props.solution.executionMilliseconds / 1000}s`,
+        `Additional meta data: ${props.solution.metaData}`,
+      ]}
+    />
+    <OutputSection
+      title="Debugging Info"
+      content={[props.solution.debugData]}
+    />
+    {/*<OutputSection title="Error" content={[props.solution.error]} />*/}
+  </Accordion>
+);

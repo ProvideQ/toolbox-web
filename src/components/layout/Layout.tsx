@@ -1,9 +1,9 @@
-import { ReactElement, ReactNode } from "react";
+import { Spacer } from "@chakra-ui/react";
+import { ReactNode } from "react";
+import { Container } from "../Container";
 import { Hero } from "../landing-page/Hero";
 import { Main } from "../Main";
-import { Container } from "../Container";
 import { Footer } from "./Footer";
-import { Spacer } from "@chakra-ui/react";
 
 export const Layout = (props: { children: ReactNode }) => (
   <Container minHeight="100vh">

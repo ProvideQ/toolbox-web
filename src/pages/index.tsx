@@ -1,9 +1,18 @@
+import {
+  Link,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { Text, Heading, Link } from "@chakra-ui/react";
+import { baseUrl } from "../api/ToolboxAPI";
+import { DemonstratorChooser } from "../components/landing-page/DemonstratorChooser";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";
-import { baseUrl } from "../api/ToolboxAPI";
 
 const Home: NextPage = () => {
   return (
@@ -48,11 +57,24 @@ const Home: NextPage = () => {
         </Link>
       </Text>
 
-      <Heading as="h2" size="xl" pt="10">
-        Solve a problem
-      </Heading>
-
-      <ProblemChooser />
+      <Tabs pt={10} variant="enclosed">
+        <TabList>
+          <Tab fontSize="4xl" fontWeight="bold">
+            Solve a problem
+          </Tab>
+          <Tab fontSize="4xl" fontWeight="bold">
+            Demonstrators
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <ProblemChooser />
+          </TabPanel>
+          <TabPanel>
+            <DemonstratorChooser />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Layout>
   );
 };

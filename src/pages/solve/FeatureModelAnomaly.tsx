@@ -1,20 +1,10 @@
-import {
-  Box,
-  Divider,
-  Heading,
-  List,
-  ListItem,
-  Spacer,
-  Text,
-  UnorderedList,
-  VStack,
-} from "@chakra-ui/react";
+import { Heading, Link, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { NextPage } from "next";
-import React, { useState } from "react";
-import { MultiSelect, Option } from "react-multi-select-component";
-import { ProgressHandler } from "../../components/solvers/ProgressHandler";
-import { TextInputMask } from "../../components/solvers/TextInputMask";
+import { useState } from "react";
+import { Option } from "react-multi-select-component";
 import { Layout } from "../../components/layout/Layout";
+import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
+import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const anomalies: Option[] = [
   {
@@ -29,8 +19,6 @@ const anomalies: Option[] = [
 
 const FeatureModelAnomaly: NextPage = () => {
   const [uvl, setUvl] = useState<string>("");
-  const [selectedAnomalies, setSelectedAnomalies] =
-    useState<Option[]>(anomalies);
 
   return (
     <Layout>
@@ -38,7 +26,15 @@ const FeatureModelAnomaly: NextPage = () => {
       <Text color="text" align="justify">
         For a tree of features with cross tree constraints, these solvers can
         detect various anomalies. Feature Models are given in the extended
-        Universal Variablity Language (UVL).
+        Universal Variablity Language (UVL). You can find information about UVL
+        and feature model examples{" "}
+        <Link
+          href="https://universal-variability-language.github.io"
+          color={"blue.400"}
+        >
+          here
+        </Link>
+        .
       </Text>
 
       <UnorderedList>
@@ -53,28 +49,20 @@ const FeatureModelAnomaly: NextPage = () => {
       </UnorderedList>
 
       <TextInputMask
+        problemTypeId=""
         textPlaceholder="Enter your feature model in UVL format"
-        onTextChanged={setUvl}
-        body={
-          <VStack>
-            <Box width="300px">
-              <MultiSelect
-                options={anomalies}
-                value={selectedAnomalies}
-                onChange={setSelectedAnomalies}
-                labelledBy="Select anomalies"
-              />
-            </Box>
-
-            <Divider />
-
-            <ProgressHandler
-              problemTypes={selectedAnomalies.map((option) => option.value)}
-              problemInput={uvl}
-            />
-          </VStack>
-        }
+        text={uvl}
+        setText={setUvl}
       />
+
+      {anomalies.map((option) => (
+        <SolverConfiguration
+          key={option.value}
+          problemTypeId={option.value}
+          problemTypeName={option.label}
+          problemInput={uvl}
+        />
+      ))}
     </Layout>
   );
 };

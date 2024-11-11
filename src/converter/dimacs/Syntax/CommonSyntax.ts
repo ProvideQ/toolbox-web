@@ -7,12 +7,10 @@ export enum TokenName {
   open = "open",
   close = "close",
   variable = "variable",
-  negatedVariable = "negatedVariable",
   variableAssignment = "=>",
 }
 
-export const variableRegexPart = "(?:[A-z]|\\d)+";
-export const regexVariable = new RegExp(variableRegexPart);
+export const regexVariable = /(?:[A-z]|\d)+/;
 export const regexBlank = /\s+/g;
 
 export const variableRule = new Rule({

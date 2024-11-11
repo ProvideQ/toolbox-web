@@ -5,9 +5,15 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { TbDownload, TbHelp, TbUpload } from "react-icons/tb";
-import { chooseFile } from "./FileInput";
+import {
+  TbDownload,
+  TbHelp,
+  TbRepeat,
+  TbTrash,
+  TbUpload,
+} from "react-icons/tb";
 import { baseUrl } from "../../api/ToolboxAPI";
+import { chooseFile } from "./FileInput";
 
 export interface EditorControlsProps {
   /**
@@ -25,9 +31,9 @@ export interface EditorControlsProps {
    */
   editorContent: string;
   /**
-   * Contents of uploaded problem files will be sent to this handler.
+   * Function to set the contents of the editor that these controls relate to.
    */
-  onUpload: (uploadContent: string) => void;
+  setEditorContent: (newContent: string) => void;
 
   /**
    * Link to the documentation for the problem type that is being edited.
@@ -74,7 +80,7 @@ export const EditorControls = (props: EditorControlsProps) => {
   return (
     <HStack justifyContent={"space-between"} width="100%">
       {props.errorText ? (
-        <Text backgroundColor="tomato">{props.errorText}</Text>
+        <Text textColor="tomato">{props.errorText}</Text>
       ) : (
         <Text as="i">{props.idleText}</Text>
       )}
@@ -90,7 +96,26 @@ export const EditorControls = (props: EditorControlsProps) => {
           <IconButton
             aria-label="Upload"
             icon={<TbUpload />}
-            onClick={() => upload(props.onUpload)}
+            onClick={() => upload(props.setEditorContent)}
+          />
+        </Tooltip>
+        <Tooltip label="Reset the problem">
+          <IconButton
+            aria-label="Reset"
+            icon={<TbTrash />}
+            onClick={() => props.setEditorContent("")}
+          />
+        </Tooltip>
+        <Tooltip label="Restart the problem">
+          <IconButton
+            aria-label="Restart"
+            icon={<TbRepeat />}
+            onClick={() => {
+              props.setEditorContent("");
+              setTimeout(() => {
+                props.setEditorContent(props.editorContent);
+              });
+            }}
           />
         </Tooltip>
         <Tooltip label="Open the documentation">
