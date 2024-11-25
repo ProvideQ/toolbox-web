@@ -12,6 +12,7 @@ export interface SolverNodeData {
 export function SolverNode(props: NodeProps<SolverNodeData>) {
   return (
     <Box
+      cursor="default"
       border="1px"
       borderRadius="10px"
       padding=".5rem"
