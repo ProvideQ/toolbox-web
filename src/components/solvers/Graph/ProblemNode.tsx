@@ -342,7 +342,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           marginTop="-10px"
         >
           <SolverNodeContent
-            problemTypeId={typeId}
+            problemIds={props.data.problemDtos.map((dto) => dto.id)}
             solver={{
               id: solverId,
               name: solverName,
