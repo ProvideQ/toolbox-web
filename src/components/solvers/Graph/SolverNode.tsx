@@ -4,7 +4,7 @@ import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 import { SolverNodeContent } from "./SolverNodeContent";
 
 export interface SolverNodeData {
-  problemTypeId: string;
+  problemId: string[];
   problemSolver: ProblemSolverInfo;
   selectCallback: (problemSolver: ProblemSolverInfo) => void;
 }
@@ -12,6 +12,7 @@ export interface SolverNodeData {
 export function SolverNode(props: NodeProps<SolverNodeData>) {
   return (
     <Box
+      cursor="default"
       border="1px"
       borderRadius="10px"
       padding=".5rem"
@@ -44,7 +45,7 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
       <Handle type="target" position={Position.Top} />
       <VStack gap="0px">
         <SolverNodeContent
-          problemTypeId={props.data.problemTypeId}
+          problemIds={props.data.problemId}
           solver={props.data.problemSolver}
           button={{
             label: "Select",

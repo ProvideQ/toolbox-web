@@ -196,6 +196,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
 
   return (
     <VStack
+      cursor="default"
       width="10rem"
       css={{
         // prevent this from consuming pointer events
@@ -239,7 +240,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               {extended &&
                 props.data.problemDtos.every((dto) =>
                   canProblemSolverBeUpdated(dto)
-                ) && <FaXmark color="red" onClick={disconnect} />}
+                ) && (
+                  <FaXmark cursor="pointer" color="red" onClick={disconnect} />
+                )}
             </div>
           )
         )}
@@ -261,7 +264,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             {props.data.problemDtos[0].typeId}
           </Text>
           <div>
-            <FaQuestionCircle size="1rem" onClick={onOpen} />
+            <FaQuestionCircle cursor="pointer" size="1rem" onClick={onOpen} />
           </div>
 
           <Modal
@@ -298,6 +301,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               position="absolute"
               bg={nodeColor}
               borderRadius={10}
+              cursor="pointer"
               onClick={() => setDropdownOpen(!dropdownOpen)}
               left="50%"
               transform="translate(-50%, -50%)"
@@ -338,7 +342,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           marginTop="-10px"
         >
           <SolverNodeContent
-            problemTypeId={typeId}
+            problemIds={props.data.problemDtos.map((dto) => dto.id)}
             solver={{
               id: solverId,
               name: solverName,

@@ -234,7 +234,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           addNode({
             id: solverId,
             data: {
-              problemTypeId: node.data.problemDtos[0].typeId,
+              problemIds: node.data.problemDtos.map((x) => x.id),
               problemSolver: solvers[i],
               selectCallback: (problemSolver: ProblemSolverInfo) => {
                 let edge = edges.find((e) =>
