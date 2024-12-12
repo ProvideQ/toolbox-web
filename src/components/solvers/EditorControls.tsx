@@ -2,9 +2,11 @@ import {
   ButtonGroup,
   HStack,
   IconButton,
+  Select,
   Text,
   Tooltip,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import {
   TbDownload,
   TbHelp,
@@ -12,7 +14,7 @@ import {
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
-import { baseUrl } from "../../api/ToolboxAPI";
+import { baseUrl, fetchExampleProblems } from "../../api/ToolboxAPI";
 import { chooseFile } from "./FileInput";
 
 export interface EditorControlsProps {
@@ -40,6 +42,11 @@ export interface EditorControlsProps {
    * If omitted, the documentation link will point to the API docs.
    */
   documentationLink?: string;
+
+  /**
+   * Problem type id.
+   */
+  problemTypeId: string;
 }
 
 /**
@@ -75,15 +82,40 @@ const upload = async (onUpload: (uploadContent: string) => void) => {
  * messages, an upload, a download and a help button.
  */
 export const EditorControls = (props: EditorControlsProps) => {
-  const documentationLink = props.documentationLink || baseUrl();
+  const [examples, setExamples] = useState<string[]>([]);
+
+  const documentationLink = props.documentationLink ?? baseUrl();
+
+  useEffect(() => {
+    fetchExampleProblems(props.problemTypeId).then((json) => setExamples(json));
+  }, [props.problemTypeId]);
 
   return (
     <HStack justifyContent={"space-between"} width="100%">
-      {props.errorText ? (
-        <Text textColor="tomato">{props.errorText}</Text>
-      ) : (
-        <Text as="i">{props.idleText}</Text>
-      )}
+      <HStack>
+        {examples.length > 0 && (
+          <Select
+            placeholder="Load example"
+            overflow="hidden"
+            textOverflow="ellipsis"
+            width="10rem"
+            onChange={(e) => props.setEditorContent(e.target.value)}
+          >
+            {examples.map((example) => (
+              <option key={example} value={example}>
+                {example.length > 100 ? example.slice(0, 100) + "..." : example}
+              </option>
+            ))}
+          </Select>
+        )}
+
+        {props.errorText ? (
+          <Text textColor="tomato">{props.errorText}</Text>
+        ) : (
+          <Text as="i">{props.idleText}</Text>
+        )}
+      </HStack>
+
       <ButtonGroup isAttached variant="outline" colorScheme="teal">
         <Tooltip label="Download problem from editor">
           <IconButton
