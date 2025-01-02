@@ -133,7 +133,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   // Type id is the same for all problems
   const typeId = props.data.problemDtos[0].typeId;
   const solverId = props.data.problemDtos[0].solverId;
-  const solverName = solvers[typeId]?.find((s) => s.id === solverId)?.name;
+  const solver = solvers[typeId]?.find((s) => s.id === solverId);
+  const solverName = solver?.name;
+  const solverDescription = solver?.description ?? "Solves the Problem.";
 
   // Fetch solvers for type if necessary
   getSolvers(typeId);
@@ -346,6 +348,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             solver={{
               id: solverId,
               name: solverName,
+              description: solverDescription,
             }}
             button={problemButton()}
           />
