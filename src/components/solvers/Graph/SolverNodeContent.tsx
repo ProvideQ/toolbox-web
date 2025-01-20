@@ -20,7 +20,6 @@ import { FaGears } from "react-icons/fa6";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
 
 export interface SolverNodeContentProps {
-  problemTypeId: string;
   solver: ProblemSolverInfo;
   button: {
     label: ReactNode;
