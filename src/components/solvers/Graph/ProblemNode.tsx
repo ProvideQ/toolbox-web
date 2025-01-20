@@ -135,8 +135,8 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const solverId = props.data.problemDtos[0].solverId;
   const solver = solvers[typeId]?.find((s) => s.id === solverId);
   const solverName = solver?.name;
-  const solverDescription = solver?.description ??
-    "Solves the ${typeId} Problem.";
+  const solverDescription =
+    solver?.description ?? "Solves the ${typeId} Problem.";
 
   // Fetch solvers for type if necessary
   getSolvers(typeId);
