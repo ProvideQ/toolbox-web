@@ -18,10 +18,10 @@ export const Footer = () => (
       </HStack>
       <HStack width={"100%"} justifyContent={"space-between"}>
         <Link href="https://tva.kastel.kit.edu/index.php">
-          <Image src="/KIT.svg" height={"2.5rem"} />
+          <Image src="/KIT.svg" height={"2.5rem"} alt="KIT" />
         </Link>
         <Link href="https://www.gams.com/">
-          <Image src="/gams.svg" height={"2.5rem"} />
+          <Image src="/gams.svg" height={"2.5rem"} alt="GAMS" />
         </Link>
       </HStack>
     </VStack>
