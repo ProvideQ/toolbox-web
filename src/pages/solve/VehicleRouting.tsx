@@ -32,7 +32,7 @@ const VehicleRouting: NextPage = () => {
         problemTypeId="vrp"
         text={vrp}
         setText={setVrp}
-        textPlaceholder={"Enter your Vehicle Routing problem in vrp format"}
+        textPlaceholder={"Enter your problem in vrp format"}
       />
 
       <SolverConfiguration problemTypeId="vrp" problemInput={vrp} />
