@@ -63,5 +63,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="Given a list of items with weights and values, find a subset of items with the highest total value up to a certain weight limit."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/CircuitProcessing"
+        new={true}
+        tags={["execute", "optimize", "mitigate"]}
+        title={"Process QASM circuits"}
+        description="Process an OpenQASM circuit."
+      />
+    </GridItem>
   </Grid>
 );
