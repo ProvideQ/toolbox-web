@@ -151,3 +151,30 @@ export async function fetchExampleProblems(problemTypeId: string) {
     },
   }).then((response) => response.json());
 }
+
+export async function fetchProblemBounds(
+  problemTypeId: string,
+  problemId: string
+) {
+  return fetch(`${baseUrl()}/problems/${problemTypeId}/${problemId}/bound`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => response.json());
+}
+
+export async function fetchProblemBoundComparison(
+  problemTypeId: string,
+  problemId: string
+) {
+  return fetch(
+    `${baseUrl()}/problems/${problemTypeId}/${problemId}/bound/comparison`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  ).then((response) => response.json());
+}
