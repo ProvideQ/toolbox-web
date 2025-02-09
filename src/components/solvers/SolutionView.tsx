@@ -44,6 +44,20 @@ const OutputSection = (props: { title: string; content: any[] }) => (
   </AccordionItem>
 );
 
+const BoundComparisonSection = () => (
+  <AccordionItem>
+    <h2>
+      <AccordionButton>
+        <Box as="span" flex="1" textAlign="left">
+          Bound Comparison
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
+    </h2>
+    <AccordionPanel pb="4"></AccordionPanel>
+  </AccordionItem>
+);
+
 export const SolutionView = (props: SolutionViewProps) => (
   <Accordion defaultIndex={[0]} width="100%" marginTop="2rem" allowMultiple>
     <OutputSection
@@ -63,6 +77,7 @@ export const SolutionView = (props: SolutionViewProps) => (
       title="Debugging Info"
       content={[props.solution.debugData]}
     />
+    {/*<BoundComparisonSection />*/}
     {/*<OutputSection title="Error" content={[props.solution.error]} />*/}
   </Accordion>
 );
