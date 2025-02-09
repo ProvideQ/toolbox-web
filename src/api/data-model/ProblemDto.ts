@@ -1,3 +1,4 @@
+import { BoundDto } from "./BoundDto";
 import { ProblemState } from "./ProblemState";
 import { getInvalidSolutionObject, SolutionObject } from "./SolutionObject";
 import { SolverSetting } from "./SolverSettings";
@@ -8,6 +9,7 @@ export interface ProblemDto<T> {
   typeId: string;
   input: T;
   solution: SolutionObject;
+  bound: BoundDto;
   state: ProblemState;
   solverId?: string;
   solverSettings: SolverSetting[];
@@ -21,6 +23,7 @@ export function getInvalidProblemDto<T>(): ProblemDto<T> {
     id: "",
     input: {} as T,
     solution: getInvalidSolutionObject(),
+    bound: {} as BoundDto,
     solverId: "",
     solverSettings: [],
     state: ProblemState.READY_TO_SOLVE,
