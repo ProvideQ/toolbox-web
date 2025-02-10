@@ -9,7 +9,7 @@ const MoleculeEnergySimulator: NextPage = () => {
 
   return (
     <Layout>
-      <Heading as="h1">Mixed Integer Programming Demonstrator</Heading>
+      <Heading as="h1">Molecule Energy Simulator</Heading>
       <Text color="text" align="justify"></Text>
 
       <Demonstrator

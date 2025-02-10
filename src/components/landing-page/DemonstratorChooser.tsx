@@ -13,7 +13,7 @@ export const DemonstratorChooser = (props: GridProps) => (
       <DemonstratorCard
         new={true}
         href="demonstrate/MoleculeEnergySimulator"
-        title="MoleculeEnergySimulator"
+        title="Molecule Energy Simulator"
         description=""
       />
     </GridItem>
