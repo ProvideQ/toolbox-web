@@ -10,6 +10,12 @@ export const DemonstratorChooser = (props: GridProps) => (
         title="Mixed Integer Programming"
         description="The MIP problem is a mathematical optimization problem where some or all of the variables are restricted to be integers."
       />
+      <DemonstratorCard
+        new={true}
+        href="demonstrate/MoleculeEnergySimulator"
+        title="MoleculeEnergySimulator"
+        description=""
+      />
     </GridItem>
   </Grid>
 );
