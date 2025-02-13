@@ -10,7 +10,10 @@ const MoleculeEnergySimulator: NextPage = () => {
   return (
     <Layout>
       <Heading as="h1">Molecule Energy Simulator</Heading>
-      <Text color="text" align="justify"></Text>
+      <Text color="text" align="justify">
+        This demonstrator will compute the ground state energy for a given
+        molecule using VQE algorithm. The molecule input is given in XYZ Format.
+      </Text>
 
       <Demonstrator
         demonstratorId="edu.kit.provideq.toolbox.demonstrators.MoleculeEnergySimulator"

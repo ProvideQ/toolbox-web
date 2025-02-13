@@ -14,7 +14,7 @@ export const DemonstratorChooser = (props: GridProps) => (
         new={true}
         href="demonstrate/MoleculeEnergySimulator"
         title="Molecule Energy Simulator"
-        description=""
+        description="This demonstrator will compute the ground state energy for a given molecule using VQE algorithm."
       />
     </GridItem>
   </Grid>
