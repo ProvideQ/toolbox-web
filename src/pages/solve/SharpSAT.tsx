@@ -16,9 +16,10 @@ const SharpSAT: NextPage = () => {
     <Layout>
       <Heading as="h1">sharpSAT Solver</Heading>
       <Text color="text" align="justify">
-        For a given Boolean formula, this algorithm counts the number of satisfying assignments.
-        You can enter any Boolean formula with any number of variables and combine them using Boolean operators
-        (i.e., &quot;and&quot;, &quot;or&quot; and &quot;not&quot;).
+        For a given Boolean formula, this algorithm counts the number of
+        satisfying assignments. You can enter any Boolean formula with any
+        number of variables and combine them using Boolean operators (i.e.,
+        &quot;and&quot;, &quot;or&quot; and &quot;not&quot;).
       </Text>
 
       <Spacer />
