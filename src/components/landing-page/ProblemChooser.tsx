@@ -13,6 +13,14 @@ export const ProblemChooser = (props: GridProps) => (
     </GridItem>
     <GridItem>
       <ProblemCard
+        href="solve/SharpSAT"
+        tags={["simulated"]}
+        title="SharpSAT"
+        description="For a given Boolean formula, this algorithm counts the number of satisfying assignments."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
         href="solve/MaxCut"
         tags={["QAOA"]}
         title="MaxCut"
