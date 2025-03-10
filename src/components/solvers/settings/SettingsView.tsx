@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Text, VStack } from "@chakra-ui/react";
+import { Button, Checkbox, Text, VStack } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
@@ -89,11 +89,37 @@ export const SettingsView = (props: SettingsViewProps) => {
   }
 
   return (
-    <Box margin={2} padding={2} borderWidth="1px" borderRadius="lg">
+    <VStack
+      margin={2}
+      padding={2}
+      borderWidth="1px"
+      borderRadius="lg"
+      borderColor={
+        settings.filter(
+          (s) =>
+            s.required &&
+            props.problemDto.solverSettings
+              .map((s) => s.name)
+              .includes(s.name) === false
+        ).length > 0
+          ? "red"
+          : "grey.300"
+      }
+    >
       {settings.map((setting) => (
         <VStack key={setting.name} align="left" paddingY="2">
           {setting.required ? (
-            <Text>{setting.name}</Text>
+            <Text
+              textColor={
+                props.problemDto.solverSettings
+                  .map((s) => s.name)
+                  .includes(setting.name)
+                  ? "black"
+                  : "red"
+              }
+            >
+              {setting.name}
+            </Text>
           ) : (
             <Checkbox
               checked={!setting.disabled}
@@ -134,6 +160,6 @@ export const SettingsView = (props: SettingsViewProps) => {
         Save
         {showSaved && <BiCheck />}
       </Button>
-    </Box>
+    </VStack>
   );
 };
