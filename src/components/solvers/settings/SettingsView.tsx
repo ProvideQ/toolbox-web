@@ -1,5 +1,6 @@
 import { Box, Button, Checkbox, Text, VStack } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
+import { BiCheck } from "react-icons/bi";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import {
   SolverSetting,
@@ -36,6 +37,7 @@ export const settingComponentMap: {
 
 export const SettingsView = (props: SettingsViewProps) => {
   const [settings, setSettings] = useState<OptionalSolverSetting[]>([]);
+  const [showSaved, setShowSaved] = useState(false);
 
   useEffect(() => {
     if (!props.problemDto.solverId) return;
@@ -122,10 +124,15 @@ export const SettingsView = (props: SettingsViewProps) => {
         onClick={() => {
           patchProblem(props.problemDto.typeId, props.problemDto.id, {
             solverSettings: settings,
-          }).then((r) => props.settingsChanged?.(r.solverSettings));
+          }).then((r) => {
+            props.settingsChanged?.(r.solverSettings);
+            setShowSaved(true);
+            setTimeout(() => setShowSaved(false), 2000);
+          });
         }}
       >
         Save
+        {showSaved && <BiCheck />}
       </Button>
     </Box>
   );
