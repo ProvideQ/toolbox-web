@@ -30,6 +30,7 @@ import {
 } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
+import { solverSettingAnyRequiredIsUnfilled } from "../../../api/data-model/SolverSettings";
 import { patchProblem } from "../../../api/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
@@ -144,6 +145,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const extended = solverId && solverName;
   const multiProblem = props.data.problemDtos.length > 1;
 
+  /**
+   * Disconnects the problem from the selected solver
+   */
   function disconnect() {
     for (let problemDto of props.data.problemDtos) {
       patchProblem(problemDto.typeId, problemDto.id, {
@@ -160,7 +164,15 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
       case ProblemState.NEEDS_CONFIGURATION:
         return {
           label: "Solve",
-          callback: () => {
+          callback: async () => {
+            // If any required setting of any problem is not filled, open the settings
+            if (
+              await solverSettingAnyRequiredIsUnfilled(props.data.problemDtos)
+            ) {
+              onOpen();
+              return;
+            }
+
             // Set state to solving manually so the ui updates instantly
             setNodeState(ProblemState.SOLVING);
 
