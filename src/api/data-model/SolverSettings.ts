@@ -44,12 +44,12 @@ export async function solverSettingAnyRequiredIsUnfilled(
   const settings = await fetchSolverSettings(problemDtos[0].typeId, solverId);
   const requiredSettings = settings
     .filter((s) => s.required)
-    .map((s_1) => s_1.name);
+    .map((s) => s.name);
 
   if (requiredSettings.length === 0) return false;
 
   for (let problemDto of problemDtos) {
-    const filledSettings = problemDto.solverSettings.map((s_2) => s_2.name);
+    const filledSettings = problemDto.solverSettings.map((s) => s.name);
     for (let requiredSetting of requiredSettings) {
       if (filledSettings.includes(requiredSetting) === false) {
         return true;
