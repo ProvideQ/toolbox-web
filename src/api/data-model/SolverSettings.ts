@@ -51,7 +51,6 @@ export async function solverSettingAnyRequiredIsUnfilled(
   for (let problemDto of problemDtos) {
     const filledSettings = problemDto.solverSettings.map((s_2) => s_2.name);
     for (let requiredSetting of requiredSettings) {
-      console.log(requiredSetting);
       if (filledSettings.includes(requiredSetting) === false) {
         return true;
       }
