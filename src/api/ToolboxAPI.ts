@@ -128,7 +128,7 @@ export async function fetchSubRoutines(
 export async function fetchSolverSettings(
   problemTypeId: string,
   solverId: string
-): Promise<[]> {
+): Promise<SolverSetting[]> {
   return fetch(`${baseUrl()}/solvers/${problemTypeId}/${solverId}/settings`, {
     method: "GET",
     headers: {
