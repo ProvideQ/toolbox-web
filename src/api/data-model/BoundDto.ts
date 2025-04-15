@@ -1,7 +1,7 @@
 import { BoundType } from "./BoundType";
 
 export interface BoundDto {
-  bound: number;
+  value: number;
   boundType: BoundType;
   executionTime: number;
 }
