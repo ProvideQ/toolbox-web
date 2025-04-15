@@ -95,7 +95,7 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
       {props.problemDto.solution !== null && (
         <VStack width="100%" align="stretch">
           <Text fontWeight="bold">Solution:</Text>
-          <SolutionView solution={props.problemDto.solution} />
+          <SolutionView problem={props.problemDto} />
         </VStack>
       )}
     </VStack>

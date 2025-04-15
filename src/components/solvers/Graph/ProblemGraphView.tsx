@@ -636,7 +636,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           nodes[0].data.problemDtos?.length > 0 &&
           nodes[0].data.problemDtos[0].state === ProblemState.SOLVED && (
             <Flex width="full" ref={solutionViewRef}>
-              <SolutionView solution={nodes[0].data.problemDtos[0].solution} />
+              <SolutionView problem={nodes[0].data.problemDtos[0]} />
             </Flex>
           )}
       </VStack>

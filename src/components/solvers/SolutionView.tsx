@@ -10,7 +10,7 @@ import {
 import { SolutionObject } from "../../api/data-model/SolutionObject";
 
 export interface SolutionViewProps {
-  solution: SolutionObject;
+  problem: ProblemDto<any>;
 }
 
 const OutputSection = (props: { title: string; content: any[] }) => (
