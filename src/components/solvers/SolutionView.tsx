@@ -54,6 +54,7 @@ const OutputSection = (props: { title: string; content: any[] }) => (
     })}
   </AccordionItem>
 );
+
 const DictOutputSection = (props: {
   title: string;
   content: [string, any][];
@@ -141,12 +142,13 @@ export const SolutionView = (props: SolutionViewProps) => {
           [
             "Bound",
             <BoundDisplay
+              key = {"boundDisplay"}
               buttonTitle={"Get Bound"}
               variable={props.problem.bound}
               getter={() => getBound()}
             />,
           ],
-          ["Bound compared to solution", <ComparisonDisplay />],
+          ["Bound compared to solution", <ComparisonDisplay key = {"comparisonDisplay"}/>],
           ["Additional meta data", props.problem.solution.metaData],
         ]}
       />
