@@ -1,4 +1,7 @@
-import { BoundDto } from "./BoundDto";
+import {
+  BoundComparisonDto,
+  getInvalidBoundComparisonDto,
+} from "./BoundComparisonDto";
 import { ProblemState } from "./ProblemState";
 import { getInvalidSolutionObject, SolutionObject } from "./SolutionObject";
 import { SolverSetting } from "./SolverSettings";
@@ -23,7 +26,7 @@ export function getInvalidProblemDto<T>(): ProblemDto<T> {
     id: "",
     input: {} as T,
     solution: getInvalidSolutionObject(),
-    bound: {} as BoundDto,
+    bound: getInvalidBoundComparisonDto(),
     solverId: "",
     solverSettings: [],
     state: ProblemState.READY_TO_SOLVE,
