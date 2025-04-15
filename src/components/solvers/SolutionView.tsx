@@ -102,6 +102,7 @@ export const SolutionView = (props: SolutionViewProps) => {
       }
     });
   }
+
   function getBoundComparison() {
     fetchProblemBoundComparison(props.problem.typeId, props.problem.id).then(
       (res) => {
@@ -142,13 +143,16 @@ export const SolutionView = (props: SolutionViewProps) => {
           [
             "Bound",
             <BoundDisplay
-              key = {"boundDisplay"}
+              key={"boundDisplay"}
               buttonTitle={"Get Bound"}
               variable={props.problem.bound}
               getter={() => getBound()}
             />,
           ],
-          ["Bound compared to solution", <ComparisonDisplay key = {"comparisonDisplay"}/>],
+          [
+            "Bound compared to solution",
+            <ComparisonDisplay key={"comparisonDisplay"} />,
+          ],
           ["Additional meta data", props.problem.solution.metaData],
         ]}
       />
