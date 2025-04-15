@@ -12,8 +12,10 @@ import {
 import { ReactNode } from "react";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
+import { fetchProblemBounds } from "../../../api/ToolboxAPI";
 import { SettingsView } from "../settings/SettingsView";
 import { SolutionView } from "../SolutionView";
+import { BoundDisplay } from "../VariableDependentDisplay";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
 
@@ -57,6 +59,14 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
     (s) => s.id === props.problemDto.solverId
   );
 
+  function getBound(problemTypeId: string, problemId: string) {
+    fetchProblemBounds(problemTypeId, problemId).then((res) => {
+      if (!res.error) {
+        updateProblem(props.problemDto.id);
+      }
+    });
+  }
+
   return (
     <VStack gap="20px" align="start">
       <Textarea readOnly resize="vertical" value={props.problemDto.input} />
@@ -77,6 +87,14 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
           />
         </VStack>
       )}
+      <Text>
+        <b>Bound: </b>{" "}
+        <BoundDisplay
+          buttonTitle="Get bound"
+          variable={props.problemDto.bound}
+          getter={() => getBound(props.problemDto.typeId, props.problemDto.id)}
+        />
+      </Text>
       {props.problemDto.subProblems.length === 0 ? (
         <b>No subroutines</b>
       ) : (
