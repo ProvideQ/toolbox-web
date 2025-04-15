@@ -9,7 +9,7 @@ export interface ProblemDto<T> {
   typeId: string;
   input: T;
   solution: SolutionObject;
-  bound: BoundDto;
+  bound: BoundComparisonDto;
   state: ProblemState;
   solverId?: string;
   solverSettings: SolverSetting[];
