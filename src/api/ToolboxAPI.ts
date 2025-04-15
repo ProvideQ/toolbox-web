@@ -169,7 +169,7 @@ export async function fetchProblemBoundComparison(
   problemId: string
 ) {
   return fetch(
-    `${baseUrl()}/problems/${problemTypeId}/${problemId}/bound/comparison`,
+    `${baseUrl()}/problems/${problemTypeId}/${problemId}/bound/compare`,
     {
       method: "GET",
       headers: {
