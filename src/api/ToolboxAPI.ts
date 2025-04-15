@@ -161,7 +161,12 @@ export async function fetchProblemBounds(
     headers: {
       "Content-Type": "application/json",
     },
-  }).then((response) => response.json());
+  }).then(
+    (response) => response.json(),
+    (reason) => {
+      return { error: reason };
+    }
+  );
 }
 
 export async function fetchProblemBoundComparison(
@@ -176,5 +181,10 @@ export async function fetchProblemBoundComparison(
         "Content-Type": "application/json",
       },
     }
-  ).then((response) => response.json());
+  ).then(
+    (response) => response.json(),
+    (reason) => {
+      return { error: reason };
+    }
+  );
 }
