@@ -94,10 +94,13 @@ const DictOutputSection = (props: {
 export const SolutionView = (props: SolutionViewProps) => {
   const { updateProblem } = useGraphUpdates();
   const [comparison, setComparison] = useState<number>();
+  const [boundError, setBoundError] = useState(false);
 
   function getBound() {
     fetchProblemBounds(props.problem.typeId, props.problem.id).then((res) => {
-      if (!res.error) {
+      if (res.error) {
+        setBoundError(true);
+      } else {
         updateProblem(props.problem.id);
       }
     });
@@ -114,6 +117,11 @@ export const SolutionView = (props: SolutionViewProps) => {
   }
 
   const ComparisonDisplay = () => {
+    if (boundError) {
+      return (
+        <Text>Error fetching bound, comparison is no longer applicable.</Text>
+      );
+    }
     if (!props.problem.bound?.bound)
       return <Text>Estimate a bound first!</Text>;
     return (
@@ -142,12 +150,16 @@ export const SolutionView = (props: SolutionViewProps) => {
           ],
           [
             "Bound",
-            <BoundDisplay
-              key={"boundDisplay"}
-              buttonTitle={"Get Bound"}
-              variable={props.problem.bound}
-              getter={() => getBound()}
-            />,
+            boundError ? (
+              <Text>Error fetching bound.</Text>
+            ) : (
+              <BoundDisplay
+                key={"boundDisplay"}
+                buttonTitle={"Get Bound"}
+                variable={props.problem.bound}
+                getter={() => getBound()}
+              />
+            ),
           ],
           [
             "Bound compared to solution",

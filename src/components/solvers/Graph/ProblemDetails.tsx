@@ -9,7 +9,7 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { ProblemDto } from "../../../api/data-model/ProblemDto";
 import { ProblemState } from "../../../api/data-model/ProblemState";
 import { fetchProblemBounds } from "../../../api/ToolboxAPI";
@@ -51,6 +51,7 @@ function getAccordionItem(label: string, content: ReactNode) {
 export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
   const { solvers, getSolvers } = useSolvers();
   const { updateProblem } = useGraphUpdates();
+  const [boundError, setBoundError] = useState(false);
 
   // Update solvers in case they are not loaded yet
   if (!solvers[props.problemDto.typeId]) getSolvers(props.problemDto.typeId);
@@ -61,7 +62,9 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
 
   function getBound(problemTypeId: string, problemId: string) {
     fetchProblemBounds(problemTypeId, problemId).then((res) => {
-      if (!res.error) {
+      if (res.error) {
+        setBoundError(true);
+      } else {
         updateProblem(props.problemDto.id);
       }
     });
@@ -89,11 +92,17 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
       )}
       <Text>
         <b>Bound: </b>{" "}
-        <BoundDisplay
-          buttonTitle="Get bound"
-          variable={props.problemDto.bound}
-          getter={() => getBound(props.problemDto.typeId, props.problemDto.id)}
-        />
+        {boundError ? (
+          "Error fetching bound"
+        ) : (
+          <BoundDisplay
+            buttonTitle="Get bound"
+            variable={props.problemDto.bound}
+            getter={() =>
+              getBound(props.problemDto.typeId, props.problemDto.id)
+            }
+          />
+        )}
       </Text>
       {props.problemDto.subProblems.length === 0 ? (
         <b>No subroutines</b>
