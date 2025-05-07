@@ -47,6 +47,7 @@ export const TextInputMask = (props: TextInputMaskProperties) => {
       </Head>
 
       <EditorControls
+        problemTypeId={props.problemTypeId}
         errorText={errorString}
         idleText={props.textPlaceholder + " 👇"}
         setEditorContent={onTextChanged}

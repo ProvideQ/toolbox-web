@@ -142,3 +142,12 @@ export async function fetchSolverSettings(
       return [];
     });
 }
+
+export async function fetchExampleProblems(problemTypeId: string) {
+  return fetch(`${baseUrl()}/problems/${problemTypeId}/examples`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => response.json());
+}

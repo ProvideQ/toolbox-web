@@ -1,26 +1,12 @@
-import {
-  Button,
-  HStack,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverFooter,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
-  Text,
-  Tooltip,
-  VStack,
-} from "@chakra-ui/react";
+import { Button, HStack, Text, Tooltip, VStack } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { FaQuestionCircle } from "react-icons/fa";
 import { FaGears } from "react-icons/fa6";
+import { IoMdRefresh } from "react-icons/io";
 import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
+import { useGraphUpdates } from "./ProblemGraphView";
 
 export interface SolverNodeContentProps {
-  problemTypeId: string;
+  problemIds: string[];
   solver: ProblemSolverInfo;
   button: {
     label: ReactNode;
@@ -29,6 +15,8 @@ export interface SolverNodeContentProps {
 }
 
 export const SolverNodeContent = (props: SolverNodeContentProps) => {
+  const { updateProblem } = useGraphUpdates();
+
   return (
     <VStack gap="0px">
       <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
@@ -41,28 +29,17 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
           {props.solver.name}
         </Text>
 
-        <Popover>
-          <PopoverTrigger>
-            <div>
-              <FaQuestionCircle size="1rem" />
-            </div>
-          </PopoverTrigger>
-          <Portal>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverHeader>
-                <Text fontWeight="semibold">{props.solver.name}</Text>
-              </PopoverHeader>
-              <PopoverBody>
-                <Text>Solves {props.problemTypeId}</Text>
-              </PopoverBody>
-              <PopoverFooter>
-                <Text fontSize="xs">{props.solver.id}</Text>
-              </PopoverFooter>
-            </PopoverContent>
-          </Portal>
-        </Popover>
+        {props.problemIds !== undefined && (
+          <IoMdRefresh
+            cursor="pointer"
+            size="2rem"
+            onClick={() => {
+              for (let problemId of props.problemIds) {
+                updateProblem(problemId);
+              }
+            }}
+          />
+        )}
       </HStack>
 
       <div
