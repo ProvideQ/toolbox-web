@@ -10,6 +10,7 @@ import {
 import type { NextPage } from "next";
 import Head from "next/head";
 import { baseUrl } from "../api/ToolboxAPI";
+import { MetaSolverStrategyEditor } from "../components/editors/MetaSolverStrategyEditor";
 import { DemonstratorChooser } from "../components/landing-page/DemonstratorChooser";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";
@@ -23,6 +24,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
         {/* TODO: replace favicon */}
       </Head>
+      <MetaSolverStrategyEditor />
       <Text color="text" align="justify" as="b">
         Welcome to the ProvideQ Toolbox!
       </Text>
