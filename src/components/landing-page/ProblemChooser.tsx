@@ -71,5 +71,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="Given a list of items with weights and values, find a subset of items with the highest total value up to a certain weight limit."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/MaterialSimulation"
+        new={true}
+        tags={["simulated"]}
+        title="Material Simulation"
+        description="Enter a molecule to get chemical information about its behavior on a quantum scale."
+      />
+    </GridItem>
   </Grid>
 );
