@@ -76,6 +76,10 @@ function getNodeType(data: ProblemNodeData): {
   };
 }
 
+function getHumanReadableTypeId(typeId: string): string {
+  return typeId.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
   for (let problemDto of problemDtos) {
     switch (problemDto.state) {
@@ -276,7 +280,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </Tooltip>
           <Text fontWeight="semibold">
             {multiProblem ? props.data.problemDtos.length + "x " : ""}
-            {props.data.problemDtos[0].typeId}
+            {getHumanReadableTypeId(props.data.problemDtos[0].typeId)}
           </Text>
           <div>
             <FaQuestionCircle cursor="pointer" size="1rem" onClick={onOpen} />
