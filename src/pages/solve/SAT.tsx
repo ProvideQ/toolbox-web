@@ -28,7 +28,7 @@ const SAT: NextPage = () => {
         textPlaceholder='Try "a and (not a or not b)"'
         text={logicalExpressionString}
         setText={setLogicalExpressionString}
-        problemTypeId="sat"
+        problemTypeId="SAT"
         grammar={{
           grammar: SAT_language,
           language: "SAT_language",
@@ -41,7 +41,7 @@ const SAT: NextPage = () => {
       <Divider />
 
       <SolverConfiguration
-        problemTypeId="sat"
+        problemTypeId="SAT"
         problemInput={logicalExpressionString}
       />
     </Layout>

@@ -29,13 +29,13 @@ const VehicleRouting: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="vrp"
+        problemTypeId="VRP"
         text={vrp}
         setText={setVrp}
         textPlaceholder={"Enter your problem in vrp format"}
       />
 
-      <SolverConfiguration problemTypeId="vrp" problemInput={vrp} />
+      <SolverConfiguration problemTypeId="VRP" problemInput={vrp} />
     </Layout>
   );
 };
