@@ -385,7 +385,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         ...n,
         data: node.data,
       }));
-      console.log(node.id, node.position.x, node.position.y);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       let subProblemsPerType: Map<
