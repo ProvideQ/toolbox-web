@@ -18,10 +18,10 @@ const MaterialSimulation: NextPage = () => {
       </Text>
 
       <TextInputMask
-        problemTypeId="knapsack"
+        problemTypeId="material-simulation"
         text={molecule}
         setText={setMolecule}
-        textPlaceholder="Enter your molecule to simulate"
+        textPlaceholder="Enter your molecule to simulate, in XYZ format, units in angstroms."
       />
 
       <SolverConfiguration
