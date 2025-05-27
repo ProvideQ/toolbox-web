@@ -10,7 +10,7 @@ const MaterialSimulation: NextPage = () => {
 
   return (
     <Layout>
-      <Heading as="h1">Knapsack Solver</Heading>
+      <Heading as="h1">Quantum Material Simulation</Heading>
 
       <Text color="text" align="justify">
         Enter a molecule to get chemical information about its behavior on a
