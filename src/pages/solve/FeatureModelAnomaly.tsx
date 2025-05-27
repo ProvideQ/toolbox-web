@@ -9,11 +9,11 @@ import { TextInputMask } from "../../components/solvers/TextInputMask";
 const anomalies: Option[] = [
   {
     label: "Void Feature Model",
-    value: "feature-model-anomaly-void",
+    value: "FeatureModelAnomalyVoid",
   },
   {
     label: "Dead Features",
-    value: "feature-model-anomaly-dead",
+    value: "FeatureModelAnomalyDead",
   },
 ];
 
@@ -49,7 +49,7 @@ const FeatureModelAnomaly: NextPage = () => {
       </UnorderedList>
 
       <TextInputMask
-        problemTypeId="feature-model-anomaly-dead"
+        problemTypeId="FeatureModelAnomalyDead"
         textPlaceholder="Enter your feature model in UVL format"
         text={uvl}
         setText={setUvl}

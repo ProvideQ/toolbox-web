@@ -28,14 +28,14 @@ const Knapsack: NextPage = () => {
       </Text>
 
       <TextInputMask
-        problemTypeId="knapsack"
+        problemTypeId="Knapsack"
         text={knapsackProblem}
         setText={setKnapsackProblem}
         textPlaceholder="Enter your knapsack problem"
       />
 
       <SolverConfiguration
-        problemTypeId="knapsack"
+        problemTypeId="Knapsack"
         problemInput={knapsackProblem}
       />
     </Layout>

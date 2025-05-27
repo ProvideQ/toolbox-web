@@ -22,13 +22,13 @@ const QUBO: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="qubo"
+        problemTypeId="QUBO"
         text={quboTerm}
         setText={setQuboTerm}
         textPlaceholder={"Enter your QUBO problem in LP format"}
       />
 
-      <SolverConfiguration problemTypeId="qubo" problemInput={quboTerm} />
+      <SolverConfiguration problemTypeId="QUBO" problemInput={quboTerm} />
     </Layout>
   );
 };
