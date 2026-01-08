@@ -42,7 +42,7 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      <VStack gap="0px">
+      <VStack gap="0px" minWidth="120px">
         <SolverNodeContent
           solver={props.data.problemSolver}
           button={{
