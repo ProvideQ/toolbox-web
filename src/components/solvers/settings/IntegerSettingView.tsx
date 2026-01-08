@@ -22,7 +22,7 @@ export const IntegerSettingView = (
       onChange={(e) => {
         props.updateSetting({
           ...props.setting,
-          value: parseInt(e),
+          value: Number.parseInt(e),
         });
       }}
     >

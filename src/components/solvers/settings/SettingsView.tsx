@@ -50,7 +50,7 @@ export const SettingsView = (props: SettingsViewProps) => {
           newSettings
             .filter(
               (s) =>
-                !props.problemDto.solverSettings.find(
+                !props.problemDto.solverSettings.some(
                   (existingSetting) => existingSetting.name === s.name
                 )
             )
@@ -94,13 +94,13 @@ export const SettingsView = (props: SettingsViewProps) => {
       borderWidth="1px"
       borderRadius="lg"
       borderColor={
-        settings.filter(
+        settings.some(
           (s) =>
             s.required &&
             props.problemDto.solverSettings
               .map((s) => s.name)
               .includes(s.name) === false
-        ).length > 0
+        )
           ? "red"
           : "grey.300"
       }

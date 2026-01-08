@@ -77,7 +77,7 @@ function getNodeType(data: ProblemNodeData): {
 }
 
 function getHumanReadableTypeId(typeId: string): string {
-  return typeId.replace(/([a-z])([A-Z])/g, "$1 $2");
+  return typeId.replaceAll(/([a-z])([A-Z])/g, "$1 $2");
 }
 
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {

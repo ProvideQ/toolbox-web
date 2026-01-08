@@ -52,9 +52,11 @@ export async function solverSettingAnyRequiredIsUnfilled(
   if (requiredSettings.length === 0) return false;
 
   for (let problemDto of problemDtos) {
-    const filledSettings = problemDto.solverSettings.map((s) => s.name);
+    const filledSettings = new Set(
+      problemDto.solverSettings.map((s) => s.name)
+    );
     for (let requiredSetting of requiredSettings) {
-      if (filledSettings.includes(requiredSetting) === false) {
+      if (filledSettings.has(requiredSetting) === false) {
         return true;
       }
     }
