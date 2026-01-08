@@ -14,7 +14,7 @@ import {
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
-import { baseUrl, fetchExampleProblems } from "../../api/ToolboxAPI";
+import { baseUrl, toolboxApi } from "../../api/toolbox/ToolboxAPI";
 import { chooseFile } from "./FileInput";
 
 export interface EditorControlsProps {
@@ -87,7 +87,9 @@ export const EditorControls = (props: EditorControlsProps) => {
   const documentationLink = props.documentationLink ?? baseUrl();
 
   useEffect(() => {
-    fetchExampleProblems(props.problemTypeId).then((json) => setExamples(json));
+    toolboxApi
+      .fetchExampleProblems(props.problemTypeId)
+      .then((json) => setExamples(json));
   }, [props.problemTypeId]);
 
   return (

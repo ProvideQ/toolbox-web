@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useState } from "react";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
-import { fetchSolvers } from "../../../api/ToolboxAPI";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 
 interface SolversMap {
   [key: string]: ProblemSolverInfo[];
@@ -28,7 +28,7 @@ export const SolverProvider = (props: { children: ReactNode }) => {
     if (cachedSolvers) {
       return cachedSolvers;
     } else {
-      const fetchedSolvers = await fetchSolvers(problemTypeId);
+      const fetchedSolvers = await toolboxApi.fetchSolvers(problemTypeId);
       setSolvers((prevSolvers) => ({
         ...prevSolvers,
         [problemTypeId]: fetchedSolvers,

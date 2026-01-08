@@ -1,4 +1,4 @@
-import { fetchSolverSettings } from "../ToolboxAPI";
+import { toolboxApi } from "../ToolboxAPI";
 import { ProblemDto } from "./ProblemDto";
 
 export enum SolverSettingType {
@@ -41,7 +41,10 @@ export async function solverSettingAnyRequiredIsUnfilled(
   const solverId = problemDtos[0].solverId;
   if (solverId === undefined) return false;
 
-  const settings = await fetchSolverSettings(problemDtos[0].typeId, solverId);
+  const settings = await toolboxApi.fetchSolverSettings(
+    problemDtos[0].typeId,
+    solverId
+  );
   const requiredSettings = settings
     .filter((s) => s.required)
     .map((s) => s.name);

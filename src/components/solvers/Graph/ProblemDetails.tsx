@@ -10,8 +10,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
-import { ProblemState } from "../../../api/data-model/ProblemState";
+import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
 import { SettingsView } from "../settings/SettingsView";
 import { SolutionView } from "../SolutionView";
 import { useGraphUpdates } from "./ProblemGraphView";

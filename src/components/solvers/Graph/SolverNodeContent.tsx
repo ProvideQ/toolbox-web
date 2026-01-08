@@ -17,7 +17,7 @@ import {
 import { ReactNode } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { FaGears } from "react-icons/fa6";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 
 export interface SolverNodeContentProps {
   solver: ProblemSolverInfo;

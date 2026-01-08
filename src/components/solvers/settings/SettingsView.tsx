@@ -1,12 +1,12 @@
 import { Button, Checkbox, Text, VStack } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import { BiCheck } from "react-icons/bi";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
+import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
 import {
   SolverSetting,
   SolverSettingType,
-} from "../../../api/data-model/SolverSettings";
-import { fetchSolverSettings, patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/SolverSettings";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { CheckboxSettingView } from "./CheckboxSettingView";
 import { DoubleSettingView } from "./DoubleSettingView";
 import { IntegerSettingView } from "./IntegerSettingView";
@@ -42,28 +42,27 @@ export const SettingsView = (props: SettingsViewProps) => {
   useEffect(() => {
     if (!props.problemDto.solverId) return;
 
-    fetchSolverSettings(
-      props.problemDto.typeId,
-      props.problemDto.solverId
-    ).then((newSettings: SolverSetting[]) =>
-      setSettings(
-        // Use settings set on the problem, if they exist
-        newSettings
-          .filter(
-            (s) =>
-              !props.problemDto.solverSettings.find(
-                (existingSetting) => existingSetting.name === s.name
-              )
-          )
-          .map((s) => ({ ...s, disabled: !s.required }))
-          .concat(
-            props.problemDto.solverSettings.map((s) => ({
-              ...s,
-              disabled: false,
-            }))
-          )
-      )
-    );
+    toolboxApi
+      .fetchSolverSettings(props.problemDto.typeId, props.problemDto.solverId)
+      .then((newSettings: SolverSetting[]) =>
+        setSettings(
+          // Use settings set on the problem, if they exist
+          newSettings
+            .filter(
+              (s) =>
+                !props.problemDto.solverSettings.find(
+                  (existingSetting) => existingSetting.name === s.name
+                )
+            )
+            .map((s) => ({ ...s, disabled: !s.required }))
+            .concat(
+              props.problemDto.solverSettings.map((s) => ({
+                ...s,
+                disabled: false,
+              }))
+            )
+        )
+      );
   }, [props.problemDto]);
 
   if (settings.length == 0) {
@@ -148,13 +147,15 @@ export const SettingsView = (props: SettingsViewProps) => {
           bg: "kitGreenAlpha",
         }}
         onClick={() => {
-          patchProblem(props.problemDto.typeId, props.problemDto.id, {
-            solverSettings: settings,
-          }).then((r) => {
-            props.settingsChanged?.(r.solverSettings);
-            setShowSaved(true);
-            setTimeout(() => setShowSaved(false), 2000);
-          });
+          toolboxApi
+            .patchProblem(props.problemDto.typeId, props.problemDto.id, {
+              solverSettings: settings,
+            })
+            .then((r) => {
+              props.settingsChanged?.(r.solverSettings);
+              setShowSaved(true);
+              setTimeout(() => setShowSaved(false), 2000);
+            });
         }}
       >
         Save

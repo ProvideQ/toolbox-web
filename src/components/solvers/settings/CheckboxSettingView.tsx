@@ -1,5 +1,5 @@
 import { Checkbox } from "@chakra-ui/react";
-import { CheckboxSetting } from "../../../api/data-model/SolverSettings";
+import { CheckboxSetting } from "../../../api/toolbox/data-model/SolverSettings";
 import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 

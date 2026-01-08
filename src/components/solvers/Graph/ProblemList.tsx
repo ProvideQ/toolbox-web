@@ -21,10 +21,10 @@ import { MdError } from "react-icons/md";
 import {
   canProblemSolverBeUpdated,
   ProblemDto,
-} from "../../../api/data-model/ProblemDto";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
-import { patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
@@ -54,11 +54,13 @@ export const ProblemList = (props: {
           <BiPlay
             color="green"
             onClick={() => {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                state: ProblemState.SOLVING,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  state: ProblemState.SOLVING,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }}
           />
         );
@@ -167,11 +169,13 @@ export const ProblemList = (props: {
             fontSize="2xs"
             value={problemDto.solverId ?? ""}
             onChange={(e) => {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                solverId: e.target.value,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  solverId: e.target.value,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }}
           >
             {[

@@ -1,6 +1,6 @@
 import { Box, VStack } from "@chakra-ui/react";
 import { Handle, NodeProps, Position } from "reactflow";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 import { SolverNodeContent } from "./SolverNodeContent";
 
 export interface SolverNodeData {

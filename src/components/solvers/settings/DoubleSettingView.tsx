@@ -5,7 +5,7 @@ import {
   SliderThumb,
   SliderTrack,
 } from "@chakra-ui/react";
-import { RangeSetting } from "../../../api/data-model/SolverSettings";
+import { RangeSetting } from "../../../api/toolbox/data-model/SolverSettings";
 
 import { SettingProps } from "./SettingProps";
 

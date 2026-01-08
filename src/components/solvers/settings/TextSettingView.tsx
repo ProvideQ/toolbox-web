@@ -1,5 +1,5 @@
 import { Textarea } from "@chakra-ui/react";
-import { TextSetting } from "../../../api/data-model/SolverSettings";
+import { TextSetting } from "../../../api/toolbox/data-model/SolverSettings";
 import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 
