@@ -199,13 +199,22 @@ export class ToolboxApi {
       });
   }
 
-  async fetchExampleProblems(problemTypeId: string) {
+  async fetchExampleProblems(problemTypeId: string): Promise<string[]> {
     return fetch(`${baseUrl()}/problems/${problemTypeId}/examples`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((response) => response.json());
+    })
+      .then((response) => response.json())
+      .then((json) => json as string[])
+      .catch((error) => {
+        console.error(
+          `Could not retrieve example problems of type ${problemTypeId}`,
+          error
+        );
+        return [];
+      });
   }
 }
 
