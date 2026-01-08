@@ -81,7 +81,7 @@ function getChildNodes(
 
     const subString = n.id.substring(parentNode.id.length + 1);
     return (
-      subString.indexOf("|") === -1 &&
+      !subString.includes("|") &&
       (typeId == undefined || subString.startsWith(typeId))
     );
   });
@@ -93,7 +93,7 @@ function getChildNodes(
  * @param fromId The source node
  */
 function getEdgeId(to: ProblemNodeIdentifier, fromId: Node): string {
-  return fromId + "->" + getNodeId(to, fromId);
+  return fromId.id + "->" + getNodeId(to, fromId);
 }
 
 function getNodePosition(data: ProblemNodeData): XYPosition {
@@ -584,7 +584,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   // Update node ids when nodes change
   useEffect(() => {
-    let ids = nodes.sort((a, b) => a.id.localeCompare(b.id)).map((n) => n.id);
+    let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
       setNodeIds(ids);
     }

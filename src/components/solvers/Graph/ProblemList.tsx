@@ -150,7 +150,7 @@ export const ProblemList = (props: {
           width="100%"
           alignItems="center"
           bg={
-            props.selectedProblemIds.find((id) => id == problemDto.id)
+            props.selectedProblemIds.some((id) => id == problemDto.id)
               ? "lightgrey"
               : "ghostwhite"
           }
