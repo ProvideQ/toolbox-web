@@ -19,6 +19,8 @@ import {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
+import { strategyApi } from "../../../api/strategy/StrategyAPI";
 import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
@@ -26,9 +28,11 @@ import { SubRoutineDefinitionDto } from "../../../api/toolbox/data-model/SubRout
 import { SubRoutineReferenceDto } from "../../../api/toolbox/data-model/SubRoutineReferenceDto";
 import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { SolutionView } from "../SolutionView";
+import { useMetaSolverStrategies } from "./MetaSolverStrategyProvider";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
-import { SolverNode } from "./SolverNode";
+import { SolverNode, SolverNodeData } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
+import { StrategyNode, StrategyNodeData } from "./StrategyNode";
 
 interface ProblemEdgeData {
   sourceProblemDto: ProblemDto<any>;
@@ -76,7 +80,7 @@ function getChildNodes(
   typeId?: string
 ): Node[] {
   return nodes.filter((n) => {
-    if (n.type !== "problemNode") return false;
+    if (n.type !== "problemNode" && n.type !== "strategyNode") return false;
     if (!n.id.startsWith(parentNode.id)) return false;
 
     const subString = n.id.substring(parentNode.id.length + 1);
@@ -126,10 +130,13 @@ function groupBySolver(problemDtos: ProblemDto<any>[]) {
 
 const nodeTypes: NodeTypes = {
   solverNode: SolverNode,
+  strategyNode: StrategyNode,
   problemNode: ProblemNode,
 };
 const solverNodeIdentifier: string = "-solver-node-";
 const solverEdgeIdentifier: string = "-solver-edge-";
+const strategyNodeIdentifier: string = "-strategy-node-";
+const strategyEdgeIdentifier: string = "-strategy-edge-";
 
 export interface GraphUpdateProps {
   updateProblem: (problemId: string) => void;
@@ -151,6 +158,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   const solutionViewRef = useRef<HTMLDivElement>(null);
 
   const { getSolvers } = useSolvers();
+  const { getStrategies } = useMetaSolverStrategies();
 
   /**
    * Node updates are scheduled in order to provide an asynchronous update mechanism.
@@ -226,15 +234,79 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   const createSolverNodes = useCallback(
     (node: Node<ProblemNodeData>) => {
+      getStrategies(node.data.problemDtos[0].typeId).then((strategies) => {
+        console.log("strategies", strategies);
+        for (let i = 0; i < strategies.length; i++) {
+          let strategyNodeId =
+            node.id + strategyNodeIdentifier + strategies[i].id.toString();
+
+          const strategyNode: Node<StrategyNodeData> = {
+            id: strategyNodeId,
+            data: {
+              strategy: strategies[i],
+              selectCallback: (strategy: MetaSolverStrategyDto) => {
+                let edge = edges.find((e) =>
+                  e.target.startsWith(node.id + strategyEdgeIdentifier)
+                );
+                if (edge) {
+                  updateEdge(edge);
+                }
+
+                Promise.all(
+                  node.data.problemDtos.map((problemDto) =>
+                    strategyApi.executeStrategy(strategy.id, problemDto.id)
+                  )
+                ).then((results) => {
+                  setNodes((previousNodes) =>
+                    previousNodes.map((n) => {
+                      if (n.id !== node.id) return n;
+
+                      let updatedNode: Node<ProblemNodeData> = {
+                        ...n,
+                        data: {
+                          ...n.data,
+                          problemDtos: results
+                            .map((r) => r.result)
+                            .filter(
+                              (dto): dto is ProblemDto<any> => dto !== undefined
+                            ),
+                        },
+                      };
+                      scheduleNodeUpdate(updatedNode);
+
+                      return updatedNode;
+                    })
+                  );
+                });
+              },
+            },
+            position: {
+              x:
+                node.position.x +
+                getNodePositionX({ index: i, count: strategies.length }),
+              y: getNodePositionY(node.data.level + 1.5),
+            },
+            type: "strategyNode",
+          };
+
+          addNode(strategyNode);
+
+          addEdge({
+            id: node.id + solverEdgeIdentifier + strategyNodeId,
+            type: "step",
+            source: node.id,
+            target: strategyNodeId,
+          });
+        }
+      });
       getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
         for (let i = 0; i < solvers.length; i++) {
           let solverId =
             node.id + solverNodeIdentifier + solvers[i].id.toString();
 
-          addNode({
+          const solverNode: Node<SolverNodeData> = {
             id: solverId,
             data: {
-              problemIds: node.data.problemDtos.map((x) => x.id),
               problemSolver: solvers[i],
               selectCallback: (problemSolver: ProblemSolverInfo) => {
                 let edge = edges.find((e) =>
@@ -277,7 +349,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               y: getNodePositionY(node.data.level + 1),
             },
             type: "solverNode",
-          });
+          };
+
+          addNode(solverNode);
 
           addEdge({
             id: node.id + solverEdgeIdentifier + solverId,
@@ -293,6 +367,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       addNode,
       edges,
       getSolvers,
+      getStrategies,
       scheduleNodeUpdate,
       setNodes,
       updateEdge,
@@ -303,11 +378,17 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     (node: Node<ProblemNodeData>) => {
       setNodes((previousNodes) =>
         previousNodes.filter(
-          (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
+          (n) =>
+            !n.id.startsWith(node.id + solverNodeIdentifier) &&
+            !n.id.startsWith(node.id + strategyNodeIdentifier)
         )
       );
       setEdges((edges) =>
-        edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
+        edges.filter(
+          (e) =>
+            !e.id.startsWith(node.id + solverEdgeIdentifier) &&
+            !e.id.startsWith(node.id + strategyEdgeIdentifier)
+        )
       );
     },
     [setEdges, setNodes]

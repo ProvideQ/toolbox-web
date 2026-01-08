@@ -2,6 +2,7 @@ import { Button, Flex, Tooltip } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { getInvalidProblemDto } from "../../api/toolbox/data-model/ProblemDto";
 import { toolboxApi } from "../../api/toolbox/ToolboxAPI";
+import { StrategyProvider } from "./Graph/MetaSolverStrategyProvider";
 import { ProblemGraphView } from "./Graph/ProblemGraphView";
 import { SolverProvider } from "./Graph/SolverProvider";
 
@@ -51,12 +52,14 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
         </Tooltip>
       ) : (
         <SolverProvider>
-          <div ref={problemGraphViewRef}>
-            <ProblemGraphView
-              problemTypeId={props.problemTypeId}
-              problemId={problemId}
-            />
-          </div>
+          <StrategyProvider>
+            <div ref={problemGraphViewRef}>
+              <ProblemGraphView
+                problemTypeId={props.problemTypeId}
+                problemId={problemId}
+              />
+            </div>
+          </StrategyProvider>
         </SolverProvider>
       )}
     </Flex>
