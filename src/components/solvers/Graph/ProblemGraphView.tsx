@@ -19,12 +19,12 @@ import {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
-import { SubRoutineReferenceDto } from "../../../api/data-model/SubRoutineReferenceDto";
-import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
+import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SubRoutineDefinitionDto } from "../../../api/toolbox/data-model/SubRoutineDefinitionDto";
+import { SubRoutineReferenceDto } from "../../../api/toolbox/data-model/SubRoutineReferenceDto";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { SolutionView } from "../SolutionView";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
 import { SolverNode } from "./SolverNode";
@@ -246,7 +246,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
                 Promise.all(
                   node.data.problemDtos.map((problemDto) =>
-                    patchProblem(problemDto.typeId, problemDto.id, {
+                    toolboxApi.patchProblem(problemDto.typeId, problemDto.id, {
                       solverId: problemSolver.id,
                     })
                   )
@@ -367,10 +367,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       if (parentNode) {
         scheduleNodeUpdate(parentNode);
       } else {
-        fetchProblem(node.data.problemDtos[0].typeId, problemId).then((dto) => {
-          node.data.problemDtos = [dto];
-          scheduleNodeUpdate(node);
-        });
+        toolboxApi
+          .fetchProblem(node.data.problemDtos[0].typeId, problemId)
+          .then((dto) => {
+            node.data.problemDtos = [dto];
+            scheduleNodeUpdate(node);
+          });
       }
     },
     [nodes, scheduleNodeUpdate]
@@ -422,7 +424,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           subProblems
             .flatMap((x) => x.subProblemIds)
             .map((subProblemId) =>
-              fetchProblem(subRoutineReference.typeId, subProblemId)
+              toolboxApi.fetchProblem(subRoutineReference.typeId, subProblemId)
             )
         ).then((subProblemDtos) => {
           // Create sub problem nodes per used solver
@@ -552,23 +554,25 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   useEffect(() => {
     setNodes([]);
     setEdges([]);
-    fetchProblem(props.problemTypeId, props.problemId).then((problemDto) => {
-      if (problemDto.error) {
-        console.error(problemDto.error);
-        return;
-      }
+    toolboxApi
+      .fetchProblem(props.problemTypeId, props.problemId)
+      .then((problemDto) => {
+        if (problemDto.error) {
+          console.error(problemDto.error);
+          return;
+        }
 
-      // Create root node
-      let rootNode = createProblemNode(props.problemId, {
-        problemDtos: [problemDto],
-        level: 0,
-        levelInfo: {
-          index: 0,
-          count: 1,
-        },
+        // Create root node
+        let rootNode = createProblemNode(props.problemId, {
+          problemDtos: [problemDto],
+          level: 0,
+          levelInfo: {
+            index: 0,
+            count: 1,
+          },
+        });
+        scheduleNodeUpdate(rootNode);
       });
-      scheduleNodeUpdate(rootNode);
-    });
   }, [
     createProblemNode,
     props.problemId,

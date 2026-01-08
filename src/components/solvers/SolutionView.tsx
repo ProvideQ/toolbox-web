@@ -7,7 +7,7 @@ import {
   Box,
   Code,
 } from "@chakra-ui/react";
-import { SolutionObject } from "../../api/data-model/SolutionObject";
+import { SolutionObject } from "../../api/toolbox/data-model/SolutionObject";
 
 export interface SolutionViewProps {
   solution: SolutionObject;

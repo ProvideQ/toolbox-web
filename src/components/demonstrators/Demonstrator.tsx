@@ -9,10 +9,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { getInvalidProblemDto } from "../../api/data-model/ProblemDto";
-import { ProblemState } from "../../api/data-model/ProblemState";
-import { SolverSetting } from "../../api/data-model/SolverSettings";
-import { fetchSolverSettings, postProblem } from "../../api/ToolboxAPI";
+import { getInvalidProblemDto } from "../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../api/toolbox/data-model/ProblemState";
+import { SolverSetting } from "../../api/toolbox/data-model/SolverSettings";
+import { toolboxApi } from "../../api/toolbox/ToolboxAPI";
 import { settingComponentMap } from "../solvers/settings/SettingsView";
 
 export interface DemonstratorProps {
@@ -50,9 +50,9 @@ export const Demonstrator = (props: DemonstratorProps) => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    fetchSolverSettings(demonstratorTypeId, props.demonstratorId).then(
-      setSettings
-    );
+    toolboxApi
+      .fetchSolverSettings(demonstratorTypeId, props.demonstratorId)
+      .then(setSettings);
   }, [props.demonstratorId]);
 
   function updateSetting(newSetting: SolverSetting) {
@@ -96,25 +96,27 @@ export const Demonstrator = (props: DemonstratorProps) => {
           if (state === DemonstratorState.SOLVING) return;
 
           setState(DemonstratorState.SOLVING);
-          postProblem(demonstratorTypeId, {
-            ...getInvalidProblemDto(),
-            input: "",
-            solverId: props.demonstratorId,
-            state: ProblemState.SOLVING,
-            solverSettings: settings,
-          }).then((problemDto) => {
-            setState(DemonstratorState.SOLVED);
-            if (problemDto.error) {
-              setError(problemDto.error);
-              props.onSolved("");
-            } else if (problemDto.solution?.debugData) {
-              setError(problemDto.solution.debugData);
-              props.onSolved("");
-            } else {
-              setError("");
-              props.onSolved(problemDto.solution.solutionData);
-            }
-          });
+          toolboxApi
+            .postProblem(demonstratorTypeId, {
+              ...getInvalidProblemDto(),
+              input: "",
+              solverId: props.demonstratorId,
+              state: ProblemState.SOLVING,
+              solverSettings: settings,
+            })
+            .then((problemDto) => {
+              setState(DemonstratorState.SOLVED);
+              if (problemDto.error) {
+                setError(problemDto.error);
+                props.onSolved("");
+              } else if (problemDto.solution?.debugData) {
+                setError(problemDto.solution.debugData);
+                props.onSolved("");
+              } else {
+                setError("");
+                props.onSolved(problemDto.solution.solutionData);
+              }
+            });
         }}
       >
         {getHumanReadableState(state)}

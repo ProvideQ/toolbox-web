@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import { baseUrl } from "../api/ToolboxAPI";
+import { baseUrl } from "../api/toolbox/ToolboxAPI";
 import { DemonstratorChooser } from "../components/landing-page/DemonstratorChooser";
 import { ProblemChooser } from "../components/landing-page/ProblemChooser";
 import { Layout } from "../components/layout/Layout";

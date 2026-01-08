@@ -1,7 +1,7 @@
 import { Button, Flex, Tooltip } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { getInvalidProblemDto } from "../../api/data-model/ProblemDto";
-import { postProblem } from "../../api/ToolboxAPI";
+import { getInvalidProblemDto } from "../../api/toolbox/data-model/ProblemDto";
+import { toolboxApi } from "../../api/toolbox/ToolboxAPI";
 import { ProblemGraphView } from "./Graph/ProblemGraphView";
 import { SolverProvider } from "./Graph/SolverProvider";
 
@@ -36,12 +36,14 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
             colorScheme="teal"
             size="md"
             onClick={() => {
-              postProblem<string>(props.problemTypeId, {
-                ...getInvalidProblemDto<string>(),
-                input: props.problemInput,
-              }).then((problem) => {
-                setProblemId(problem.id);
-              });
+              toolboxApi
+                .postProblem<string>(props.problemTypeId, {
+                  ...getInvalidProblemDto<string>(),
+                  input: props.problemInput,
+                })
+                .then((problem) => {
+                  setProblemId(problem.id);
+                });
             }}
           >
             Configure {props.problemTypeName} Solver

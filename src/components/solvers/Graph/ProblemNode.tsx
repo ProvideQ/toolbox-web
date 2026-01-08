@@ -27,11 +27,11 @@ import { Handle, NodeProps, Position } from "reactflow";
 import {
   canProblemSolverBeUpdated,
   ProblemDto,
-} from "../../../api/data-model/ProblemDto";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
-import { solverSettingAnyRequiredIsUnfilled } from "../../../api/data-model/SolverSettings";
-import { patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
+import { solverSettingAnyRequiredIsUnfilled } from "../../../api/toolbox/data-model/SolverSettings";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
@@ -154,11 +154,13 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
    */
   function disconnect() {
     for (let problemDto of props.data.problemDtos) {
-      patchProblem(problemDto.typeId, problemDto.id, {
-        solverId: "",
-      }).then((dto) => {
-        updateProblem(dto.id);
-      });
+      toolboxApi
+        .patchProblem(problemDto.typeId, problemDto.id, {
+          solverId: "",
+        })
+        .then((dto) => {
+          updateProblem(dto.id);
+        });
     }
   }
 
@@ -181,11 +183,13 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             setNodeState(ProblemState.SOLVING);
 
             for (let problemDto of props.data.problemDtos) {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                state: ProblemState.SOLVING,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  state: ProblemState.SOLVING,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }
 
             // Update the state again after a delay to attempt
