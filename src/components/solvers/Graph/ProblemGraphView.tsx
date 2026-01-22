@@ -693,6 +693,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         <div
           style={{
             width: "50vw",
+            minWidth: "1000px",
             height: "50vh",
           }}
         >
