@@ -14,7 +14,7 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { PiGraph } from "react-icons/pi";
 import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
@@ -28,6 +28,8 @@ export interface StrategyNodeContentProps {
 }
 
 export const StrategyNodeContent = (props: StrategyNodeContentProps) => {
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+
   return (
     <VStack gap="0px">
       <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
@@ -79,6 +81,7 @@ export const StrategyNodeContent = (props: StrategyNodeContentProps) => {
           textColor="white"
           fontWeight="bold"
           fontSize="small"
+          isDisabled={isRunning}
           _hover={{
             bg: props.button.callback ? "kitBlueAlpha" : "kitBlue",
           }}
@@ -86,9 +89,12 @@ export const StrategyNodeContent = (props: StrategyNodeContentProps) => {
           borderColor="black"
           borderRadius="0.25rem"
           paddingY="1px"
-          onClick={props.button.callback}
+          onClick={() => {
+            setIsRunning(true);
+            props.button.callback?.();
+          }}
         >
-          {props.button.label}
+          {isRunning ? "Running..." : props.button.label}
         </Button>
       </div>
     </VStack>
