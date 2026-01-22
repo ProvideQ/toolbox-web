@@ -15,7 +15,6 @@ export function StrategyNode(props: NodeProps<StrategyNodeData>) {
       border="1px"
       borderRadius="10px"
       padding=".5rem"
-      background="cornflowerblue"
       fontSize="xs"
       css={{
         "&::before, &::after": {
@@ -46,7 +45,7 @@ export function StrategyNode(props: NodeProps<StrategyNodeData>) {
         <StrategyNodeContent
           strategy={props.data.strategy}
           button={{
-            label: "Solve via Strategy",
+            label: "Select Strategy",
             callback: () => {
               props.data.selectCallback(props.data.strategy);
             },

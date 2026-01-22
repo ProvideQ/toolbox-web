@@ -46,7 +46,7 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
         <SolverNodeContent
           solver={props.data.problemSolver}
           button={{
-            label: "Select",
+            label: "Select Solver",
             callback: () => {
               props.data.selectCallback(props.data.problemSolver);
             },
