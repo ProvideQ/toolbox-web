@@ -3,14 +3,16 @@ import { extendTheme } from "@chakra-ui/react";
 const theme = extendTheme({
   semanticTokens: {
     colors: {
-      kitGreen: "#00876C",
-      kitGreenAlpha: "#00876CA0",
+      kitGreen: "#009682",
+      kitGreenAlpha: "#009682A0",
+      kitBlue: "#4664aa",
+      kitBlueAlpha: "#4664aaA0",
       heroGradientStart: {
-        default: "kitGreen",
+        default: "kitBlue",
         _dark: "#e3a7f9",
       },
       heroGradientEnd: {
-        default: "#FF0080",
+        default: "kitGreen",
         _dark: "#fbec8f",
       },
     },

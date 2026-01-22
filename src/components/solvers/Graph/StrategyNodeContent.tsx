@@ -73,14 +73,14 @@ export const StrategyNodeContent = (props: StrategyNodeContentProps) => {
         }}
       >
         <Button
-          bg="kitGreen"
+          bg="#4664aa"
           width="100%"
           height="25px"
           textColor="white"
           fontWeight="bold"
           fontSize="small"
           _hover={{
-            bg: props.button.callback ? "kitGreenAlpha" : "kitGreen",
+            bg: props.button.callback ? "kitBlueAlpha" : "kitBlue",
           }}
           border="1px"
           borderColor="black"
