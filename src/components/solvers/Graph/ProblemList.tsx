@@ -12,7 +12,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { BiPlay } from "react-icons/bi";
 import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
 import { GrInProgress } from "react-icons/gr";
@@ -84,7 +84,7 @@ export const ProblemList = (props: {
 
   function handleClick(
     e: React.MouseEvent<HTMLDivElement>,
-    clickedSubProblem: ProblemDto<any>
+    clickedSubProblem: ProblemDto<any>,
   ) {
     setLastSelectedProblem(clickedSubProblem);
     if (!lastSelectedProblem) {
@@ -107,14 +107,14 @@ export const ProblemList = (props: {
       props.setSelectedProblemIds((prev) => [
         ...prev.filter((id) => !newProblemIds.includes(id)),
         ...newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
+          (id) => lastSelectedProblem.id == id || !prev.includes(id),
         ),
       ]);
     } else {
       props.setSelectedProblemIds((prev) =>
         newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
-        )
+          (id) => lastSelectedProblem.id == id || !prev.includes(id),
+        ),
       );
     }
   }
