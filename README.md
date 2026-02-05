@@ -37,6 +37,6 @@ This repository contains the web frontend for the ProvideQ toolbox.
 
 ## License
 
-Copyright (c) 2022 - 2023 ProvideQ
+Copyright (c) 2022 - 2026 ProvideQ
 
 This project is available under the [MIT License](./LICENSE)
