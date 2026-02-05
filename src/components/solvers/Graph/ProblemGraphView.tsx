@@ -1,5 +1,4 @@
 import { Flex, VStack } from "@chakra-ui/react";
-import type { XYPosition } from "@reactflow/core/dist/esm/types";
 import {
   createContext,
   useCallback,
@@ -8,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import type { XYPosition } from "reactflow";
 import {
   Controls,
   Edge,
@@ -714,7 +714,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     if (solutionViewRef.current) {
       solutionViewRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [solutionViewRef.current]);
+  }, [solutionViewRef]);
 
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
