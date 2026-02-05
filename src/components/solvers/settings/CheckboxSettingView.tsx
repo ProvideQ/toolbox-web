@@ -4,7 +4,7 @@ import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 
 export const CheckboxSettingView = (
-  props: SettingProps<CheckboxSetting & Disabled>
+  props: SettingProps<CheckboxSetting & Disabled>,
 ) => {
   return (
     <Checkbox

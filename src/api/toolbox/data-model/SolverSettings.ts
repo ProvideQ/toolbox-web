@@ -36,14 +36,14 @@ export interface SelectSetting extends SolverSetting {
 }
 
 export async function solverSettingAnyRequiredIsUnfilled(
-  problemDtos: ProblemDto<any>[]
+  problemDtos: ProblemDto<any>[],
 ): Promise<boolean> {
   const solverId = problemDtos[0].solverId;
   if (solverId === undefined) return false;
 
   const settings = await toolboxApi.fetchSolverSettings(
     problemDtos[0].typeId,
-    solverId
+    solverId,
   );
   const requiredSettings = settings
     .filter((s) => s.required)
@@ -53,7 +53,7 @@ export async function solverSettingAnyRequiredIsUnfilled(
 
   for (let problemDto of problemDtos) {
     const filledSettings = new Set(
-      problemDto.solverSettings.map((s) => s.name)
+      problemDto.solverSettings.map((s) => s.name),
     );
     for (let requiredSetting of requiredSettings) {
       if (filledSettings.has(requiredSetting) === false) {

@@ -54,7 +54,7 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
   if (!solvers[props.problemDto.typeId]) getSolvers(props.problemDto.typeId);
 
   const solver = solvers[props.problemDto.typeId]?.find(
-    (s) => s.id === props.problemDto.solverId
+    (s) => s.id === props.problemDto.solverId,
   );
 
   return (
@@ -86,8 +86,8 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
             {props.problemDto.subProblems.map((subProblem) =>
               getAccordionItem(
                 subProblem.subRoutine.typeId,
-                subProblem.subRoutine.description
-              )
+                subProblem.subRoutine.description,
+              ),
             )}
           </Accordion>
         </VStack>

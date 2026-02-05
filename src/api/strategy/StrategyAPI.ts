@@ -9,7 +9,7 @@ export class StrategyApi {
   }
 
   async listStrategies(
-    problemTypeId: string = ""
+    problemTypeId: string = "",
   ): Promise<MetaSolverStrategyDto[]> {
     const query = problemTypeId ? "?type=" + problemTypeId : "";
 
@@ -61,7 +61,7 @@ export class StrategyApi {
 
   updateStrategy(
     strategyId: string,
-    payload: { name: string; code: string }
+    payload: { name: string; code: string },
   ): Promise<MetaSolverStrategyDto> {
     return fetch(`${this.baseUrl}/strategies/${strategyId}`, {
       method: "PATCH",
@@ -90,7 +90,7 @@ export class StrategyApi {
 
   executeStrategy(
     strategyId: string,
-    problemId: string
+    problemId: string,
   ): Promise<MetaSolverStrategyExecutionOutput> {
     return fetch(`${this.baseUrl}/strategies/${strategyId}/execute`, {
       method: "POST",
@@ -102,7 +102,7 @@ export class StrategyApi {
       .catch((error) => {
         console.error(
           `Failed to execute strategy ${strategyId} on problem ${problemId}`,
-          error
+          error,
         );
         throw error;
       });

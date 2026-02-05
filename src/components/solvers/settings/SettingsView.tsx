@@ -51,17 +51,17 @@ export const SettingsView = (props: SettingsViewProps) => {
             .filter(
               (s) =>
                 !props.problemDto.solverSettings.some(
-                  (existingSetting) => existingSetting.name === s.name
-                )
+                  (existingSetting) => existingSetting.name === s.name,
+                ),
             )
             .map((s) => ({ ...s, disabled: !s.required }))
             .concat(
               props.problemDto.solverSettings.map((s) => ({
                 ...s,
                 disabled: false,
-              }))
-            )
-        )
+              })),
+            ),
+        ),
       );
   }, [props.problemDto]);
 
@@ -71,7 +71,7 @@ export const SettingsView = (props: SettingsViewProps) => {
 
   function updateSetting<T extends OptionalSolverSetting>(newSetting: T) {
     const index = settings.findIndex(
-      (setting) => setting.name === newSetting.name
+      (setting) => setting.name === newSetting.name,
     );
     if (index !== -1) {
       settings.splice(index, 1, newSetting);
@@ -99,7 +99,7 @@ export const SettingsView = (props: SettingsViewProps) => {
             s.required &&
             props.problemDto.solverSettings
               .map((s) => s.name)
-              .includes(s.name) === false
+              .includes(s.name) === false,
         )
           ? "red"
           : "grey.300"

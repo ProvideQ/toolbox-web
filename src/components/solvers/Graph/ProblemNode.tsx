@@ -121,7 +121,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedProblemIds, setSelectedProblemIds] = useState<string[]>([]);
   const [nodeState, setNodeState] = useState<ProblemState>(
-    getState(props.data.problemDtos)
+    getState(props.data.problemDtos),
   );
 
   // Update node state when problems change
@@ -262,12 +262,12 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             >
               {extended &&
                 props.data.problemDtos.every((dto) =>
-                  canProblemSolverBeUpdated(dto)
+                  canProblemSolverBeUpdated(dto),
                 ) && (
                   <FaXmark cursor="pointer" color="red" onClick={disconnect} />
                 )}
             </div>
-          )
+          ),
         )}
 
         <HStack

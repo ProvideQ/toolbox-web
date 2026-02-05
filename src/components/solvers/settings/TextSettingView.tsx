@@ -4,7 +4,7 @@ import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 
 export const TextSettingView = (
-  props: SettingProps<TextSetting & Disabled>
+  props: SettingProps<TextSetting & Disabled>,
 ) => {
   return (
     <Textarea

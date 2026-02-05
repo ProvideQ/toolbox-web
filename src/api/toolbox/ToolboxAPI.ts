@@ -24,7 +24,7 @@ export class ToolboxApi {
       .catch((error) => {
         console.error(
           "Could not retrieve problem types " + this.baseUrl + "/problem-types",
-          error
+          error,
         );
         return [];
       });
@@ -42,7 +42,7 @@ export class ToolboxApi {
       .catch((error) => {
         console.error(
           `Could not retrieve solvers of type ${problemTypeId}`,
-          error
+          error,
         );
         return [];
       });
@@ -50,7 +50,7 @@ export class ToolboxApi {
 
   async fetchSubRoutines(
     problemTypeId: string,
-    solverId: string
+    solverId: string,
   ): Promise<SubRoutineDefinitionDto[]> {
     return fetch(
       `${this.baseUrl}/solvers/${problemTypeId}/${solverId}/sub-routines`,
@@ -59,14 +59,14 @@ export class ToolboxApi {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
       .then((response) => response.json())
       .then((json) => json as SubRoutineDefinitionDto[])
       .catch((error) => {
         console.error(
           `Could not retrieve subroutines of solver ${solverId}`,
-          error
+          error,
         );
         return [];
       });
@@ -74,7 +74,7 @@ export class ToolboxApi {
 
   async fetchSolverSettings(
     problemTypeId: string,
-    solverId: string
+    solverId: string,
   ): Promise<SolverSetting[]> {
     return fetch(
       `${this.baseUrl}/solvers/${problemTypeId}/${solverId}/settings`,
@@ -83,14 +83,14 @@ export class ToolboxApi {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
       .then((response) => response.json())
       .then((json) => json as SolverSetting[])
       .catch((error) => {
         console.error(
           `Could not retrieve subroutines of solver ${solverId}`,
-          error
+          error,
         );
         return [];
       });
@@ -103,7 +103,7 @@ export class ToolboxApi {
 
   async fetchProblem<T>(
     problemTypeId: string,
-    problemId: string
+    problemId: string,
   ): Promise<ProblemDto<T>> {
     return fetch(`${this.baseUrl}/problems/${problemTypeId}/${problemId}`, {
       method: "GET",
@@ -129,7 +129,7 @@ export class ToolboxApi {
 
   async postProblem<T>(
     problemTypeId: string,
-    problemRequest: ProblemDto<T>
+    problemRequest: ProblemDto<T>,
   ): Promise<ProblemDto<T>> {
     return fetch(`${this.baseUrl}/problems/${problemTypeId}`, {
       method: "POST",
@@ -156,7 +156,7 @@ export class ToolboxApi {
       solverId?: string;
       state?: ProblemState;
       solverSettings?: SolverSetting[];
-    }
+    },
   ): Promise<ProblemDto<T>> {
     return fetch(`${this.baseUrl}/problems/${problemTypeId}/${problemId}`, {
       method: "PATCH",
@@ -178,7 +178,7 @@ export class ToolboxApi {
   async fetchProblemAttribute(
     problemTypeId: string,
     problemId: string,
-    attributeName: string
+    attributeName: string,
   ): Promise<any> {
     return fetch(
       `${this.baseUrl}/problems/${problemTypeId}/${problemId}/attributes/${attributeName}`,
@@ -187,13 +187,13 @@ export class ToolboxApi {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     )
       .then((response) => response.json())
       .catch((error) => {
         console.error(
           `Could not retrieve attribute ${attributeName} of problem ${problemId}`,
-          error
+          error,
         );
         return undefined;
       });
@@ -211,7 +211,7 @@ export class ToolboxApi {
       .catch((error) => {
         console.error(
           `Could not retrieve example problems of type ${problemTypeId}`,
-          error
+          error,
         );
         return [];
       });

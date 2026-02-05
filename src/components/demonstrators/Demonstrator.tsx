@@ -57,7 +57,7 @@ export const Demonstrator = (props: DemonstratorProps) => {
 
   function updateSetting(newSetting: SolverSetting) {
     const index = settings.findIndex(
-      (setting) => setting.name === newSetting.name
+      (setting) => setting.name === newSetting.name,
     );
     if (index !== -1) {
       settings.splice(index, 1, newSetting);

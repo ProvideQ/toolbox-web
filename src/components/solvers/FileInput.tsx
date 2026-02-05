@@ -1,6 +1,6 @@
 export async function chooseFile(
   multiple?: boolean,
-  accept?: string
+  accept?: string,
 ): Promise<FileList | null> {
   const input = document.createElement("input");
   input.accept = accept || "";

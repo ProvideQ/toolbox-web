@@ -4,7 +4,7 @@ import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 
 export const SelectSettingView = (
-  props: SettingProps<SelectSetting & Disabled>
+  props: SettingProps<SelectSetting & Disabled>,
 ) => {
   return (
     <Select

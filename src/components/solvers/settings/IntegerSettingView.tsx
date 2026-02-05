@@ -10,7 +10,7 @@ import { RangeSetting } from "../../../api/toolbox/data-model/SolverSettings";
 import { SettingProps } from "./SettingProps";
 
 export const IntegerSettingView = (
-  props: SettingProps<RangeSetting & { disabled: boolean }>
+  props: SettingProps<RangeSetting & { disabled: boolean }>,
 ) => {
   return (
     <NumberInput
