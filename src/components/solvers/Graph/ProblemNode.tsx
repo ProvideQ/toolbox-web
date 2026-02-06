@@ -126,7 +126,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
 
   // Update node state when problems change
   useEffect(() => {
-    setNodeState(getState(props.data.problemDtos));
+    // Defer the state update to avoid calling setState synchronously in effect
+    setTimeout(() => {
+      setNodeState(getState(props.data.problemDtos));
+    }, 0);
   }, [props.data.problemDtos]);
 
   const { topHandle, bottomHandle } = getNodeType(props.data);

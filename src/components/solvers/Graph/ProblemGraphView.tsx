@@ -655,9 +655,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     for (let scheduledNodeUpdate of scheduledNodeUpdates) {
       updateNode(scheduledNodeUpdate);
     }
-    setScheduledNodeUpdates((nodes) =>
-      nodes.filter((node) => !scheduledNodeUpdates.includes(node)),
-    );
+    // Avoid calling setState synchronously inside the effect body; defer to next tick
+    setTimeout(() => {
+      setScheduledNodeUpdates((nodes) =>
+        nodes.filter((node) => !scheduledNodeUpdates.includes(node)),
+      );
+    }, 0);
   }, [scheduledNodeUpdates, updateNode]);
 
   // Repopulate graph when problem changes
@@ -696,7 +699,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   useEffect(() => {
     let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
-      setNodeIds(ids);
+      // Defer node id update to avoid synchronous setState inside effect
+      setTimeout(() => setNodeIds(ids), 0);
     }
   }, [graphInstance, nodeIds, nodes]);
 

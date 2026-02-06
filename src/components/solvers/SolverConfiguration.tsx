@@ -21,7 +21,8 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
   // Reset problemId when problemInput is empty
   useEffect(() => {
     if (props.problemInput === "") {
-      setProblemId(null);
+      // Defer to avoid synchronous setState inside an effect
+      setTimeout(() => setProblemId(null), 0);
     }
   }, [props.problemInput]);
 
