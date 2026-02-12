@@ -5,12 +5,12 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from "@chakra-ui/react";
-import { RangeSetting } from "../../../api/data-model/SolverSettings";
+import { RangeSetting } from "../../../api/toolbox/data-model/SolverSettings";
 
 import { SettingProps } from "./SettingProps";
 
 export const IntegerSettingView = (
-  props: SettingProps<RangeSetting & { disabled: boolean }>
+  props: SettingProps<RangeSetting & { disabled: boolean }>,
 ) => {
   return (
     <NumberInput
@@ -22,7 +22,7 @@ export const IntegerSettingView = (
       onChange={(e) => {
         props.updateSetting({
           ...props.setting,
-          value: parseInt(e),
+          value: Number.parseInt(e),
         });
       }}
     >

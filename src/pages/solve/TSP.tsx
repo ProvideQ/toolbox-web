@@ -29,7 +29,7 @@ const TSP: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="tsp"
+        problemTypeId="TSP"
         text={tsp}
         setText={setTsp}
         textPlaceholder={
@@ -37,7 +37,7 @@ const TSP: NextPage = () => {
         }
       />
 
-      <SolverConfiguration problemTypeId="tsp" problemInput={tsp} />
+      <SolverConfiguration problemTypeId="TSP" problemInput={tsp} />
     </Layout>
   );
 };

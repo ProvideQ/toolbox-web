@@ -28,7 +28,7 @@ const SharpSAT: NextPage = () => {
         textPlaceholder='Try "a and (not a or not b)"'
         text={logicalExpressionString}
         setText={setLogicalExpressionString}
-        problemTypeId="sharpsat"
+        problemTypeId="SharpSAT"
         grammar={{
           grammar: SAT_language,
           language: "SAT_language",
@@ -41,7 +41,7 @@ const SharpSAT: NextPage = () => {
       <Divider />
 
       <SolverConfiguration
-        problemTypeId="sharpsat"
+        problemTypeId="SharpSAT"
         problemInput={logicalExpressionString}
       />
     </Layout>

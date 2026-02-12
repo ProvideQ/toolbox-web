@@ -14,30 +14,32 @@ import {
   Tooltip,
   VStack,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
-import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { PiGraph } from "react-icons/pi";
+import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
 
-export interface SolverNodeContentProps {
-  solver: ProblemSolverInfo;
+export interface StrategyNodeContentProps {
+  strategy: MetaSolverStrategyDto;
   button: {
     label: ReactNode;
     callback?: () => void;
   };
 }
 
-export const SolverNodeContent = (props: SolverNodeContentProps) => {
+export const StrategyNodeContent = (props: StrategyNodeContentProps) => {
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+
   return (
     <VStack gap="0px">
       <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
-        <Tooltip hasArrow label="Solver" placement="bottom">
+        <Tooltip hasArrow label="Strategy" placement="bottom">
           <div>
-            <FaGears size="2rem" />
+            <PiGraph size="2rem" />
           </div>
         </Tooltip>
         <Text padding=".25rem" fontWeight="semibold">
-          {props.solver.name}
+          {props.strategy.name}
         </Text>
 
         <Popover>
@@ -51,13 +53,13 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
               <PopoverArrow />
               <PopoverCloseButton />
               <PopoverHeader>
-                <Text fontWeight="semibold">{props.solver.name}</Text>
+                <Text fontWeight="semibold">{props.strategy.name}</Text>
               </PopoverHeader>
               <PopoverBody>
-                <Text>{props.solver.description}</Text>
+                <Text>{props.strategy.code}</Text>
               </PopoverBody>
               <PopoverFooter>
-                <Text fontSize="xs">{props.solver.id}</Text>
+                <Text fontSize="xs">{props.strategy.id}</Text>
               </PopoverFooter>
             </PopoverContent>
           </Portal>
@@ -73,22 +75,26 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
         }}
       >
         <Button
-          bg="kitGreen"
+          bg="#4664aa"
           width="100%"
           height="25px"
           textColor="white"
           fontWeight="bold"
           fontSize="small"
+          isDisabled={isRunning}
           _hover={{
-            bg: props.button.callback ? "kitGreenAlpha" : "kitGreen",
+            bg: props.button.callback ? "kitBlueAlpha" : "kitBlue",
           }}
           border="1px"
           borderColor="black"
           borderRadius="0.25rem"
           paddingY="1px"
-          onClick={props.button.callback}
+          onClick={() => {
+            setIsRunning(true);
+            props.button.callback?.();
+          }}
         >
-          {props.button.label}
+          {isRunning ? "Running..." : props.button.label}
         </Button>
       </div>
     </VStack>

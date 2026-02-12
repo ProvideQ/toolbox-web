@@ -15,7 +15,8 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run linter
@@ -30,7 +31,8 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run tests
@@ -45,7 +47,8 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run tests

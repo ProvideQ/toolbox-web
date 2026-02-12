@@ -1,21 +1,20 @@
 import { Box, VStack } from "@chakra-ui/react";
 import { Handle, NodeProps, Position } from "reactflow";
-import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
-import { SolverNodeContent } from "./SolverNodeContent";
+import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
+import { StrategyNodeContent } from "./StrategyNodeContent";
 
-export interface SolverNodeData {
-  problemSolver: ProblemSolverInfo;
-  selectCallback: (problemSolver: ProblemSolverInfo) => void;
+export interface StrategyNodeData {
+  strategy: MetaSolverStrategyDto;
+  selectCallback: (strategy: MetaSolverStrategyDto) => void;
 }
 
-export function SolverNode(props: NodeProps<SolverNodeData>) {
+export function StrategyNode(props: NodeProps<StrategyNodeData>) {
   return (
     <Box
       cursor="default"
       border="1px"
       borderRadius="10px"
       padding=".5rem"
-      background="ghostwhite"
       fontSize="xs"
       css={{
         "&::before, &::after": {
@@ -43,12 +42,12 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
     >
       <Handle type="target" position={Position.Top} />
       <VStack gap="0px" minWidth="120px">
-        <SolverNodeContent
-          solver={props.data.problemSolver}
+        <StrategyNodeContent
+          strategy={props.data.strategy}
           button={{
-            label: "Select Solver",
+            label: "Select Strategy",
             callback: () => {
-              props.data.selectCallback(props.data.problemSolver);
+              props.data.selectCallback(props.data.strategy);
             },
           }}
         />

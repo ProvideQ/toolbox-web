@@ -1,5 +1,4 @@
 import { Flex, VStack } from "@chakra-ui/react";
-import type { XYPosition } from "@reactflow/core/dist/esm/types";
 import {
   createContext,
   useCallback,
@@ -8,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import type { XYPosition } from "reactflow";
 import {
   Controls,
   Edge,
@@ -19,16 +19,20 @@ import {
   useNodesState,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SubRoutineDefinitionDto } from "../../../api/data-model/SubRoutineDefinitionDto";
-import { SubRoutineReferenceDto } from "../../../api/data-model/SubRoutineReferenceDto";
-import { fetchProblem, patchProblem } from "../../../api/ToolboxAPI";
+import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
+import { strategyApi } from "../../../api/strategy/StrategyAPI";
+import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SubRoutineDefinitionDto } from "../../../api/toolbox/data-model/SubRoutineDefinitionDto";
+import { SubRoutineReferenceDto } from "../../../api/toolbox/data-model/SubRoutineReferenceDto";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { SolutionView } from "../SolutionView";
+import { useMetaSolverStrategies } from "./MetaSolverStrategyProvider";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
-import { SolverNode } from "./SolverNode";
+import { SolverNode, SolverNodeData } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
+import { StrategyNode, StrategyNodeData } from "./StrategyNode";
 
 interface ProblemEdgeData {
   sourceProblemDto: ProblemDto<any>;
@@ -53,7 +57,7 @@ export interface ProblemNodeIdentifier {
  */
 function getNodeId(
   identifier: ProblemNodeIdentifier,
-  parentNode: Node
+  parentNode: Node,
 ): string {
   return (
     parentNode.id +
@@ -73,15 +77,15 @@ function getParentNodeId(nodeId: string): string {
 function getChildNodes(
   nodes: Node[],
   parentNode: Node,
-  typeId?: string
+  typeId?: string,
 ): Node[] {
   return nodes.filter((n) => {
-    if (n.type !== "problemNode") return false;
+    if (n.type !== "problemNode" && n.type !== "strategyNode") return false;
     if (!n.id.startsWith(parentNode.id)) return false;
 
     const subString = n.id.substring(parentNode.id.length + 1);
     return (
-      subString.indexOf("|") === -1 &&
+      !subString.includes("|") &&
       (typeId == undefined || subString.startsWith(typeId))
     );
   });
@@ -93,7 +97,7 @@ function getChildNodes(
  * @param fromId The source node
  */
 function getEdgeId(to: ProblemNodeIdentifier, fromId: Node): string {
-  return fromId + "->" + getNodeId(to, fromId);
+  return fromId.id + "->" + getNodeId(to, fromId);
 }
 
 function getNodePosition(data: ProblemNodeData): XYPosition {
@@ -126,10 +130,13 @@ function groupBySolver(problemDtos: ProblemDto<any>[]) {
 
 const nodeTypes: NodeTypes = {
   solverNode: SolverNode,
+  strategyNode: StrategyNode,
   problemNode: ProblemNode,
 };
 const solverNodeIdentifier: string = "-solver-node-";
 const solverEdgeIdentifier: string = "-solver-edge-";
+const strategyNodeIdentifier: string = "-strategy-node-";
+const strategyEdgeIdentifier: string = "-strategy-edge-";
 
 export interface GraphUpdateProps {
   updateProblem: (problemId: string) => void;
@@ -151,6 +158,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   const solutionViewRef = useRef<HTMLDivElement>(null);
 
   const { getSolvers } = useSolvers();
+  const { getStrategies } = useMetaSolverStrategies();
 
   /**
    * Node updates are scheduled in order to provide an asynchronous update mechanism.
@@ -159,7 +167,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   const scheduleNodeUpdate = useCallback((updateNode: Node) => {
     setScheduledNodeUpdates((nodes) =>
-      nodes.filter((n) => n.id != updateNode.id).concat(updateNode)
+      nodes.filter((n) => n.id != updateNode.id).concat(updateNode),
     );
   }, []);
 
@@ -174,7 +182,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         return previousNodes.concat(newNode);
       });
     },
-    [setNodes]
+    [setNodes],
   );
 
   const addEdge = useCallback(
@@ -188,7 +196,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         return edges.concat(newEdge);
       });
     },
-    [setEdges]
+    [setEdges],
   );
 
   const createProblemNode = useCallback(
@@ -204,7 +212,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
       return node;
     },
-    [addNode]
+    [addNode],
   );
 
   const updateEdge = useCallback(
@@ -218,27 +226,115 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             animated:
               edge.data?.sourceProblemDto.state === ProblemState.SOLVING,
           };
-        })
+        }),
       );
     },
-    [setEdges]
+    [setEdges],
   );
 
   const createSolverNodes = useCallback(
     (node: Node<ProblemNodeData>) => {
+      getStrategies(node.data.problemDtos[0].typeId).then((strategies) => {
+        console.log("strategies", strategies);
+        for (let i = 0; i < strategies.length; i++) {
+          let strategyNodeId =
+            node.id + strategyNodeIdentifier + strategies[i].id.toString();
+
+          const strategyNode: Node<StrategyNodeData> = {
+            id: strategyNodeId,
+            data: {
+              strategy: strategies[i],
+              selectCallback: (strategy: MetaSolverStrategyDto) => {
+                let edge = edges.find((e) =>
+                  e.target.startsWith(node.id + strategyEdgeIdentifier),
+                );
+                if (edge) {
+                  updateEdge(edge);
+                }
+
+                // Update graph every second while solving
+                // This is needed because we don't send the requests to update the graph
+                // and instead call the interpreter which handles all in one request
+                const updateTimer = setInterval(() => {
+                  toolboxApi
+                    .fetchProblem(
+                      node.data.problemDtos[0].typeId,
+                      node.data.problemDtos[0].id,
+                    )
+                    .then((updatedDto) => {
+                      let updatedNode: Node<ProblemNodeData> = {
+                        ...node,
+                        data: {
+                          ...node.data,
+                          problemDtos: [updatedDto],
+                        },
+                      };
+                      scheduleNodeUpdate(updatedNode);
+                    });
+                }, 1000);
+                Promise.all(
+                  node.data.problemDtos.map((problemDto) =>
+                    strategyApi.executeStrategy(strategy.id, problemDto.id),
+                  ),
+                )
+                  .then((results) => {
+                    clearInterval(updateTimer);
+                    setNodes((previousNodes) =>
+                      previousNodes.map((n) => {
+                        if (n.id !== node.id) return n;
+
+                        let updatedNode: Node<ProblemNodeData> = {
+                          ...n,
+                          data: {
+                            ...n.data,
+                            problemDtos: results
+                              .map((r) => r.result)
+                              .filter(
+                                (dto): dto is ProblemDto<any> =>
+                                  dto !== undefined,
+                              ),
+                          },
+                        };
+                        scheduleNodeUpdate(updatedNode);
+
+                        return updatedNode;
+                      }),
+                    );
+                  })
+                  .catch(() => clearInterval(updateTimer));
+              },
+            },
+            position: {
+              x:
+                node.position.x +
+                getNodePositionX({ index: i, count: strategies.length }),
+              y: getNodePositionY(node.data.level + 1.5),
+            },
+            type: "strategyNode",
+          };
+
+          addNode(strategyNode);
+
+          addEdge({
+            id: node.id + solverEdgeIdentifier + strategyNodeId,
+            type: "step",
+            source: node.id,
+            target: strategyNodeId,
+          });
+        }
+      });
       getSolvers(node.data.problemDtos[0].typeId).then((solvers) => {
         for (let i = 0; i < solvers.length; i++) {
           let solverId =
             node.id + solverNodeIdentifier + solvers[i].id.toString();
 
-          addNode({
+          const solverNode: Node<SolverNodeData> = {
             id: solverId,
             data: {
-              problemIds: node.data.problemDtos.map((x) => x.id),
               problemSolver: solvers[i],
               selectCallback: (problemSolver: ProblemSolverInfo) => {
                 let edge = edges.find((e) =>
-                  e.target.startsWith(node.id + solverEdgeIdentifier)
+                  e.target.startsWith(node.id + solverEdgeIdentifier),
                 );
                 if (edge) {
                   updateEdge(edge);
@@ -246,10 +342,10 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
                 Promise.all(
                   node.data.problemDtos.map((problemDto) =>
-                    patchProblem(problemDto.typeId, problemDto.id, {
+                    toolboxApi.patchProblem(problemDto.typeId, problemDto.id, {
                       solverId: problemSolver.id,
-                    })
-                  )
+                    }),
+                  ),
                 ).then((dtos) => {
                   setNodes((previousNodes) =>
                     previousNodes.map((n) => {
@@ -265,7 +361,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                       scheduleNodeUpdate(updatedNode);
 
                       return updatedNode;
-                    })
+                    }),
                   );
                 });
               },
@@ -277,7 +373,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               y: getNodePositionY(node.data.level + 1),
             },
             type: "solverNode",
-          });
+          };
+
+          addNode(solverNode);
 
           addEdge({
             id: node.id + solverEdgeIdentifier + solverId,
@@ -293,32 +391,44 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       addNode,
       edges,
       getSolvers,
+      getStrategies,
       scheduleNodeUpdate,
       setNodes,
       updateEdge,
-    ]
+    ],
   );
 
   const removeSolverNodes = useCallback(
     (node: Node<ProblemNodeData>) => {
       setNodes((previousNodes) =>
         previousNodes.filter(
-          (n) => !n.id.startsWith(node.id + solverNodeIdentifier)
-        )
+          (n) =>
+            !n.id.startsWith(node.id + solverNodeIdentifier) &&
+            !n.id.startsWith(node.id + strategyNodeIdentifier),
+        ),
       );
       setEdges((edges) =>
-        edges.filter((e) => !e.id.startsWith(node.id + solverEdgeIdentifier))
+        edges.filter(
+          (e) =>
+            !e.id.startsWith(node.id + solverEdgeIdentifier) &&
+            !e.id.startsWith(node.id + strategyEdgeIdentifier),
+        ),
       );
     },
-    [setEdges, setNodes]
+    [setEdges, setNodes],
   );
 
   const updateSolverNodes = useCallback(
     (node: Node<ProblemNodeData>) => {
       // Load solver nodes when user action is required
+      if (node.data.problemDtos === undefined) {
+        removeSolverNodes(node);
+        return;
+      }
+
       if (node.data.problemDtos[0].solverId === undefined) {
         const existingSolverNode = nodes.find((n) =>
-          n.id.startsWith(node.id + solverNodeIdentifier)
+          n.id.startsWith(node.id + solverNodeIdentifier),
         );
         if (existingSolverNode === undefined) {
           createSolverNodes(node);
@@ -327,23 +437,23 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         removeSolverNodes(node);
       }
     },
-    [createSolverNodes, nodes, removeSolverNodes]
+    [createSolverNodes, nodes, removeSolverNodes],
   );
 
   const updateNodeData = useCallback(
     (
       nodeId: string,
-      updateNode: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>
+      updateNode: (node: Node<ProblemNodeData>) => Node<ProblemNodeData>,
     ) => {
       setNodes((previousNodes) =>
         previousNodes.map((node) => {
           if (node.id !== nodeId) return node;
 
           return updateNode(node);
-        })
+        }),
       );
     },
-    [setNodes]
+    [setNodes],
   );
 
   const updateProblem = useCallback(
@@ -354,7 +464,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         }
 
         return n.data.problemDtos.find(
-          (p: ProblemDto<any>) => p.id === problemId
+          (p: ProblemDto<any>) => p.id === problemId,
         );
       });
 
@@ -367,13 +477,15 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       if (parentNode) {
         scheduleNodeUpdate(parentNode);
       } else {
-        fetchProblem(node.data.problemDtos[0].typeId, problemId).then((dto) => {
-          node.data.problemDtos = [dto];
-          scheduleNodeUpdate(node);
-        });
+        toolboxApi
+          .fetchProblem(node.data.problemDtos[0].typeId, problemId)
+          .then((dto) => {
+            node.data.problemDtos = [dto];
+            scheduleNodeUpdate(node);
+          });
       }
     },
-    [nodes, scheduleNodeUpdate]
+    [nodes, scheduleNodeUpdate],
   );
 
   const updateNode = useCallback(
@@ -385,7 +497,6 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         ...n,
         data: node.data,
       }));
-      console.log(node.id, node.position.x, node.position.y);
 
       // Solver id and thus sub problems are the same for all problems, so we can just use the first one
       let subProblemsPerType: Map<
@@ -397,12 +508,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       node.data.problemDtos[0].subProblems.forEach((subRoutineReference, i) => {
         for (let problemDto of node.data.problemDtos) {
           const references = subProblemsPerType.get(
-            subRoutineReference.subRoutine
+            subRoutineReference.subRoutine,
           );
           if (references) {
             subProblemsPerType.set(
               subRoutineReference.subRoutine,
-              references.concat(problemDto.subProblems)
+              references.concat(problemDto.subProblems),
             );
           } else {
             subProblemsPerType.set(subRoutineReference.subRoutine, [
@@ -423,8 +534,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           subProblems
             .flatMap((x) => x.subProblemIds)
             .map((subProblemId) =>
-              fetchProblem(subRoutineReference.typeId, subProblemId)
-            )
+              toolboxApi.fetchProblem(subRoutineReference.typeId, subProblemId),
+            ),
         ).then((subProblemDtos) => {
           // Create sub problem nodes per used solver
           const problemsPerSolver = groupBySolver(subProblemDtos);
@@ -433,7 +544,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           let unusedChildNodes = getChildNodes(
             nodes,
             node,
-            subRoutineReference.typeId
+            subRoutineReference.typeId,
           );
 
           let entries = Array.from(problemsPerSolver.entries());
@@ -443,7 +554,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             // Schedule update for unsolved base node if all subproblems were solved
             if (
               node.data.problemDtos.some(
-                (dto) => dto.state === ProblemState.SOLVING
+                (dto) => dto.state === ProblemState.SOLVING,
               ) &&
               problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
             ) {
@@ -465,7 +576,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
             // Remove child node from unused list
             unusedChildNodes = unusedChildNodes.filter(
-              (n) => n.id !== subNodeId
+              (n) => n.id !== subNodeId,
             );
 
             const subNode = nodes.find((n) => n.id === subNodeId);
@@ -500,7 +611,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                   sourceProblemDto: problemDtos,
                 },
                 animated: problemDtos.some(
-                  (dto) => dto.state === ProblemState.SOLVING
+                  (dto) => dto.state === ProblemState.SOLVING,
                 ),
               });
 
@@ -513,10 +624,10 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           for (let childNode of unusedChildNodes) {
             removeSolverNodes(childNode);
             setNodes((previousNodes) =>
-              previousNodes.filter((n) => n.id !== childNode.id)
+              previousNodes.filter((n) => n.id !== childNode.id),
             );
             setEdges((edges) =>
-              edges.filter((e) => !e.id.startsWith(childNode.id))
+              edges.filter((e) => !e.id.startsWith(childNode.id)),
             );
           }
         });
@@ -535,7 +646,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       updateNodeData,
       updateProblem,
       updateSolverNodes,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -544,32 +655,37 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     for (let scheduledNodeUpdate of scheduledNodeUpdates) {
       updateNode(scheduledNodeUpdate);
     }
-    setScheduledNodeUpdates((nodes) =>
-      nodes.filter((node) => !scheduledNodeUpdates.includes(node))
-    );
+    // Avoid calling setState synchronously inside the effect body; defer to next tick
+    setTimeout(() => {
+      setScheduledNodeUpdates((nodes) =>
+        nodes.filter((node) => !scheduledNodeUpdates.includes(node)),
+      );
+    }, 0);
   }, [scheduledNodeUpdates, updateNode]);
 
   // Repopulate graph when problem changes
   useEffect(() => {
     setNodes([]);
     setEdges([]);
-    fetchProblem(props.problemTypeId, props.problemId).then((problemDto) => {
-      if (problemDto.error) {
-        console.error(problemDto.error);
-        return;
-      }
+    toolboxApi
+      .fetchProblem(props.problemTypeId, props.problemId)
+      .then((problemDto) => {
+        if (problemDto.error) {
+          console.error(problemDto.error);
+          return;
+        }
 
-      // Create root node
-      let rootNode = createProblemNode(props.problemId, {
-        problemDtos: [problemDto],
-        level: 0,
-        levelInfo: {
-          index: 0,
-          count: 1,
-        },
+        // Create root node
+        let rootNode = createProblemNode(props.problemId, {
+          problemDtos: [problemDto],
+          level: 0,
+          levelInfo: {
+            index: 0,
+            count: 1,
+          },
+        });
+        scheduleNodeUpdate(rootNode);
       });
-      scheduleNodeUpdate(rootNode);
-    });
   }, [
     createProblemNode,
     props.problemId,
@@ -581,9 +697,10 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   // Update node ids when nodes change
   useEffect(() => {
-    let ids = nodes.sort((a, b) => a.id.localeCompare(b.id)).map((n) => n.id);
+    let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
-      setNodeIds(ids);
+      // Defer node id update to avoid synchronous setState inside effect
+      setTimeout(() => setNodeIds(ids), 0);
     }
   }, [graphInstance, nodeIds, nodes]);
 
@@ -601,7 +718,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     if (solutionViewRef.current) {
       solutionViewRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [solutionViewRef.current]);
+  }, [solutionViewRef]);
 
   return (
     <GraphUpdateContext.Provider value={{ updateProblem }}>
@@ -609,6 +726,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         <div
           style={{
             width: "50vw",
+            minWidth: "1000px",
             height: "50vh",
           }}
         >

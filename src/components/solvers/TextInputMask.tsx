@@ -1,7 +1,7 @@
 import { Divider } from "@chakra-ui/react";
 import Head from "next/head";
 import { ReactElement, useState } from "react";
-import { baseUrl } from "../../api/ToolboxAPI";
+import { baseUrl } from "../../api/toolbox/ToolboxAPI";
 import { Container } from "../Container";
 import { EditorControls } from "./EditorControls";
 import {

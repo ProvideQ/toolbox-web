@@ -1,4 +1,4 @@
-import { fetchSolverSettings } from "../ToolboxAPI";
+import { toolboxApi } from "../ToolboxAPI";
 import { ProblemDto } from "./ProblemDto";
 
 export enum SolverSettingType {
@@ -36,12 +36,15 @@ export interface SelectSetting extends SolverSetting {
 }
 
 export async function solverSettingAnyRequiredIsUnfilled(
-  problemDtos: ProblemDto<any>[]
+  problemDtos: ProblemDto<any>[],
 ): Promise<boolean> {
   const solverId = problemDtos[0].solverId;
   if (solverId === undefined) return false;
 
-  const settings = await fetchSolverSettings(problemDtos[0].typeId, solverId);
+  const settings = await toolboxApi.fetchSolverSettings(
+    problemDtos[0].typeId,
+    solverId,
+  );
   const requiredSettings = settings
     .filter((s) => s.required)
     .map((s) => s.name);
@@ -49,9 +52,11 @@ export async function solverSettingAnyRequiredIsUnfilled(
   if (requiredSettings.length === 0) return false;
 
   for (let problemDto of problemDtos) {
-    const filledSettings = problemDto.solverSettings.map((s) => s.name);
+    const filledSettings = new Set(
+      problemDto.solverSettings.map((s) => s.name),
+    );
     for (let requiredSetting of requiredSettings) {
-      if (filledSettings.includes(requiredSetting) === false) {
+      if (filledSettings.has(requiredSetting) === false) {
         return true;
       }
     }

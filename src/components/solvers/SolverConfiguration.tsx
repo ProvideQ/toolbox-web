@@ -1,7 +1,10 @@
-import { Button, Flex, Tooltip } from "@chakra-ui/react";
+import { Button, Flex, HStack, Link, Tooltip } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
-import { getInvalidProblemDto } from "../../api/data-model/ProblemDto";
-import { postProblem } from "../../api/ToolboxAPI";
+import { BsArrowUpRight } from "react-icons/bs";
+import { FaPlay } from "react-icons/fa6";
+import { getInvalidProblemDto } from "../../api/toolbox/data-model/ProblemDto";
+import { toolboxApi } from "../../api/toolbox/ToolboxAPI";
+import { StrategyProvider } from "./Graph/MetaSolverStrategyProvider";
 import { ProblemGraphView } from "./Graph/ProblemGraphView";
 import { SolverProvider } from "./Graph/SolverProvider";
 
@@ -18,7 +21,8 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
   // Reset problemId when problemInput is empty
   useEffect(() => {
     if (props.problemInput === "") {
-      setProblemId(null);
+      // Defer to avoid synchronous setState inside an effect
+      setTimeout(() => setProblemId(null), 0);
     }
   }, [props.problemInput]);
 
@@ -31,30 +35,51 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
   return (
     <Flex alignSelf="center">
       {problemId === null ? (
-        <Tooltip label="Unleash the Qubits!" color="white">
-          <Button
-            colorScheme="teal"
-            size="md"
-            onClick={() => {
-              postProblem<string>(props.problemTypeId, {
-                ...getInvalidProblemDto<string>(),
-                input: props.problemInput,
-              }).then((problem) => {
-                setProblemId(problem.id);
-              });
-            }}
-          >
-            Configure {props.problemTypeName} Solver
-          </Button>
-        </Tooltip>
+        <HStack>
+          <Tooltip label="Interactively configure and solve this problem using a selection of various solvers.">
+            <Button
+              bg="kitGreen"
+              textColor="white"
+              size="md"
+              gap="5px"
+              onClick={() => {
+                toolboxApi
+                  .postProblem<string>(props.problemTypeId, {
+                    ...getInvalidProblemDto<string>(),
+                    input: props.problemInput,
+                  })
+                  .then((problem) => {
+                    setProblemId(problem.id);
+                  });
+              }}
+            >
+              <FaPlay />
+              Configure {props.problemTypeName ?? props.problemTypeId} Solver
+            </Button>
+          </Tooltip>
+
+          <Tooltip label="Create and save a strategy what solvers to use.">
+            <Link
+              href={process.env.NEXT_PUBLIC_MSS_EDITOR_BASE_URL}
+              target="_blank"
+            >
+              <Button bg="kitBlue" textColor="white" size="md" gap="5px">
+                <BsArrowUpRight />
+                Go to Strategy Editor
+              </Button>
+            </Link>
+          </Tooltip>
+        </HStack>
       ) : (
         <SolverProvider>
-          <div ref={problemGraphViewRef}>
-            <ProblemGraphView
-              problemTypeId={props.problemTypeId}
-              problemId={problemId}
-            />
-          </div>
+          <StrategyProvider>
+            <div ref={problemGraphViewRef}>
+              <ProblemGraphView
+                problemTypeId={props.problemTypeId}
+                problemId={problemId}
+              />
+            </div>
+          </StrategyProvider>
         </SolverProvider>
       )}
     </Flex>

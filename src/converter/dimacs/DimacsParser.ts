@@ -120,7 +120,7 @@ export class DimacsParser {
     let actualVariables = this.variables.size;
     if (expectedVariables != actualVariables) {
       throw new Error(
-        `Expected ${expectedVariables} variables, but received ${actualVariables}`
+        `Expected ${expectedVariables} variables, but received ${actualVariables}`,
       );
     }
   }
@@ -149,7 +149,7 @@ export class DimacsParser {
         break;
       default:
         throw new Error(
-          `Unexpected token ${token.name} in formula at line ${token.position.line} column ${token.position.col}`
+          `Unexpected token ${token.name} in formula at line ${token.position.line} column ${token.position.col}`,
         );
     }
   }
@@ -187,7 +187,7 @@ export class DimacsParser {
     let token = this.nextToken();
     if (token.name != tokenType)
       throw new Error(
-        `Expected ${tokenType} but received ${token.name} (${token.lexeme}) at line ${token.position.line} column ${token.position.col}`
+        `Expected ${tokenType} but received ${token.name} (${token.lexeme}) at line ${token.position.line} column ${token.position.col}`,
       );
 
     return token;

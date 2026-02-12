@@ -12,7 +12,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useState } from "react";
 import { BiPlay } from "react-icons/bi";
 import { FaQuestion, FaQuestionCircle } from "react-icons/fa";
 import { GrInProgress } from "react-icons/gr";
@@ -21,10 +21,10 @@ import { MdError } from "react-icons/md";
 import {
   canProblemSolverBeUpdated,
   ProblemDto,
-} from "../../../api/data-model/ProblemDto";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
-import { patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
@@ -54,11 +54,13 @@ export const ProblemList = (props: {
           <BiPlay
             color="green"
             onClick={() => {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                state: ProblemState.SOLVING,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  state: ProblemState.SOLVING,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }}
           />
         );
@@ -82,7 +84,7 @@ export const ProblemList = (props: {
 
   function handleClick(
     e: React.MouseEvent<HTMLDivElement>,
-    clickedSubProblem: ProblemDto<any>
+    clickedSubProblem: ProblemDto<any>,
   ) {
     setLastSelectedProblem(clickedSubProblem);
     if (!lastSelectedProblem) {
@@ -105,14 +107,14 @@ export const ProblemList = (props: {
       props.setSelectedProblemIds((prev) => [
         ...prev.filter((id) => !newProblemIds.includes(id)),
         ...newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
+          (id) => lastSelectedProblem.id == id || !prev.includes(id),
         ),
       ]);
     } else {
       props.setSelectedProblemIds((prev) =>
         newProblemIds.filter(
-          (id) => lastSelectedProblem.id == id || !prev.includes(id)
-        )
+          (id) => lastSelectedProblem.id == id || !prev.includes(id),
+        ),
       );
     }
   }
@@ -148,7 +150,7 @@ export const ProblemList = (props: {
           width="100%"
           alignItems="center"
           bg={
-            props.selectedProblemIds.find((id) => id == problemDto.id)
+            props.selectedProblemIds.some((id) => id == problemDto.id)
               ? "lightgrey"
               : "ghostwhite"
           }
@@ -167,11 +169,13 @@ export const ProblemList = (props: {
             fontSize="2xs"
             value={problemDto.solverId ?? ""}
             onChange={(e) => {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                solverId: e.target.value,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  solverId: e.target.value,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }}
           >
             {[

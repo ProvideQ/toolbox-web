@@ -6,13 +6,13 @@ import { regexNOT } from "../../../src/converter/dimacs/Syntax/LogicalExpression
 
 function isEquivalentLogicalExpression(f1: string, f2: string) {
   expect(f1.replace(regexNOT, "!").replace(regexBlank, "")).toBe(
-    f2.replace(regexNOT, "!").replace(regexBlank, "")
+    f2.replace(regexNOT, "!").replace(regexBlank, ""),
   );
 }
 
 function isEquivalentDimacs(f1: string, f2: string) {
   expect(f1.replace(regexComment, "").replace(regexBlank, "")).toBe(
-    f2.replace(regexComment, "").replace(regexBlank, "")
+    f2.replace(regexComment, "").replace(regexBlank, ""),
   );
 }
 
@@ -66,8 +66,8 @@ describe("Parsing", () => {
     (logicalExpression: string, dimacs: string) => {
       isEquivalentLogicalExpression(
         dimacsParser.parseLogicalExpression(dimacs),
-        logicalExpression
+        logicalExpression,
       );
-    }
+    },
   );
 });
