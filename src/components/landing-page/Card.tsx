@@ -26,18 +26,17 @@ export const Card = (props: CardProps & { refer: string }) => {
             fontSize="xs"
             textTransform="uppercase"
           >
-            {props.tags &&
-              props.tags.map((tag) => (
-                <Badge
-                  key={tag}
-                  borderRadius="full"
-                  px="2"
-                  colorScheme="teal"
-                  mr="2"
-                >
-                  {tag}
-                </Badge>
-              ))}
+            {props.tags?.map((tag) => (
+              <Badge
+                key={tag}
+                borderRadius="full"
+                px="2"
+                color="kitGreen"
+                mr="2"
+              >
+                {tag}
+              </Badge>
+            ))}
           </Box>
         </Box>
 
