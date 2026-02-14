@@ -48,9 +48,11 @@ export const Card = (props: CardProps & { refer: string }) => {
           lineHeight="tight"
           noOfLines={1}
         >
-          <NextLink href={props.href} passHref>
-            <LinkOverlay>{props.title}</LinkOverlay>
-          </NextLink>
+          {/* Render LinkOverlay as Next.js Link so it becomes a single <a> element
+              and avoids nested anchors / deprecated legacyBehavior. */}
+          <LinkOverlay as={NextLink} href={props.href}>
+            {props.title}
+          </LinkOverlay>
         </Box>
 
         <Box>{props.description}</Box>
