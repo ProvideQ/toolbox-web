@@ -25,15 +25,21 @@ export const StrategyProvider = (props: { children: ReactNode }) => {
   // Function to get solvers, either from cache or by fetching
   const getStrategies = async (problemTypeId: string) => {
     const cachedSolvers = strategies[problemTypeId];
-    if (cachedSolvers) {
-      return cachedSolvers;
-    } else {
+    if (cachedSolvers) return cachedSolvers;
+
+    try {
       const strategies = await strategyApi.listStrategies(problemTypeId);
       setStrategies((previous) => ({
         ...previous,
         [problemTypeId]: strategies,
       }));
       return strategies;
+    } catch (error) {
+      console.error(
+        `Failed to fetch strategies for problem type ${problemTypeId}`,
+        error,
+      );
+      return [];
     }
   };
 
