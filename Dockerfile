@@ -7,6 +7,11 @@ ENV NODE_ENV=production
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
+# Pass in NEXT_PUBLIC_API_BASE_URL from Docker build args
+# TODO: add MSS args later...
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 # Copy source and build
 COPY . .
 RUN yarn build
