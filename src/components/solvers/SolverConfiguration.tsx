@@ -16,6 +16,7 @@ interface SolverConfigurationProps {
 
 export const SolverConfiguration = (props: SolverConfigurationProps) => {
   const [problemId, setProblemId] = useState<string | null>(null);
+  const [isEditorReachable, setIsEditorReachable] = useState(true);
   const problemGraphViewRef = useRef<HTMLDivElement>(null);
 
   // Reset problemId when problemInput is empty
@@ -31,6 +32,15 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
       problemGraphViewRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [problemId]);
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_MSS_EDITOR_BASE_URL ?? "";
+    const controller = new AbortController();
+    fetch(url, { signal: controller.signal })
+      .then(() => setIsEditorReachable(true))
+      .catch(() => setIsEditorReachable(false));
+    return () => controller.abort();
+  }, []);
 
   return (
     <Flex alignSelf="center">
@@ -58,17 +68,19 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
             </Button>
           </Tooltip>
 
-          <Tooltip label="Create and save a strategy what solvers to use.">
-            <Link
-              href={process.env.NEXT_PUBLIC_MSS_EDITOR_BASE_URL}
-              target="_blank"
-            >
-              <Button bg="kitBlue" textColor="white" size="md" gap="5px">
-                <BsArrowUpRight />
-                Go to Strategy Editor
-              </Button>
-            </Link>
-          </Tooltip>
+          {isEditorReachable && (
+            <Tooltip label="Create and save a strategy what solvers to use.">
+              <Link
+                href={process.env.NEXT_PUBLIC_MSS_EDITOR_BASE_URL}
+                target="_blank"
+              >
+                <Button bg="kitBlue" textColor="white" size="md" gap="5px">
+                  <BsArrowUpRight />
+                  Go to Strategy Editor
+                </Button>
+              </Link>
+            </Tooltip>
+          )}
         </HStack>
       ) : (
         <SolverProvider>
