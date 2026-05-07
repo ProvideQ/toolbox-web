@@ -17,6 +17,7 @@ interface SolverConfigurationProps {
 export const SolverConfiguration = (props: SolverConfigurationProps) => {
   const [problemId, setProblemId] = useState<string | null>(null);
   const [isEditorReachable, setIsEditorReachable] = useState(true);
+  const [isMssApiAvailable, setIsMssApiAvailable] = useState(false);
   const problemGraphViewRef = useRef<HTMLDivElement>(null);
 
   // Reset problemId when problemInput is empty
@@ -39,6 +40,15 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
     fetch(url, { signal: controller.signal })
       .then(() => setIsEditorReachable(true))
       .catch(() => setIsEditorReachable(false));
+    return () => controller.abort();
+  }, []);
+
+  useEffect(() => {
+    const url = process.env.NEXT_PUBLIC_MSS_API_BASE_URL ?? "";
+    const controller = new AbortController();
+    fetch(`${url}/strategies`, { signal: controller.signal })
+      .then(() => setIsMssApiAvailable(true))
+      .catch(() => setIsMssApiAvailable(false));
     return () => controller.abort();
   }, []);
 
@@ -84,7 +94,7 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
         </HStack>
       ) : (
         <SolverProvider>
-          <StrategyProvider>
+          <StrategyProvider isMssApiAvailable={isMssApiAvailable}>
             <div ref={problemGraphViewRef}>
               <ProblemGraphView
                 problemTypeId={props.problemTypeId}
