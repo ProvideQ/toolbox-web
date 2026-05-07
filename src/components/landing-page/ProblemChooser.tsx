@@ -76,5 +76,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="Enter a molecule to get chemical information about its behavior on a quantum scale."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/CircuitProcessing"
+        new={false}
+        tags={["execute", "optimize", "mitigate"]}
+        title={"Process QASM circuits"}
+        description="Process an OpenQASM circuit, including execution, optimization and mitigation."
+      />
+    </GridItem>
   </Grid>
 );

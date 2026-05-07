@@ -14,8 +14,8 @@ export class StrategyApi {
     const query = problemTypeId ? "?type=" + problemTypeId : "";
 
     return await fetch(`${this.baseUrl}/strategies` + query)
-      .then((res) => res.json())
-      .then((json) => json as MetaSolverStrategyDto[])
+      .then((res) => res.text())
+      .then((text) => (text ? JSON.parse(text) : []) as MetaSolverStrategyDto[])
       .catch((error) => {
         console.error("Failed to list strategies", error);
         return [];
