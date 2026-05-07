@@ -19,11 +19,16 @@ const StrategyContext = createContext<{
 
 export const useMetaSolverStrategies = () => useContext(StrategyContext);
 
-export const StrategyProvider = (props: { children: ReactNode }) => {
+export const StrategyProvider = (props: {
+  children: ReactNode;
+  isMssApiAvailable: boolean;
+}) => {
   const [strategies, setStrategies] = useState<StrategiesMap>({});
 
   // Function to get solvers, either from cache or by fetching
   const getStrategies = async (problemTypeId: string) => {
+    if (!props.isMssApiAvailable) return [];
+
     const cachedSolvers = strategies[problemTypeId];
     if (cachedSolvers) return cachedSolvers;
 
