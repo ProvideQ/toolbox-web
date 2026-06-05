@@ -650,6 +650,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   );
 
   const updateNodeRef = useRef(updateNode);
+  // eslint-disable-next-line react-hooks/refs
   updateNodeRef.current = updateNode;
 
   useEffect(() => {
