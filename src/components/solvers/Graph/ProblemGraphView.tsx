@@ -710,12 +710,14 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   // Fit view when nodes change
   useEffect(() => {
-    graphInstance?.fitView({
-      duration: 500,
-      nodes: nodeIds.map((id) => ({
-        id: id,
-      })),
-    });
+    setTimeout(() => {
+      graphInstance?.fitView({
+        duration: 500,
+        nodes: nodeIds.map((id) => ({
+          id: id,
+        })),
+      });
+    }, 100);
   }, [graphInstance, nodeIds]);
 
   useEffect(() => {
