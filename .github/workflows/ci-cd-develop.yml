@@ -65,6 +65,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          clean: true
 
       - name: Deploy via SSH and Docker Compose
         uses: appleboy/ssh-action@v1.2.5
