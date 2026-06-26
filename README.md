@@ -15,7 +15,8 @@ This repository contains the web frontend for the ProvideQ toolbox.
    By default, Next.js will collect
    [anonymous telemetry data](https://nextjs.org/telemetry).
    You can disable the data collection using `yarn exec next telemetry disable`.
-6. Use `yarn dev` to spin up a local development server
+6. Copy .env.example to .env and configure the environment variables as needed
+7. Use `yarn dev` to spin up a local development server
 
 ## Releasing a new version
 
