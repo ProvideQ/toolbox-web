@@ -11,16 +11,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.3.1",
+    "@chakra-ui/react": "^2.10.10",
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@jlguenego/lexer": "^1.5.0",
-    "framer-motion": "^12.33.0",
-    "next": "16.1.6",
+    "framer-motion": "^12.42.0",
+    "next": "16.2.9",
     "prismjs": "^1.30.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "react-icons": "^5.5.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-icons": "^5.6.0",
     "react-multi-select-component": "^4.3.4",
     "react-simple-code-editor": "^0.14.1",
     "reactflow": "^11.11.4"
@@ -28,17 +28,17 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "25.2.1",
+    "@types/node": "26.0.1",
     "@types/prismjs": "^1.26.0",
-    "@types/react": "19.2.13",
+    "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "eslint": "^9.39.2",
-    "eslint-config-next": "^16.1.6",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
-    "prettier": "^3.8.1",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.9",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
+    "prettier": "^3.8.5",
     "prettier-plugin-organize-imports": "^4.3.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "engines": {
     "node": ">=18.14.0"
