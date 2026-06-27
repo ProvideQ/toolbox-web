@@ -123,7 +123,7 @@ export const EditorControls = (props: EditorControlsProps) => {
         )}
       </HStack>
 
-      <ButtonGroup isAttached variant="outline" colorScheme="teal">
+      <ButtonGroup isAttached variant="outline" colorScheme="kitGreen">
         <Tooltip label="Download problem from editor">
           <IconButton
             aria-label="Download"

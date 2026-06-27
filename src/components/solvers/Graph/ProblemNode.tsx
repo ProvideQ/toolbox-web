@@ -97,7 +97,7 @@ function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
 
   // If all dtos are solved, the whole node should have the solved color
   if (problemDtos.every((dto) => dto.state === ProblemState.SOLVED)) {
-    return "teal";
+    return "kitGreen";
   }
 
   // Otherwise if any dto is ready to solve or solving, the whole node should have the ready to solve color

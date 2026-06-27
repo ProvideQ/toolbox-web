@@ -75,7 +75,7 @@ export const ProblemList = (props: {
           case SolutionStatus.COMPUTING:
             return <GrInProgress />;
           case SolutionStatus.SOLVED:
-            return <ImCheckmark color="teal" />;
+            return <ImCheckmark color="kitGreen" />;
           case SolutionStatus.ERROR:
             return <MdError color="red" />;
         }
