@@ -19,7 +19,7 @@ const MixedIntegerProgramming: NextPage = () => {
       </Text>
 
       <Demonstrator
-        demonstratorId="edu.kit.provideq.toolbox.demonstrators.CplexMipDemonstrator"
+        demonstratorId="CplexMipDemonstrator"
         onSolved={setSvg}
       />
 

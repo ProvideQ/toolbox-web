@@ -16,7 +16,7 @@ const MoleculeEnergySimulator: NextPage = () => {
       </Text>
 
       <Demonstrator
-        demonstratorId="edu.kit.provideq.toolbox.demonstrators.MoleculeEnergySimulator"
+        demonstratorId="MoleculeEnergySimulator"
         onSolved={setSvg}
       />
 
