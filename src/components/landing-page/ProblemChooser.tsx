@@ -76,5 +76,14 @@ export const ProblemChooser = (props: GridProps) => (
         description="Enter a molecule to get chemical information about its behavior on a quantum scale."
       />
     </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/UnsplittableMCF"
+        new={true}
+        tags={["sub-routines", "QUBO"]}
+        title="Unsplittable Multi Commodity Flow"
+        description="Find optimal routing paths to fulfill customer orders through a Time-Expanded Network without splitting an order's demand."
+      />
+    </GridItem>
   </Grid>
 );
