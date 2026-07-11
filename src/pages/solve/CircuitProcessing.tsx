@@ -1,7 +1,7 @@
 import { Heading, Link, Spacer, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
@@ -9,7 +9,7 @@ const CircuitProcessing: NextPage = () => {
   const [qasmString, setQASMString] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">OpenQASM Processing</Heading>
       <Text color="text" align="justify">
         Give a circuit in{" "}
@@ -33,7 +33,7 @@ const CircuitProcessing: NextPage = () => {
         problemTypeId="circuit-processing"
         problemInput={qasmString}
       />
-    </Layout>
+    </PageLayout>
   );
 };
 export default CircuitProcessing;

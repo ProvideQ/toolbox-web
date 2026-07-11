@@ -32,6 +32,7 @@ import { useMetaSolverStrategies } from "./MetaSolverStrategyProvider";
 import { LevelInfo, ProblemNode, ProblemNodeData } from "./ProblemNode";
 import { SolverNode, SolverNodeData } from "./SolverNode";
 import { useSolvers } from "./SolverProvider";
+import { useNodeSelector } from "./state/useNodeSelector";
 import { StrategyNode, StrategyNodeData } from "./StrategyNode";
 
 interface ProblemEdgeData {
@@ -159,6 +160,12 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
 
   const { getSolvers } = useSolvers();
   const { getStrategies } = useMetaSolverStrategies();
+
+  const nodeSelector = useNodeSelector();
+
+  useEffect(() => {
+    nodeSelector.updateAllNodes(nodes);
+  }, [nodeSelector, nodes]);
 
   /**
    * Node updates are scheduled in order to provide an asynchronous update mechanism.
@@ -733,7 +740,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           style={{
             width: "50vw",
             minWidth: "1000px",
-            height: "50vh",
+            height: "80vh",
           }}
         >
           <ReactFlow

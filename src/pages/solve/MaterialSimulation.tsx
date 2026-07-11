@@ -1,7 +1,7 @@
 import { Heading, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
@@ -9,7 +9,7 @@ const MaterialSimulation: NextPage = () => {
   const [molecule, setMolecule] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">Quantum Material Simulation</Heading>
 
       <Text color="text" align="justify">
@@ -28,7 +28,7 @@ const MaterialSimulation: NextPage = () => {
         problemTypeId="MaterialSimulation"
         problemInput={molecule}
       />
-    </Layout>
+    </PageLayout>
   );
 };
 

@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { GMLGraphView } from "../../components/solvers/Graph/GMLGraphView";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
@@ -21,7 +21,7 @@ const MaxCut: NextPage = () => {
   const [graphString, setGraphString] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">MaxCut Solver</Heading>
       <Text color="text" align="justify">
         For a given weighted graph, this algorithm finds a partition of the
@@ -72,7 +72,7 @@ const MaxCut: NextPage = () => {
       />
 
       <SolverConfiguration problemTypeId="MaxCut" problemInput={graphString} />
-    </Layout>
+    </PageLayout>
   );
 };
 export default MaxCut;

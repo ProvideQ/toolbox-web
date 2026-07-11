@@ -1,7 +1,7 @@
 import { Divider, Heading, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SAT_language } from "../../components/solvers/SAT/prism-SAT";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
@@ -13,7 +13,7 @@ const SharpSAT: NextPage = () => {
   const [logicalExpressionString, setLogicalExpressionString] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">sharpSAT Solver</Heading>
       <Text color="text" align="justify">
         For a given Boolean formula, this algorithm counts the number of
@@ -44,7 +44,7 @@ const SharpSAT: NextPage = () => {
         problemTypeId="SharpSAT"
         problemInput={logicalExpressionString}
       />
-    </Layout>
+    </PageLayout>
   );
 };
 

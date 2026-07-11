@@ -5,17 +5,28 @@ import {
   AccordionItem,
   AccordionPanel,
   Box,
+  Button,
+  Card,
+  CardBody, CardFooter,
+  CardHeader,
+  Heading,
+  HStack,
   Text,
   Textarea,
-  VStack,
+  VStack
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
 import { SettingsView } from "../settings/SettingsView";
 import { SolutionView } from "../SolutionView";
+import { useEquivalenceChecking } from "./equivalence/useEquivalenceChecking";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { useSolvers } from "./SolverProvider";
+
+interface Props {
+  problemDto: ProblemDto<any>;
+}
 
 function getHumanReadableState(state: ProblemState) {
   switch (state) {
@@ -46,22 +57,24 @@ function getAccordionItem(label: string, content: ReactNode) {
   );
 }
 
-export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
+export const ProblemDetails = ({ problemDto }: Props) => {
   const { solvers, getSolvers } = useSolvers();
   const { updateProblem } = useGraphUpdates();
 
-  // Update solvers in case they are not loaded yet
-  if (!solvers[props.problemDto.typeId]) getSolvers(props.problemDto.typeId);
+  const equivalenceChecking = useEquivalenceChecking(problemDto);
 
-  const solver = solvers[props.problemDto.typeId]?.find(
-    (s) => s.id === props.problemDto.solverId,
+  // Update solvers in case they are not loaded yet
+  if (!solvers[problemDto.typeId]) getSolvers(problemDto.typeId);
+
+  const solver = solvers[problemDto.typeId]?.find(
+    (s) => s.id === problemDto.solverId,
   );
 
   return (
     <VStack gap="20px" align="start">
-      <Textarea readOnly resize="vertical" value={props.problemDto.input} />
+      <Textarea readOnly resize="vertical" value={problemDto.input} />
       <Text>
-        <b>Status:</b> {getHumanReadableState(props.problemDto.state)}
+        <b>Status:</b> {getHumanReadableState(problemDto.state)}
       </Text>
       <Text>
         <b>Solver:</b> {solver?.name ?? "-"}
@@ -70,20 +83,20 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
         <VStack width="100%" align="stretch">
           <Text fontWeight="bold">Solver Settings:</Text>
           <SettingsView
-            problemDto={props.problemDto}
+            problemDto={problemDto}
             settingsChanged={(settings) => {
-              updateProblem(props.problemDto.id);
+              updateProblem(problemDto.id);
             }}
           />
         </VStack>
       )}
-      {props.problemDto.subProblems.length === 0 ? (
+      {problemDto.subProblems.length === 0 ? (
         <b>No subroutines</b>
       ) : (
         <VStack width="100%" align="stretch">
           <Text fontWeight="bold">Sub Routines:</Text>
           <Accordion>
-            {props.problemDto.subProblems.map((subProblem) =>
+            {problemDto.subProblems.map((subProblem) =>
               getAccordionItem(
                 subProblem.subRoutine.typeId,
                 subProblem.subRoutine.description,
@@ -92,12 +105,39 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
           </Accordion>
         </VStack>
       )}
-      {props.problemDto.solution !== null && (
+      {problemDto.solution !== null && (
         <VStack width="100%" align="stretch">
           <Text fontWeight="bold">Solution:</Text>
-          <SolutionView solution={props.problemDto.solution} />
+          <SolutionView solution={problemDto.solution} />
         </VStack>
       )}
+
+      <Card>
+        <CardHeader>
+          <Heading size="md">Equivalence Checking</Heading>
+          <Text>Check the input OpenQASM of two nodes for equivalence</Text>
+        </CardHeader>
+        <CardBody>
+          {!equivalenceChecking.isRunning ? (
+            <Button onClick={equivalenceChecking.activate}>
+              Check Equivalence
+            </Button>
+          ) : (
+              <HStack gap="8px">
+                <Button
+                  onClick={equivalenceChecking.check}
+                  disabled={!equivalenceChecking.canCheck()}
+                >
+                  Check
+                </Button>
+                <Button onClick={equivalenceChecking.cancel}>Cancel</Button>
+              </HStack>
+          )}
+        </CardBody>
+        <CardFooter>
+          {equivalenceChecking.output}
+        </CardFooter>
+      </Card>
     </VStack>
   );
 };

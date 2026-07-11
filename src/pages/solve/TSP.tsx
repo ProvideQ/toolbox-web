@@ -1,7 +1,7 @@
 import { Heading, Link, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
@@ -9,7 +9,7 @@ const TSP: NextPage = () => {
   const [tsp, setTsp] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">Traveling Salesperson Problem</Heading>
       <Text color="text" align="justify">
         The Traveling Salesperson Problem (TSP) is a classic combinatorial
@@ -38,7 +38,7 @@ const TSP: NextPage = () => {
       />
 
       <SolverConfiguration problemTypeId="TSP" problemInput={tsp} />
-    </Layout>
+    </PageLayout>
   );
 };
 

@@ -1,7 +1,7 @@
 import { Heading, Link, Spacer, Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useState } from "react";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
@@ -9,7 +9,7 @@ const VehicleRouting: NextPage = () => {
   const [vrp, setVrp] = useState("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">Vehicle Routing Solver</Heading>
       <Text color="text" align="justify">
         The Vehicle Routing Problem (VRP) is a combinatorial optimization
@@ -36,7 +36,7 @@ const VehicleRouting: NextPage = () => {
       />
 
       <SolverConfiguration problemTypeId="VRP" problemInput={vrp} />
-    </Layout>
+    </PageLayout>
   );
 };
 

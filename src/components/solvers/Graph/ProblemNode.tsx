@@ -1,13 +1,6 @@
 import {
   Box,
-  Divider,
   HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Spinner,
   Text,
   Tooltip,
@@ -32,11 +25,12 @@ import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
 import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
 import { solverSettingAnyRequiredIsUnfilled } from "../../../api/toolbox/data-model/SolverSettings";
 import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
-import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
 import { SolverNodeContent } from "./SolverNodeContent";
 import { useSolvers } from "./SolverProvider";
+import { useNodeDetails } from "./state/useNodeDetails";
+import { useNodeSelector } from "./state/useNodeSelector";
 import Color = Property.Color;
 
 // Used to determine the horizontal position of the node in the canvas
@@ -117,6 +111,16 @@ function getState(problemDtos: ProblemDto<any>[]): ProblemState {
 }
 
 export function ProblemNode(props: NodeProps<ProblemNodeData>) {
+  const nodeDetails = useNodeDetails();
+  const nodeSelector = useNodeSelector();
+
+  const isSelectable =
+    nodeSelector.isInSelectionMode &&
+    nodeSelector.isNodeSelectable(props.id, props.data);
+
+  const isSelected =
+    nodeSelector.selectedNodes.findIndex((node) => node.id === props.id) >= 0;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedProblemIds, setSelectedProblemIds] = useState<string[]>([]);
@@ -245,6 +249,21 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         fontSize="xs"
         position="relative"
         zIndex="2"
+        transition="filter 0.2s"
+        filter={isSelected ? "brightness(1.2)" : undefined}
+        _hover={
+          isSelectable
+            ? {
+                filter: "brightness(1.2)",
+                cursor: "pointer",
+              }
+            : undefined
+        }
+        onClick={
+          isSelectable
+            ? () => nodeSelector.toggleNodeIdSelection(props.id)
+            : undefined
+        }
       >
         {["translate(calc(-50% + 50px))", "translate(calc(-50% + -50px))"].map(
           (transform) => (
@@ -290,10 +309,16 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             {getHumanReadableTypeId(props.data.problemDtos[0].typeId)}
           </Text>
           <div>
-            <FaQuestionCircle cursor="pointer" size="1rem" onClick={onOpen} />
+            <FaQuestionCircle
+              cursor="pointer"
+              size="1rem"
+              onClick={() =>
+                nodeDetails.selectProblemDtos(props.data.problemDtos)
+              }
+            />
           </div>
 
-          <Modal
+          {/*<Modal
             isOpen={isOpen}
             onClose={onClose}
             scrollBehavior="inside"
@@ -314,7 +339,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                 ))}
               </ModalBody>
             </ModalContent>
-          </Modal>
+          </Modal>*/}
         </HStack>
 
         {multiProblem && (

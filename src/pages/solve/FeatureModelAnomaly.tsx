@@ -2,7 +2,7 @@ import { Heading, Link, ListItem, Text, UnorderedList } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { Option } from "react-multi-select-component";
-import { Layout } from "../../components/layout/Layout";
+import { PageLayout } from "../../components/layout/page-layout/PageLayout";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
 import { TextInputMask } from "../../components/solvers/TextInputMask";
 
@@ -21,7 +21,7 @@ const FeatureModelAnomaly: NextPage = () => {
   const [uvl, setUvl] = useState<string>("");
 
   return (
-    <Layout>
+    <PageLayout>
       <Heading as="h1">Feature Model Anomaly Solvers</Heading>
       <Text color="text" align="justify">
         For a tree of features with cross tree constraints, these solvers can
@@ -63,7 +63,7 @@ const FeatureModelAnomaly: NextPage = () => {
           problemInput={uvl}
         />
       ))}
-    </Layout>
+    </PageLayout>
   );
 };
 export default FeatureModelAnomaly;
