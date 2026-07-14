@@ -1,7 +1,6 @@
 # Stage 1: build
 FROM node:24-alpine AS builder
 WORKDIR /app
-ENV NODE_ENV=production
 
 # Install dependencies (uses yarn if yarn.lock exists)
 COPY package.json yarn.lock ./
@@ -19,6 +18,7 @@ ENV NEXT_PUBLIC_MSS_API_BASE_URL=$NEXT_PUBLIC_MSS_API_BASE_URL
 
 # Copy source and build
 COPY . .
+ENV NODE_ENV=production
 RUN yarn build
 
 # Stage 2: serve with node
