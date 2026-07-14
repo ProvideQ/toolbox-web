@@ -83,21 +83,22 @@ export class DimacsParser {
   private getVariableAliases(text: string): Map<number, string> {
     let aliases = new Map<number, string>();
 
-    let match = new RegExp(regexComment).exec(text);
-    if (match == null) return aliases;
+    let match = regexComment.exec(text);
+    while (match != null) {
+      let vars = match[0]
+        // Remove blanks
+        .replace(regexBlank, "")
+        // Remove c at beginning
+        .substring(1)
+        // Split comments which must be of type "Number variableAssignment AliasStr"
+        .split(TokenName.variableAssignment);
 
-    for (let m of match) {
-      let trimmed = m.replace(regexBlank, "");
-
-      //Remove c at beginning
-      trimmed = trimmed.substring(1);
-
-      //Comments must be of type "Number variableAssignment AliasStr"
-      let vars = trimmed.split(TokenName.variableAssignment);
       if (vars.length != 2) continue;
       if (!/\d/.test(vars[0])) continue;
 
       aliases.set(+vars[0], vars[1]);
+
+      match = regexComment.exec(text);
     }
 
     return aliases;
