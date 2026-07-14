@@ -649,11 +649,15 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     ],
   );
 
+  const updateNodeRef = useRef(updateNode);
+  // eslint-disable-next-line react-hooks/refs
+  updateNodeRef.current = updateNode;
+
   useEffect(() => {
     if (scheduledNodeUpdates.length === 0) return;
 
     for (let scheduledNodeUpdate of scheduledNodeUpdates) {
-      updateNode(scheduledNodeUpdate);
+      updateNodeRef.current(scheduledNodeUpdate);
     }
     // Avoid calling setState synchronously inside the effect body; defer to next tick
     setTimeout(() => {
@@ -661,7 +665,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
         nodes.filter((node) => !scheduledNodeUpdates.includes(node)),
       );
     }, 0);
-  }, [scheduledNodeUpdates, updateNode]);
+  }, [scheduledNodeUpdates]);
 
   // Repopulate graph when problem changes
   useEffect(() => {
