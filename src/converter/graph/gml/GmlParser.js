@@ -35,7 +35,7 @@ export function parseGML(gml) {
   try {
     parsed = JSON.parse(json);
   } catch (err) {
-    throw new SyntaxError("bad format");
+    throw new SyntaxError(`bad format: ${err.message}`);
   }
 
   if (!isObject(parsed.graph)) {

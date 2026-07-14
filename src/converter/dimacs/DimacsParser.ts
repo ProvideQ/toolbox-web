@@ -33,7 +33,7 @@ const rules = [
 
 //Inspired by https://github.com/Robbepop/dimacs-parser/blob/master/src/items.rs
 export class DimacsParser {
-  private lex: Lexer = new Lexer(rules);
+  private readonly lex: Lexer = new Lexer(rules);
   private tokenIterator!: IterableIterator<Token>;
   private output: string = "";
   private variables: Set<number> = new Set<number>();
@@ -59,16 +59,15 @@ export class DimacsParser {
 
     //Problem token
     let token = this.nextToken();
-    if (token.name != problem) new Error("Must start with problem description");
+    if (token.name != problem)
+      throw new Error("Must start with problem description");
 
     //Problem type token
     token = this.nextToken();
-    switch (token.name) {
-      case sat:
-        this.parseSAT();
-        break;
-      default:
-        new Error("Problem " + token.name + " is not supported");
+    if (token.name === sat) {
+      this.parseSAT();
+    } else {
+      throw new Error("Problem " + token.name + " is not supported");
     }
 
     //Replace with variable names from comments if possible
@@ -84,7 +83,7 @@ export class DimacsParser {
   private getVariableAliases(text: string): Map<number, string> {
     let aliases = new Map<number, string>();
 
-    let match = text.match(regexComment);
+    let match = new RegExp(regexComment).exec(text);
     if (match == null) return aliases;
 
     for (let m of match) {

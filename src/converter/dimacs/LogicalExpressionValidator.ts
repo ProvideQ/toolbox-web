@@ -18,7 +18,7 @@ const rules = [
 ];
 
 export class LogicalExpressionValidator {
-  private lex: Lexer = new Lexer(rules);
+  private readonly lex: Lexer = new Lexer(rules);
 
   /**
    * Validates a logical expression
@@ -49,7 +49,7 @@ export class LogicalExpressionValidator {
           break;
       }
 
-      switch (tokens[tokens.length - 1].name) {
+      switch (tokens.at(-1)?.name) {
         case TokenName.or:
         case TokenName.and:
           errors.push("Formula can't end with operator (AND/OR)");
