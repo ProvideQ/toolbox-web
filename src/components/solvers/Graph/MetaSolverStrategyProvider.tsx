@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
 import { strategyApi } from "../../../api/strategy/StrategyAPI";
 
@@ -25,31 +25,37 @@ export const StrategyProvider = (props: {
 }) => {
   const [strategies, setStrategies] = useState<StrategiesMap>({});
 
-  // Function to get solvers, either from cache or by fetching
-  const getStrategies = async (problemTypeId: string) => {
-    if (!props.isMssApiAvailable) return [];
+  const value = useMemo(
+    () => ({
+      strategies,
+      getStrategies: async (problemTypeId: string) => {
+        // Function to get solvers, either from cache or by fetching
+        if (!props.isMssApiAvailable) return [];
 
-    const cachedSolvers = strategies[problemTypeId];
-    if (cachedSolvers) return cachedSolvers;
+        const cachedSolvers = strategies[problemTypeId];
+        if (cachedSolvers) return cachedSolvers;
 
-    try {
-      const strategies = await strategyApi.listStrategies(problemTypeId);
-      setStrategies((previous) => ({
-        ...previous,
-        [problemTypeId]: strategies,
-      }));
-      return strategies;
-    } catch (error) {
-      console.error(
-        `Failed to fetch strategies for problem type ${problemTypeId}`,
-        error,
-      );
-      return [];
-    }
-  };
+        try {
+          const strategies = await strategyApi.listStrategies(problemTypeId);
+          setStrategies((previous) => ({
+            ...previous,
+            [problemTypeId]: strategies,
+          }));
+          return strategies;
+        } catch (error) {
+          console.error(
+            `Failed to fetch strategies for problem type ${problemTypeId}`,
+            error,
+          );
+          return [];
+        }
+      },
+    }),
+    [props.isMssApiAvailable, strategies],
+  );
 
   return (
-    <StrategyContext.Provider value={{ strategies, getStrategies }}>
+    <StrategyContext.Provider value={value}>
       {props.children}
     </StrategyContext.Provider>
   );

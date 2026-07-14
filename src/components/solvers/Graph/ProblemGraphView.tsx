@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -726,8 +727,15 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     }
   }, [solutionViewRef]);
 
+  const updateContext = useMemo(
+    () => ({
+      updateProblem,
+    }),
+    [updateProblem],
+  );
+
   return (
-    <GraphUpdateContext.Provider value={{ updateProblem }}>
+    <GraphUpdateContext.Provider value={updateContext}>
       <VStack>
         <div
           style={{
