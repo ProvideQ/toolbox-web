@@ -79,7 +79,7 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/CircuitProcessing"
-        new={false}
+        new={true}
         tags={["execute", "optimize", "mitigate"]}
         title={"Process QASM circuits"}
         description="Process an OpenQASM circuit, including execution, optimization and mitigation."
