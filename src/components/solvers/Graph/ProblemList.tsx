@@ -190,20 +190,15 @@ export const ProblemList = (props: {
             ]}
           </Select>
 
-          <div
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setModalProblemDto(problemDto);
-                onOpen();
-              }
-            }}
+          <button
+            type="button"
             onClick={() => {
               setModalProblemDto(problemDto);
               onOpen();
             }}
           >
             <FaQuestionCircle size="1rem" />
-          </div>
+          </button>
         </Flex>
       ))}
     </VStack>
