@@ -26,6 +26,7 @@ export const GMLGraphView = (props: { gml: string }) => {
       try {
         graph = parseGML(gml);
       } catch (e) {
+        console.error(e);
         return { nodes: [], edges: [] };
       }
 
