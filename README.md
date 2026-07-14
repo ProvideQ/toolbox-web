@@ -1,5 +1,4 @@
-[![Build](https://img.shields.io/github/actions/workflow/status/ProvideQ/toolbox-web/ci-cd.yml?branch=main&style=for-the-badge
-)](https://github.com/ProvideQ/toolbox-web/actions/workflows/ci-cd.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/ProvideQ/toolbox-web/ci-cd.yml?branch=main&style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/actions/workflows/ci-cd.yml)
 [![Release](https://img.shields.io/github/v/release/ProvideQ/toolbox-web?style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/releases/)
 
 # ProvideQ
