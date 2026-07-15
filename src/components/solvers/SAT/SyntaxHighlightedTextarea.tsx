@@ -17,7 +17,7 @@ export interface GrammarSettings {
 }
 
 export const SyntaxHighlightedTextarea = (
-  props: SyntaxHighlightedTextareaProps
+  props: SyntaxHighlightedTextareaProps,
 ) => {
   return (
     <Box
@@ -37,7 +37,7 @@ export const SyntaxHighlightedTextarea = (
             return highlight(
               code,
               props.grammar.grammar,
-              props.grammar.language
+              props.grammar.language,
             );
           }
           return code;

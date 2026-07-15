@@ -1,10 +1,9 @@
 import { Box, VStack } from "@chakra-ui/react";
 import { Handle, NodeProps, Position } from "reactflow";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 import { SolverNodeContent } from "./SolverNodeContent";
 
 export interface SolverNodeData {
-  problemId: string[];
   problemSolver: ProblemSolverInfo;
   selectCallback: (problemSolver: ProblemSolverInfo) => void;
 }
@@ -43,12 +42,11 @@ export function SolverNode(props: NodeProps<SolverNodeData>) {
       }}
     >
       <Handle type="target" position={Position.Top} />
-      <VStack gap="0px">
+      <VStack gap="0px" minWidth="120px">
         <SolverNodeContent
-          problemIds={props.data.problemId}
           solver={props.data.problemSolver}
           button={{
-            label: "Select",
+            label: "Select Solver",
             callback: () => {
               props.data.selectCallback(props.data.problemSolver);
             },

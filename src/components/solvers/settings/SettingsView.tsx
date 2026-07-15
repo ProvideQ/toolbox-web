@@ -1,11 +1,12 @@
-import { Box, Button, Checkbox, Text, VStack } from "@chakra-ui/react";
+import { Button, Checkbox, Text, VStack } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
-import { ProblemDto } from "../../../api/data-model/ProblemDto";
+import { BiCheck } from "react-icons/bi";
+import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
 import {
   SolverSetting,
   SolverSettingType,
-} from "../../../api/data-model/SolverSettings";
-import { fetchSolverSettings, patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/SolverSettings";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { CheckboxSettingView } from "./CheckboxSettingView";
 import { DoubleSettingView } from "./DoubleSettingView";
 import { IntegerSettingView } from "./IntegerSettingView";
@@ -36,32 +37,32 @@ export const settingComponentMap: {
 
 export const SettingsView = (props: SettingsViewProps) => {
   const [settings, setSettings] = useState<OptionalSolverSetting[]>([]);
+  const [showSaved, setShowSaved] = useState(false);
 
   useEffect(() => {
     if (!props.problemDto.solverId) return;
 
-    fetchSolverSettings(
-      props.problemDto.typeId,
-      props.problemDto.solverId
-    ).then((newSettings: SolverSetting[]) =>
-      setSettings(
-        // Use settings set on the problem, if they exist
-        newSettings
-          .filter(
-            (s) =>
-              !props.problemDto.solverSettings.find(
-                (existingSetting) => existingSetting.name === s.name
-              )
-          )
-          .map((s) => ({ ...s, disabled: !s.required }))
-          .concat(
-            props.problemDto.solverSettings.map((s) => ({
-              ...s,
-              disabled: false,
-            }))
-          )
-      )
-    );
+    toolboxApi
+      .fetchSolverSettings(props.problemDto.typeId, props.problemDto.solverId)
+      .then((newSettings: SolverSetting[]) =>
+        setSettings(
+          // Use settings set on the problem, if they exist
+          newSettings
+            .filter(
+              (s) =>
+                !props.problemDto.solverSettings.some(
+                  (existingSetting) => existingSetting.name === s.name,
+                ),
+            )
+            .map((s) => ({ ...s, disabled: !s.required }))
+            .concat(
+              props.problemDto.solverSettings.map((s) => ({
+                ...s,
+                disabled: false,
+              })),
+            ),
+        ),
+      );
   }, [props.problemDto]);
 
   if (settings.length == 0) {
@@ -70,7 +71,7 @@ export const SettingsView = (props: SettingsViewProps) => {
 
   function updateSetting<T extends OptionalSolverSetting>(newSetting: T) {
     const index = settings.findIndex(
-      (setting) => setting.name === newSetting.name
+      (setting) => setting.name === newSetting.name,
     );
     if (index !== -1) {
       settings.splice(index, 1, newSetting);
@@ -87,11 +88,37 @@ export const SettingsView = (props: SettingsViewProps) => {
   }
 
   return (
-    <Box margin={2} padding={2} borderWidth="1px" borderRadius="lg">
+    <VStack
+      margin={2}
+      padding={2}
+      borderWidth="1px"
+      borderRadius="lg"
+      borderColor={
+        settings.some(
+          (s) =>
+            s.required &&
+            props.problemDto.solverSettings
+              .map((s) => s.name)
+              .includes(s.name) === false,
+        )
+          ? "red"
+          : "grey.300"
+      }
+    >
       {settings.map((setting) => (
         <VStack key={setting.name} align="left" paddingY="2">
           {setting.required ? (
-            <Text>{setting.name}</Text>
+            <Text
+              textColor={
+                props.problemDto.solverSettings
+                  .map((s) => s.name)
+                  .includes(setting.name)
+                  ? "black"
+                  : "red"
+              }
+            >
+              {setting.name}
+            </Text>
           ) : (
             <Checkbox
               checked={!setting.disabled}
@@ -120,13 +147,20 @@ export const SettingsView = (props: SettingsViewProps) => {
           bg: "kitGreenAlpha",
         }}
         onClick={() => {
-          patchProblem(props.problemDto.typeId, props.problemDto.id, {
-            solverSettings: settings,
-          }).then((r) => props.settingsChanged?.(r.solverSettings));
+          toolboxApi
+            .patchProblem(props.problemDto.typeId, props.problemDto.id, {
+              solverSettings: settings,
+            })
+            .then((r) => {
+              props.settingsChanged?.(r.solverSettings);
+              setShowSaved(true);
+              setTimeout(() => setShowSaved(false), 2000);
+            });
         }}
       >
         Save
+        {showSaved && <BiCheck />}
       </Button>
-    </Box>
+    </VStack>
   );
 };

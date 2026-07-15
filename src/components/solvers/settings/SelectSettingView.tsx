@@ -1,10 +1,10 @@
 import { Select } from "@chakra-ui/react";
-import { SelectSetting } from "../../../api/data-model/SolverSettings";
+import { SelectSetting } from "../../../api/toolbox/data-model/SolverSettings";
 import { SettingProps } from "./SettingProps";
 import { Disabled } from "./SettingsView";
 
 export const SelectSettingView = (
-  props: SettingProps<SelectSetting & Disabled>
+  props: SettingProps<SelectSetting & Disabled>,
 ) => {
   return (
     <Select

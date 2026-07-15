@@ -13,6 +13,14 @@ export const ProblemChooser = (props: GridProps) => (
     </GridItem>
     <GridItem>
       <ProblemCard
+        href="solve/SharpSAT"
+        tags={["simulated"]}
+        title="SharpSAT"
+        description="For a given Boolean formula, this algorithm counts the number of satisfying assignments."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
         href="solve/MaxCut"
         tags={["QAOA"]}
         title="MaxCut"
@@ -30,7 +38,6 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/QUBO"
-        new={true}
         tags={["QAOA", "Annealing"]}
         title="QUBO"
         description="For a quadratic term with binary decision variables, find the variable assignment minimizing the term."
@@ -39,7 +46,6 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/VehicleRouting"
-        new={true}
         tags={["sub-routines", "QUBO", "Clustering"]}
         title="Vehicle Routing"
         description="What is the optimal set of routes for a fleet of vehicles to traverse in order to deliver to a given set of customers?"
@@ -48,7 +54,6 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/TSP"
-        new={true}
         tags={["sub-routines", "qubo"]}
         title="Traveling Salesperson Problem"
         description="Given a list of cities and the distances between them, find the shortest possible route that visits each city exactly once and returns to the origin city."
@@ -57,10 +62,36 @@ export const ProblemChooser = (props: GridProps) => (
     <GridItem>
       <ProblemCard
         href="solve/Knapsack"
-        new={true}
         tags={["QAOA"]}
         title={"Knapsack"}
         description="Given a list of items with weights and values, find a subset of items with the highest total value up to a certain weight limit."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/MaterialSimulation"
+        new={true}
+        tags={["simulated"]}
+        title="Material Simulation"
+        description="Enter a molecule to get chemical information about its behavior on a quantum scale."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/CircuitProcessing"
+        new={true}
+        tags={["execute", "optimize", "mitigate"]}
+        title={"Process QASM circuits"}
+        description="Process an OpenQASM circuit, including execution, optimization and mitigation."
+      />
+    </GridItem>
+    <GridItem>
+      <ProblemCard
+        href="solve/UnsplittableMCF"
+        new={true}
+        tags={["sub-routines", "QUBO"]}
+        title="Unsplittable Multi Commodity Flow"
+        description="Find optimal routing paths to fulfill customer orders through a Time-Expanded Network without splitting an order's demand."
       />
     </GridItem>
   </Grid>

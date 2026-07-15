@@ -9,13 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo (shallow)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run linter
@@ -24,13 +25,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo (shallow)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run tests
@@ -39,13 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone repo (shallow)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set up node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: ">=18.14.0"
+          cache: "yarn"
       - name: Install dependencies
         run: yarn install
       - name: Run tests
@@ -56,17 +59,15 @@ jobs:
       - lint
       - test
       - build
-    if: ${{ github.ref == 'refs/heads/develop' }}
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
     steps:
-      - name: Cloning repo
-        uses: actions/checkout@v2
+      - name: Deploy via SSH and Docker Compose
+        uses: appleboy/ssh-action@068c0c7a4e59a5ae12fb7cb454b05735d830c82b #v1.25
         with:
-          fetch-depth: 0
-
-      - name: Push to dokku
-        uses: dokku/github-action@master
-        with:
-          branch: develop
-          # only extracting the server address to a secret avoids leaking it in the logs
-          git_remote_url: ssh://dokku@${{ secrets.DOKKU_SERVER_ADDRESS }}/toolbox-frontend-staging
-          ssh_private_key: ${{ secrets.DOKKU_DEPLOYMENT_KEY }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 60m
+          script: |
+            echo "Deploying ${{ github.event.repository.name }} to '${{ github.ref_name }}' environment"
+            sh /root/ProvideQ/${{ github.event.repository.name }}/deploy.sh ${{ github.ref_name }}

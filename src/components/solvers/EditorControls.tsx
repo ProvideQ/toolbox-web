@@ -14,7 +14,7 @@ import {
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
-import { baseUrl, fetchExampleProblems } from "../../api/ToolboxAPI";
+import { baseUrl, toolboxApi } from "../../api/toolbox/ToolboxAPI";
 import { chooseFile } from "./FileInput";
 
 export interface EditorControlsProps {
@@ -83,11 +83,14 @@ const upload = async (onUpload: (uploadContent: string) => void) => {
  */
 export const EditorControls = (props: EditorControlsProps) => {
   const [examples, setExamples] = useState<string[]>([]);
+  const [selectedExample, setSelectedExample] = useState<string>("");
 
   const documentationLink = props.documentationLink ?? baseUrl();
 
   useEffect(() => {
-    fetchExampleProblems(props.problemTypeId).then((json) => setExamples(json));
+    toolboxApi
+      .fetchExampleProblems(props.problemTypeId)
+      .then((json) => setExamples(json));
   }, [props.problemTypeId]);
 
   return (
@@ -99,7 +102,11 @@ export const EditorControls = (props: EditorControlsProps) => {
             overflow="hidden"
             textOverflow="ellipsis"
             width="10rem"
-            onChange={(e) => props.setEditorContent(e.target.value)}
+            value={selectedExample}
+            onChange={(e) => {
+              setSelectedExample(e.target.value);
+              props.setEditorContent(e.target.value);
+            }}
           >
             {examples.map((example) => (
               <option key={example} value={example}>
@@ -116,7 +123,7 @@ export const EditorControls = (props: EditorControlsProps) => {
         )}
       </HStack>
 
-      <ButtonGroup isAttached variant="outline" colorScheme="teal">
+      <ButtonGroup isAttached variant="outline" colorScheme="kitGreen">
         <Tooltip label="Download problem from editor">
           <IconButton
             aria-label="Download"
@@ -135,7 +142,10 @@ export const EditorControls = (props: EditorControlsProps) => {
           <IconButton
             aria-label="Reset"
             icon={<TbTrash />}
-            onClick={() => props.setEditorContent("")}
+            onClick={() => {
+              setSelectedExample("");
+              props.setEditorContent("");
+            }}
           />
         </Tooltip>
         <Tooltip label="Restart the problem">

@@ -33,7 +33,7 @@ const rules = [
 
 //Inspired by https://github.com/Robbepop/dimacs-parser/blob/master/src/items.rs
 export class DimacsParser {
-  private lex: Lexer = new Lexer(rules);
+  private readonly lex: Lexer = new Lexer(rules);
   private tokenIterator!: IterableIterator<Token>;
   private output: string = "";
   private variables: Set<number> = new Set<number>();
@@ -59,16 +59,15 @@ export class DimacsParser {
 
     //Problem token
     let token = this.nextToken();
-    if (token.name != problem) new Error("Must start with problem description");
+    if (token.name != problem)
+      throw new Error("Must start with problem description");
 
     //Problem type token
     token = this.nextToken();
-    switch (token.name) {
-      case sat:
-        this.parseSAT();
-        break;
-      default:
-        new Error("Problem " + token.name + " is not supported");
+    if (token.name === sat) {
+      this.parseSAT();
+    } else {
+      throw new Error("Problem " + token.name + " is not supported");
     }
 
     //Replace with variable names from comments if possible
@@ -84,21 +83,22 @@ export class DimacsParser {
   private getVariableAliases(text: string): Map<number, string> {
     let aliases = new Map<number, string>();
 
-    let match = text.match(regexComment);
-    if (match == null) return aliases;
+    let match = regexComment.exec(text);
+    while (match != null) {
+      let vars = match[0]
+        // Remove blanks
+        .replace(regexBlank, "")
+        // Remove c at beginning
+        .substring(1)
+        // Split comments which must be of type "Number variableAssignment AliasStr"
+        .split(TokenName.variableAssignment);
 
-    for (let m of match) {
-      let trimmed = m.replace(regexBlank, "");
-
-      //Remove c at beginning
-      trimmed = trimmed.substring(1);
-
-      //Comments must be of type "Number variableAssignment AliasStr"
-      let vars = trimmed.split(TokenName.variableAssignment);
       if (vars.length != 2) continue;
       if (!/\d/.test(vars[0])) continue;
 
       aliases.set(+vars[0], vars[1]);
+
+      match = regexComment.exec(text);
     }
 
     return aliases;
@@ -120,7 +120,7 @@ export class DimacsParser {
     let actualVariables = this.variables.size;
     if (expectedVariables != actualVariables) {
       throw new Error(
-        `Expected ${expectedVariables} variables, but received ${actualVariables}`
+        `Expected ${expectedVariables} variables, but received ${actualVariables}`,
       );
     }
   }
@@ -149,7 +149,7 @@ export class DimacsParser {
         break;
       default:
         throw new Error(
-          `Unexpected token ${token.name} in formula at line ${token.position.line} column ${token.position.col}`
+          `Unexpected token ${token.name} in formula at line ${token.position.line} column ${token.position.col}`,
         );
     }
   }
@@ -187,7 +187,7 @@ export class DimacsParser {
     let token = this.nextToken();
     if (token.name != tokenType)
       throw new Error(
-        `Expected ${tokenType} but received ${token.name} (${token.lexeme}) at line ${token.position.line} column ${token.position.col}`
+        `Expected ${tokenType} but received ${token.name} (${token.lexeme}) at line ${token.position.line} column ${token.position.col}`,
       );
 
     return token;

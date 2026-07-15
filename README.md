@@ -1,4 +1,4 @@
-[![Build](https://img.shields.io/github/actions/workflow/status/ProvideQ/toolbox-web/deploy-main.yml?style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/actions/workflows/deploy-main.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/ProvideQ/toolbox-web/ci-cd.yml?branch=main&style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/actions/workflows/ci-cd.yml)
 [![Release](https://img.shields.io/github/v/release/ProvideQ/toolbox-web?style=for-the-badge)](https://github.com/ProvideQ/toolbox-web/releases/)
 
 # ProvideQ
@@ -7,7 +7,7 @@ This repository contains the web frontend for the ProvideQ toolbox.
 
 ## Development setup
 
-1. Install [Node.js 16](https://nodejs.org/) (check with `node -v`)
+1. Install [Node.js](https://nodejs.org/) (check with `node -v`)
 2. Make sure that the [Yarn package manager is enabled](https://yarnpkg.com/getting-started/install) (check with `yarn -v`)
 3. Clone this repository
 4. Install dependencies: `yarn install`
@@ -15,7 +15,8 @@ This repository contains the web frontend for the ProvideQ toolbox.
    By default, Next.js will collect
    [anonymous telemetry data](https://nextjs.org/telemetry).
    You can disable the data collection using `yarn exec next telemetry disable`.
-6. Use `yarn dev` to spin up a local development server
+6. Copy .env.example to .env and configure the environment variables as needed
+7. Use `yarn dev` to spin up a local development server
 
 ## Releasing a new version
 
@@ -37,6 +38,6 @@ This repository contains the web frontend for the ProvideQ toolbox.
 
 ## License
 
-Copyright (c) 2022 - 2023 ProvideQ
+Copyright (c) 2022 - 2026 ProvideQ
 
 This project is available under the [MIT License](./LICENSE)

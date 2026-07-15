@@ -27,10 +27,11 @@ import { Handle, NodeProps, Position } from "reactflow";
 import {
   canProblemSolverBeUpdated,
   ProblemDto,
-} from "../../../api/data-model/ProblemDto";
-import { ProblemState } from "../../../api/data-model/ProblemState";
-import { SolutionStatus } from "../../../api/data-model/SolutionStatus";
-import { patchProblem } from "../../../api/ToolboxAPI";
+} from "../../../api/toolbox/data-model/ProblemDto";
+import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
+import { solverSettingAnyRequiredIsUnfilled } from "../../../api/toolbox/data-model/SolverSettings";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
@@ -75,6 +76,10 @@ function getNodeType(data: ProblemNodeData): {
   };
 }
 
+function getHumanReadableTypeId(typeId: string): string {
+  return typeId.replaceAll(/([a-z])([A-Z])/g, "$1 $2");
+}
+
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
   for (let problemDto of problemDtos) {
     switch (problemDto.state) {
@@ -92,7 +97,7 @@ function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
 
   // If all dtos are solved, the whole node should have the solved color
   if (problemDtos.every((dto) => dto.state === ProblemState.SOLVED)) {
-    return "teal";
+    return "kitGreen";
   }
 
   // Otherwise if any dto is ready to solve or solving, the whole node should have the ready to solve color
@@ -116,12 +121,15 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedProblemIds, setSelectedProblemIds] = useState<string[]>([]);
   const [nodeState, setNodeState] = useState<ProblemState>(
-    getState(props.data.problemDtos)
+    getState(props.data.problemDtos),
   );
 
   // Update node state when problems change
   useEffect(() => {
-    setNodeState(getState(props.data.problemDtos));
+    // Defer the state update to avoid calling setState synchronously in effect
+    setTimeout(() => {
+      setNodeState(getState(props.data.problemDtos));
+    }, 0);
   }, [props.data.problemDtos]);
 
   const { topHandle, bottomHandle } = getNodeType(props.data);
@@ -133,7 +141,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   // Type id is the same for all problems
   const typeId = props.data.problemDtos[0].typeId;
   const solverId = props.data.problemDtos[0].solverId;
-  const solverName = solvers[typeId]?.find((s) => s.id === solverId)?.name;
+  const solver = solvers[typeId]?.find((s) => s.id === solverId);
+  const solverName = solver?.name;
+  const solverDescription =
+    solver?.description ?? "Solves the ${typeId} Problem.";
 
   // Fetch solvers for type if necessary
   getSolvers(typeId);
@@ -141,13 +152,18 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   const extended = solverId && solverName;
   const multiProblem = props.data.problemDtos.length > 1;
 
+  /**
+   * Disconnects the problem from the selected solver
+   */
   function disconnect() {
     for (let problemDto of props.data.problemDtos) {
-      patchProblem(problemDto.typeId, problemDto.id, {
-        solverId: "",
-      }).then((dto) => {
-        updateProblem(dto.id);
-      });
+      toolboxApi
+        .patchProblem(problemDto.typeId, problemDto.id, {
+          solverId: "",
+        })
+        .then((dto) => {
+          updateProblem(dto.id);
+        });
     }
   }
 
@@ -157,16 +173,26 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
       case ProblemState.NEEDS_CONFIGURATION:
         return {
           label: "Solve",
-          callback: () => {
+          callback: async () => {
+            // If any required setting of any problem is not filled, open the settings
+            if (
+              await solverSettingAnyRequiredIsUnfilled(props.data.problemDtos)
+            ) {
+              onOpen();
+              return;
+            }
+
             // Set state to solving manually so the ui updates instantly
             setNodeState(ProblemState.SOLVING);
 
             for (let problemDto of props.data.problemDtos) {
-              patchProblem(problemDto.typeId, problemDto.id, {
-                state: ProblemState.SOLVING,
-              }).then((dto) => {
-                updateProblem(dto.id);
-              });
+              toolboxApi
+                .patchProblem(problemDto.typeId, problemDto.id, {
+                  state: ProblemState.SOLVING,
+                })
+                .then((dto) => {
+                  updateProblem(dto.id);
+                });
             }
 
             // Update the state again after a delay to attempt
@@ -239,12 +265,12 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             >
               {extended &&
                 props.data.problemDtos.every((dto) =>
-                  canProblemSolverBeUpdated(dto)
+                  canProblemSolverBeUpdated(dto),
                 ) && (
                   <FaXmark cursor="pointer" color="red" onClick={disconnect} />
                 )}
             </div>
-          )
+          ),
         )}
 
         <HStack
@@ -261,7 +287,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           </Tooltip>
           <Text fontWeight="semibold">
             {multiProblem ? props.data.problemDtos.length + "x " : ""}
-            {props.data.problemDtos[0].typeId}
+            {getHumanReadableTypeId(props.data.problemDtos[0].typeId)}
           </Text>
           <div>
             <FaQuestionCircle cursor="pointer" size="1rem" onClick={onOpen} />
@@ -342,10 +368,10 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
           marginTop="-10px"
         >
           <SolverNodeContent
-            problemIds={props.data.problemDtos.map((dto) => dto.id)}
             solver={{
               id: solverId,
               name: solverName,
+              description: solverDescription,
             }}
             button={problemButton()}
           />

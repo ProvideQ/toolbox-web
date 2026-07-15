@@ -18,7 +18,7 @@ const VehicleRouting: NextPage = () => {
         the VRP format and all solvers will return a solution in the same
         format. Example VRP problems can be found in the{" "}
         <Link
-          href="http://vrp.galgos.inf.puc-rio.br/index.php/en"
+          href="https://vrp.galgos.inf.puc-rio.br/index.php/en"
           color={"blue.400"}
         >
           CVRPLib
@@ -29,13 +29,13 @@ const VehicleRouting: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="vrp"
+        problemTypeId="VRP"
         text={vrp}
         setText={setVrp}
-        textPlaceholder={"Enter your Vehicle Routing problem in vrp format"}
+        textPlaceholder={"Enter your problem in vrp format"}
       />
 
-      <SolverConfiguration problemTypeId="vrp" problemInput={vrp} />
+      <SolverConfiguration problemTypeId="VRP" problemInput={vrp} />
     </Layout>
   );
 };

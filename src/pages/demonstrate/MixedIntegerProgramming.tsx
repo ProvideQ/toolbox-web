@@ -18,10 +18,7 @@ const MixedIntegerProgramming: NextPage = () => {
         to be integers.
       </Text>
 
-      <Demonstrator
-        demonstratorId="edu.kit.provideq.toolbox.demonstrators.CplexMipDemonstrator"
-        onSolved={setSvg}
-      />
+      <Demonstrator demonstratorId="CplexMipDemonstrator" onSolved={setSvg} />
 
       {svg && (
         <Flex justifyContent="center">

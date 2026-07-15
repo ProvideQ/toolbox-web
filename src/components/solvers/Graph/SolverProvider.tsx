@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from "react";
-import { ProblemSolverInfo } from "../../../api/data-model/ProblemSolverInfo";
-import { fetchSolvers } from "../../../api/ToolboxAPI";
+import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
 
 interface SolversMap {
   [key: string]: ProblemSolverInfo[];
@@ -22,23 +22,29 @@ export const useSolvers = () => useContext(SolverContext);
 export const SolverProvider = (props: { children: ReactNode }) => {
   const [solvers, setSolvers] = useState<SolversMap>({});
 
-  // Function to get solvers, either from cache or by fetching
-  const getSolvers = async (problemTypeId: string) => {
-    const cachedSolvers = solvers[problemTypeId];
-    if (cachedSolvers) {
-      return cachedSolvers;
-    } else {
-      const fetchedSolvers = await fetchSolvers(problemTypeId);
-      setSolvers((prevSolvers) => ({
-        ...prevSolvers,
-        [problemTypeId]: fetchedSolvers,
-      }));
-      return fetchedSolvers;
-    }
-  };
+  const value = useMemo(
+    () => ({
+      solvers,
+      getSolvers: async (problemTypeId: string) => {
+        // Function to get solvers, either from cache or by fetching
+        const cachedSolvers = solvers[problemTypeId];
+        if (cachedSolvers) {
+          return cachedSolvers;
+        } else {
+          const fetchedSolvers = await toolboxApi.fetchSolvers(problemTypeId);
+          setSolvers((prevSolvers) => ({
+            ...prevSolvers,
+            [problemTypeId]: fetchedSolvers,
+          }));
+          return fetchedSolvers;
+        }
+      },
+    }),
+    [solvers],
+  );
 
   return (
-    <SolverContext.Provider value={{ solvers, getSolvers }}>
+    <SolverContext.Provider value={value}>
       {props.children}
     </SolverContext.Provider>
   );

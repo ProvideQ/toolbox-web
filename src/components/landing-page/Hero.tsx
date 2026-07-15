@@ -1,15 +1,14 @@
-import { Flex, Heading, Link } from "@chakra-ui/react";
+import { Flex, Heading, HStack, Image, Link } from "@chakra-ui/react";
 
 export const Hero = (props: { title: string }) => (
-  <Flex
-    justifyContent="center"
-    alignItems="center"
-    height="60vh"
-    bgGradient="linear(to-l, heroGradientStart, heroGradientEnd)"
-    bgClip="text"
-  >
+  <Flex justifyContent="center" alignItems="center">
     <Link href="/">
-      <Heading fontSize="6vw">{props.title}</Heading>
+      <HStack spacing={4}>
+        <Image src="/ProvideQ.svg" height={"8em"} alt="ProvideQ Logo" />
+        <Heading fontSize="8em" color="kitBlueDark">
+          {props.title}
+        </Heading>
+      </HStack>
     </Link>
   </Flex>
 );

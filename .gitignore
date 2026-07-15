@@ -12,6 +12,9 @@
 /.next/
 /out/
 
+# yarn
+/.yarn/
+
 # production
 /build
 
@@ -25,8 +28,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# local env files
+# env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -37,3 +41,4 @@ next-env.d.ts
 
 # webstorm
 .idea/
+.junie

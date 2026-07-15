@@ -51,7 +51,7 @@ const MaxCut: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="max-cut"
+        problemTypeId="MaxCut"
         textPlaceholder="Enter your graph in GML format"
         text={graphString}
         setText={setGraphString}
@@ -71,7 +71,7 @@ const MaxCut: NextPage = () => {
         }
       />
 
-      <SolverConfiguration problemTypeId="max-cut" problemInput={graphString} />
+      <SolverConfiguration problemTypeId="MaxCut" problemInput={graphString} />
     </Layout>
   );
 };

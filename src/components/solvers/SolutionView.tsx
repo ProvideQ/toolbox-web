@@ -7,7 +7,7 @@ import {
   Box,
   Code,
 } from "@chakra-ui/react";
-import { SolutionObject } from "../../api/data-model/SolutionObject";
+import { SolutionObject } from "../../api/toolbox/data-model/SolutionObject";
 
 export interface SolutionViewProps {
   solution: SolutionObject;
@@ -29,8 +29,7 @@ const OutputSection = (props: { title: string; content: any[] }) => (
           {contentChunk !== null && contentChunk !== undefined ? (
             <Code width="100%" padding="1rem">
               <pre style={{ overflowX: "auto" }}>
-                {typeof contentChunk === "string" ||
-                contentChunk instanceof String
+                {typeof contentChunk === "string"
                   ? contentChunk
                   : JSON.stringify(contentChunk, null, "\t")}
               </pre>
