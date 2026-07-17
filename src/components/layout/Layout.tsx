@@ -6,7 +6,7 @@ import { Main } from "../Main";
 import { Footer } from "./Footer";
 
 export const Layout = (props: { children: ReactNode }) => (
-  <Container minHeight="100vh" paddingTop="8rem" >
+  <Container minHeight="100vh" paddingTop="8rem">
     <Hero title="ProvideQ" />
     <Main>{props.children}</Main>
 
