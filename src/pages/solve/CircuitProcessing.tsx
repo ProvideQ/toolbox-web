@@ -23,14 +23,14 @@ const CircuitProcessing: NextPage = () => {
       <Spacer />
 
       <TextInputMask
-        problemTypeId="circuit-processing"
+        problemTypeId="CircuitProcessing"
         textPlaceholder="Enter your OpenQASM code"
         text={qasmString}
         setText={setQASMString}
       />
 
       <SolverConfiguration
-        problemTypeId="circuit-processing"
+        problemTypeId="CircuitProcessing"
         problemInput={qasmString}
       />
     </Layout>
