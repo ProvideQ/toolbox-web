@@ -11,13 +11,12 @@ import {
   PopoverTrigger,
   Portal,
   Text,
-  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { SolverCharacteristicIcons } from "./SolverCharacteristicIcons";
 
 export interface SolverNodeContentProps {
   solver: ProblemSolverInfo;
@@ -30,19 +29,17 @@ export interface SolverNodeContentProps {
 export const SolverNodeContent = (props: SolverNodeContentProps) => {
   return (
     <VStack gap="0px">
-      <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
-        <Tooltip hasArrow label="Solver" placement="bottom">
-          <div>
-            <FaGears size="2rem" />
-          </div>
-        </Tooltip>
-        <Text padding=".25rem" fontWeight="semibold">
+      <HStack align="start" maxW="10rem" justifyContent="space-between">
+        <SolverCharacteristicIcons
+          characteristics={props.solver.characteristics}
+        />
+        <Text paddingY=".25rem" fontWeight="semibold">
           {props.solver.name}
         </Text>
 
         <Popover>
           <PopoverTrigger>
-            <div>
+            <div style={{ marginTop: "0.5rem" }}>
               <FaQuestionCircle size="1rem" />
             </div>
           </PopoverTrigger>
@@ -63,6 +60,12 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
           </Portal>
         </Popover>
       </HStack>
+
+      {/*
+        <SolverCharacteristicBadges
+          characteristics={props.solver.characteristics}
+        />
+      */}
 
       <div
         style={{

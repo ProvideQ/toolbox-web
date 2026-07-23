@@ -372,6 +372,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               id: solverId,
               name: solverName,
               description: solverDescription,
+              characteristics: solver?.characteristics,
             }}
             button={problemButton()}
           />
