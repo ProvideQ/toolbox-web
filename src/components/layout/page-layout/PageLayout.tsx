@@ -1,5 +1,5 @@
 import { Flex, Spacer } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { Children, ReactNode } from "react";
 import { Main } from "../../Main";
 import { Footer } from "../Footer";
 import { Island } from "../Island";
@@ -8,21 +8,48 @@ import { ResizeHandle } from "./ResizeHandle";
 import { useResize } from "./useResize";
 
 interface Props {
-  leftSidebar?: ReactNode;
-  rightSidebar?: ReactNode;
+  leftTopSidebarContent?: ReactNode;
+  leftBottomSidebarContent?: ReactNode;
+  rightTopSidebarContent?: ReactNode;
+  rightBottomSidebarContent?: ReactNode;
   children: ReactNode;
 }
 
-export function PageLayout({ leftSidebar, rightSidebar, children }: Props) {
+interface PageSidebarProps {
+  side: "left" | "right";
+  topContent?: ReactNode;
+  bottomContent?: ReactNode;
+  width: number;
+  split: number;
+  resizeHandleSize: number;
+  onResizeSplit: (delta: number) => void;
+}
+
+export function PageLayout({
+  leftTopSidebarContent,
+  leftBottomSidebarContent,
+  rightTopSidebarContent,
+  rightBottomSidebarContent,
+  children,
+}: Props) {
+  const hasLeftSidebar =
+    hasContent(leftTopSidebarContent) || hasContent(leftBottomSidebarContent);
+  const hasRightSidebar =
+    hasContent(rightTopSidebarContent) || hasContent(rightBottomSidebarContent);
+
   const {
     leftWidth,
     rightWidth,
+    leftSplit,
+    rightSplit,
     resizeLeftSidebar,
     resizeRightSidebar,
+    resizeLeftSidebarSplit,
+    resizeRightSidebarSplit,
     MIN_MAIN_WIDTH,
     LAYOUT_PADDING,
-    RESIZE_HANDLE_WIDTH,
-  } = useResize();
+    RESIZE_HANDLE_SIZE,
+  } = useResize({ hasLeftSidebar, hasRightSidebar });
 
   return (
     <Flex
@@ -34,13 +61,26 @@ export function PageLayout({ leftSidebar, rightSidebar, children }: Props) {
       padding={`${LAYOUT_PADDING}px`}
       gap={0}
     >
-      <Sidebar width={`${leftWidth}px`}>{leftSidebar}</Sidebar>
+      {hasLeftSidebar && (
+        <>
+          <PageSidebar
+            side="left"
+            topContent={leftTopSidebarContent}
+            bottomContent={leftBottomSidebarContent}
+            width={leftWidth}
+            split={leftSplit}
+            resizeHandleSize={RESIZE_HANDLE_SIZE}
+            onResizeSplit={resizeLeftSidebarSplit}
+          />
 
-      <ResizeHandle
-        side="left"
-        onResize={resizeLeftSidebar}
-        width={RESIZE_HANDLE_WIDTH}
-      />
+          <ResizeHandle
+            orientation="vertical"
+            onResize={resizeLeftSidebar}
+            size={RESIZE_HANDLE_SIZE}
+            ariaLabel="Resize left sidebar"
+          />
+        </>
+      )}
 
       <Flex
         minWidth={`${MIN_MAIN_WIDTH}px`}
@@ -64,13 +104,82 @@ export function PageLayout({ leftSidebar, rightSidebar, children }: Props) {
         </Island>
       </Flex>
 
-      <ResizeHandle
-        side="right"
-        onResize={resizeRightSidebar}
-        width={RESIZE_HANDLE_WIDTH}
-      />
+      {hasRightSidebar && (
+        <>
+          <ResizeHandle
+            orientation="vertical"
+            onResize={resizeRightSidebar}
+            size={RESIZE_HANDLE_SIZE}
+            invertDelta
+            ariaLabel="Resize right sidebar"
+          />
 
-      <Sidebar width={`${rightWidth}px`}>{rightSidebar}</Sidebar>
+          <PageSidebar
+            side="right"
+            topContent={rightTopSidebarContent}
+            bottomContent={rightBottomSidebarContent}
+            width={rightWidth}
+            split={rightSplit}
+            resizeHandleSize={RESIZE_HANDLE_SIZE}
+            onResizeSplit={resizeRightSidebarSplit}
+          />
+        </>
+      )}
     </Flex>
   );
+}
+
+function PageSidebar({
+  side,
+  topContent,
+  bottomContent,
+  width,
+  split,
+  resizeHandleSize,
+  onResizeSplit,
+}: PageSidebarProps) {
+  const hasTopContent = hasContent(topContent);
+  const hasBottomContent = hasContent(bottomContent);
+
+  if (!hasTopContent || !hasBottomContent) {
+    return (
+      <Sidebar width={`${width}px`}>
+        {hasTopContent ? topContent : bottomContent}
+      </Sidebar>
+    );
+  }
+
+  return (
+    <Flex
+      direction="column"
+      width={`${width}px`}
+      height="100%"
+      flexShrink={0}
+      overflow="hidden"
+    >
+      <Flex minHeight={0} flexBasis={0} flexGrow={split} overflow="hidden">
+        <Sidebar width="100%">{topContent}</Sidebar>
+      </Flex>
+
+      <ResizeHandle
+        orientation="horizontal"
+        onResize={onResizeSplit}
+        size={resizeHandleSize}
+        ariaLabel={`Resize ${side} sidebar sections`}
+      />
+
+      <Flex
+        minHeight={0}
+        flexBasis={0}
+        flexGrow={100 - split}
+        overflow="hidden"
+      >
+        <Sidebar width="100%">{bottomContent}</Sidebar>
+      </Flex>
+    </Flex>
+  );
+}
+
+function hasContent(content: ReactNode) {
+  return Children.toArray(content).length > 0;
 }

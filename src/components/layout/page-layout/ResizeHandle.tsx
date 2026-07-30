@@ -2,21 +2,33 @@ import { Flex } from "@chakra-ui/react";
 import { PointerEvent, useRef } from "react";
 
 interface ResizeHandleProps {
-  side: "left" | "right";
+  orientation: "horizontal" | "vertical";
   onResize: (delta: number) => void;
-  width: number;
+  size: number;
+  invertDelta?: boolean;
+  ariaLabel: string;
 }
 
-export function ResizeHandle({ side, onResize, width }: ResizeHandleProps) {
-  const startXRef = useRef(0);
+export function ResizeHandle({
+  orientation,
+  onResize,
+  size,
+  invertDelta = false,
+  ariaLabel,
+}: ResizeHandleProps) {
+  const startPositionRef = useRef(0);
+  const cursor = orientation === "vertical" ? "col-resize" : "row-resize";
+
+  const getPointerPosition = (event: PointerEvent<HTMLDivElement>) =>
+    orientation === "vertical" ? event.clientX : event.clientY;
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
 
-    startXRef.current = event.clientX;
+    startPositionRef.current = getPointerPosition(event);
     event.currentTarget.setPointerCapture(event.pointerId);
 
-    document.body.style.cursor = "col-resize";
+    document.body.style.cursor = cursor;
     document.body.style.userSelect = "none";
   };
 
@@ -25,12 +37,11 @@ export function ResizeHandle({ side, onResize, width }: ResizeHandleProps) {
       return;
     }
 
-    const movement = event.clientX - startXRef.current;
-    startXRef.current = event.clientX;
+    const currentPosition = getPointerPosition(event);
+    const movement = currentPosition - startPositionRef.current;
+    startPositionRef.current = currentPosition;
 
-    // Links wird beim Ziehen nach rechts größer.
-    // Rechts wird beim Ziehen nach links größer.
-    onResize(side === "left" ? movement : -movement);
+    onResize(invertDelta ? -movement : movement);
   };
 
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
@@ -45,12 +56,12 @@ export function ResizeHandle({ side, onResize, width }: ResizeHandleProps) {
   return (
     <Flex
       role="separator"
-      aria-orientation="vertical"
-      aria-label={`${side === "left" ? "Linke" : "Rechte"} Sidebar vergrößern oder verkleinern`}
-      width={`${width}px`}
-      height="100%"
+      aria-orientation={orientation}
+      aria-label={ariaLabel}
+      width={orientation === "vertical" ? `${size}px` : "100%"}
+      height={orientation === "horizontal" ? `${size}px` : "100%"}
       flexShrink={0}
-      cursor="col-resize"
+      cursor={cursor}
       bg="transparent"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
