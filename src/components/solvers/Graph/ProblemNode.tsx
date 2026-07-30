@@ -1,5 +1,6 @@
 import {
   Box,
+  Checkbox,
   HStack,
   Spinner,
   Text,
@@ -249,22 +250,22 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         fontSize="xs"
         position="relative"
         zIndex="2"
-        transition="filter 0.2s"
-        filter={isSelected ? "brightness(1.2)" : undefined}
-        _hover={
-          isSelectable
-            ? {
-                filter: "brightness(1.2)",
-                cursor: "pointer",
-              }
-            : undefined
-        }
-        onClick={
-          isSelectable
-            ? () => nodeSelector.toggleNodeIdSelection(props.id)
-            : undefined
-        }
       >
+        {nodeSelector.isInSelectionMode && (
+          <Checkbox
+            position="absolute"
+            top="0"
+            left="0"
+            transform="translate(-50%, -50%)"
+            zIndex="11"
+            isChecked={isSelected}
+            isDisabled={!isSelectable}
+            aria-label={`${isSelected ? "Deselect" : "Select"} problem node`}
+            onClick={(event) => event.stopPropagation()}
+            onChange={() => nodeSelector.toggleNodeIdSelection(props.id)}
+          />
+        )}
+
         {["translate(calc(-50% + 50px))", "translate(calc(-50% + -50px))"].map(
           (transform) => (
             <div
