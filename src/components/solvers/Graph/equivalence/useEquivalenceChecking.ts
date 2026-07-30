@@ -2,9 +2,15 @@ import { useRef, useState } from "react";
 import { ProblemNodeData } from "../ProblemNode";
 import { useNodeSelector } from "../state/useNodeSelector";
 
-type EquivalenceCheckResponse = {
+export type EquivalenceCheckStatus =
+  | "equivalent"
+  | "not_equivalent"
+  | "unknown"
+  | "error";
+
+export type EquivalenceCheckResponse = {
   strategy: "mqt-qcec";
-  status: "equivalent" | "not_equivalent" | "unknown" | "error";
+  status: EquivalenceCheckStatus;
   globalPhaseIgnored: boolean | null;
   runtimeMs: number;
   rawEquivalence: string | null;
@@ -16,8 +22,9 @@ type EquivalenceCheckResponse = {
 };
 
 export function useEquivalenceChecking() {
-  const [output, setOutput] = useState<string>();
+  const [result, setResult] = useState<EquivalenceCheckResponse>();
   const [isRunning, setIsRunning] = useState(false);
+  const [isChecking, setIsChecking] = useState(false);
   const nodeSelector = useNodeSelector();
   const previousSelectionLimitOptions = useRef(
     nodeSelector.nodeSelectionLimitOptions,
@@ -42,8 +49,8 @@ export function useEquivalenceChecking() {
       limit: 2,
       strategy: "evictOldest",
     });
+    setResult(undefined);
     setIsRunning(true);
-    setOutput("Select two nodes");
 
     function isNodeSelectable(_: string, nodeData: ProblemNodeData) {
       if ((nodeData?.problemDtos?.length ?? 0) === 0) {
@@ -67,27 +74,25 @@ export function useEquivalenceChecking() {
   }
 
   async function check() {
-    if (!canCheck()) {
+    if (!canCheck() || isChecking) {
       return;
     }
 
-    setIsRunning(true);
-    setOutput("Running...");
+    setIsChecking(true);
 
-    let output: string;
     try {
       const [firstNode, secondNode] = nodeSelector.selectedNodes;
       const qasmA = firstNode.data.problemDtos[0].input;
       const qasmB = secondNode.data.problemDtos[0].input;
 
-      output = await performCheck(qasmA, qasmB);
-    } catch {
-      output = "Error";
+      setResult(await performCheck(qasmA, qasmB));
+    } catch (error) {
+      setResult(createErrorResult(error));
+    } finally {
+      setIsChecking(false);
+      setIsRunning(false);
+      finishSelection();
     }
-
-    setOutput(output);
-    setIsRunning(false);
-    finishSelection();
   }
 
   function canCheck() {
@@ -99,12 +104,17 @@ export function useEquivalenceChecking() {
     cancel,
     check,
     canCheck,
-    output,
+    result,
     isRunning,
+    isChecking,
+    selectedNodeCount: nodeSelector.selectedNodes.length,
   };
 }
 
-async function performCheck(qasmA: string, qasmB: string) {
+async function performCheck(
+  qasmA: string,
+  qasmB: string,
+): Promise<EquivalenceCheckResponse> {
   const response = await fetch("http://localhost:8100/api/equivalence-check", {
     method: "POST",
     headers: {
@@ -112,7 +122,25 @@ async function performCheck(qasmA: string, qasmB: string) {
     },
     body: JSON.stringify({ qasmA, qasmB }),
   });
-  const data: EquivalenceCheckResponse = await response.json();
 
-  return data.status;
+  return response.json();
+}
+
+function createErrorResult(error: unknown): EquivalenceCheckResponse {
+  const errorType = error instanceof Error ? error.name : "UnknownError";
+  const errorMessage =
+    error instanceof Error ? error.message : "An unknown error occurred.";
+
+  return {
+    strategy: "mqt-qcec",
+    status: "error",
+    globalPhaseIgnored: null,
+    runtimeMs: 0,
+    rawEquivalence: null,
+    message: "The equivalence service could not complete the request.",
+    error: {
+      type: errorType,
+      message: errorMessage,
+    },
+  };
 }
