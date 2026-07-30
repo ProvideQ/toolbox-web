@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ProblemDto } from "../../../../api/toolbox/data-model/ProblemDto";
+import { useRef, useState } from "react";
 import { ProblemNodeData } from "../ProblemNode";
 import { useNodeSelector } from "../state/useNodeSelector";
 
@@ -16,32 +15,46 @@ type EquivalenceCheckResponse = {
   } | null;
 };
 
-export function useEquivalenceChecking(problemDto: ProblemDto<any>) {
+export function useEquivalenceChecking() {
   const [output, setOutput] = useState<string>();
   const [isRunning, setIsRunning] = useState(false);
   const nodeSelector = useNodeSelector();
+  const previousSelectionLimitOptions = useRef(
+    nodeSelector.nodeSelectionLimitOptions,
+  );
+
+  function finishSelection() {
+    nodeSelector.updateIsInSelectionMode(false);
+    nodeSelector.updateNodeSelectionLimitOptions(
+      previousSelectionLimitOptions.current,
+    );
+  }
 
   function cancel() {
     setIsRunning(false);
-    console.log("cancel");
-    nodeSelector.updateIsInSelectionMode(false);
+    finishSelection();
   }
 
   function activate() {
+    previousSelectionLimitOptions.current =
+      nodeSelector.nodeSelectionLimitOptions;
+    nodeSelector.updateNodeSelectionLimitOptions({
+      limit: 2,
+      strategy: "evictOldest",
+    });
     setIsRunning(true);
-    setOutput("Select another node")
+    setOutput("Select two nodes");
+
     function isNodeSelectable(_: string, nodeData: ProblemNodeData) {
-      console.log("nodeData:", nodeData);
       if ((nodeData?.problemDtos?.length ?? 0) === 0) {
-        console.log("1");
         return false;
       }
+
       const input = nodeData.problemDtos[0].input;
       if (!input || !(typeof input === "string")) {
-        console.log("2");
         return false;
       }
-      console.log("3");
+
       const firstLine = input.split("\n")[0];
       return firstLine
         .toLowerCase()
@@ -55,7 +68,6 @@ export function useEquivalenceChecking(problemDto: ProblemDto<any>) {
 
   async function check() {
     if (!canCheck()) {
-      console.log('cannot check but dont know why');
       return;
     }
 
@@ -64,8 +76,9 @@ export function useEquivalenceChecking(problemDto: ProblemDto<any>) {
 
     let output: string;
     try {
-      const qasmA = problemDto.input;
-      const qasmB = nodeSelector.selectedNodes[0].data.problemDtos[0].input;
+      const [firstNode, secondNode] = nodeSelector.selectedNodes;
+      const qasmA = firstNode.data.problemDtos[0].input;
+      const qasmB = secondNode.data.problemDtos[0].input;
 
       output = await performCheck(qasmA, qasmB);
     } catch {
@@ -74,10 +87,11 @@ export function useEquivalenceChecking(problemDto: ProblemDto<any>) {
 
     setOutput(output);
     setIsRunning(false);
+    finishSelection();
   }
 
   function canCheck() {
-    return nodeSelector.selectedNodes.length > 0;
+    return nodeSelector.selectedNodes.length === 2;
   }
 
   return {

@@ -7,13 +7,14 @@ import {
   Box,
   Button,
   Card,
-  CardBody, CardFooter,
+  CardBody,
+  CardFooter,
   CardHeader,
   Heading,
   HStack,
   Text,
   Textarea,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
@@ -61,7 +62,7 @@ export const ProblemDetails = ({ problemDto }: Props) => {
   const { solvers, getSolvers } = useSolvers();
   const { updateProblem } = useGraphUpdates();
 
-  const equivalenceChecking = useEquivalenceChecking(problemDto);
+  const equivalenceChecking = useEquivalenceChecking();
 
   // Update solvers in case they are not loaded yet
   if (!solvers[problemDto.typeId]) getSolvers(problemDto.typeId);
@@ -123,20 +124,18 @@ export const ProblemDetails = ({ problemDto }: Props) => {
               Check Equivalence
             </Button>
           ) : (
-              <HStack gap="8px">
-                <Button
-                  onClick={equivalenceChecking.check}
-                  disabled={!equivalenceChecking.canCheck()}
-                >
-                  Check
-                </Button>
-                <Button onClick={equivalenceChecking.cancel}>Cancel</Button>
-              </HStack>
+            <HStack gap="8px">
+              <Button
+                onClick={equivalenceChecking.check}
+                disabled={!equivalenceChecking.canCheck()}
+              >
+                Check
+              </Button>
+              <Button onClick={equivalenceChecking.cancel}>Cancel</Button>
+            </HStack>
           )}
         </CardBody>
-        <CardFooter>
-          {equivalenceChecking.output}
-        </CardFooter>
+        <CardFooter>{equivalenceChecking.output}</CardFooter>
       </Card>
     </VStack>
   );
