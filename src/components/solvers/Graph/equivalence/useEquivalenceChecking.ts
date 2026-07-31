@@ -115,12 +115,13 @@ async function performCheck(
   qasmA: string,
   qasmB: string,
 ): Promise<EquivalenceCheckResponse> {
+  const strategy = "mqt-qcec";
   const response = await fetch("http://localhost:8100/api/equivalence-check", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ qasmA, qasmB }),
+    body: JSON.stringify({ strategy, qasmA, qasmB }),
   });
 
   return response.json();
