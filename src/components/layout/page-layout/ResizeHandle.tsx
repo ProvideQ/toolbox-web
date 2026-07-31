@@ -3,6 +3,7 @@ import { PointerEvent, useRef } from "react";
 
 interface ResizeHandleProps {
   orientation: "horizontal" | "vertical";
+  onResizeStart: () => void;
   onResize: (delta: number) => void;
   size: number;
   gapSize: number;
@@ -13,6 +14,7 @@ interface ResizeHandleProps {
 
 export function ResizeHandle({
   orientation,
+  onResizeStart,
   onResize,
   size,
   gapSize,
@@ -30,6 +32,7 @@ export function ResizeHandle({
     event.preventDefault();
 
     startPositionRef.current = getPointerPosition(event);
+    onResizeStart();
     event.currentTarget.setPointerCapture(event.pointerId);
 
     document.body.style.cursor = cursor;
@@ -43,7 +46,6 @@ export function ResizeHandle({
 
     const currentPosition = getPointerPosition(event);
     const movement = currentPosition - startPositionRef.current;
-    startPositionRef.current = currentPosition;
 
     onResize(invertDelta ? -movement : movement);
   };

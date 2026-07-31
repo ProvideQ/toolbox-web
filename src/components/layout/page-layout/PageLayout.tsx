@@ -25,6 +25,7 @@ interface PageSidebarProps {
   split: number;
   resizeHandleSize: number;
   islandGap: number;
+  onResizeStart: () => void;
   onResizeSplit: (delta: number) => void;
 }
 
@@ -45,6 +46,10 @@ export function PageLayout({
     rightWidth,
     leftSplit,
     rightSplit,
+    startResizeLeftSidebar,
+    startResizeRightSidebar,
+    startResizeLeftSidebarSplit,
+    startResizeRightSidebarSplit,
     resizeLeftSidebar,
     resizeRightSidebar,
     resizeLeftSidebarSplit,
@@ -92,11 +97,13 @@ export function PageLayout({
               split={leftSplit}
               resizeHandleSize={RESIZE_HANDLE_SIZE}
               islandGap={ISLAND_GAP}
+              onResizeStart={startResizeLeftSidebarSplit}
               onResizeSplit={resizeLeftSidebarSplit}
             />
 
             <ResizeHandle
               orientation="vertical"
+              onResizeStart={startResizeLeftSidebar}
               onResize={resizeLeftSidebar}
               size={RESIZE_HANDLE_SIZE}
               gapSize={ISLAND_GAP}
@@ -137,6 +144,7 @@ export function PageLayout({
           >
             <ResizeHandle
               orientation="vertical"
+              onResizeStart={startResizeRightSidebar}
               onResize={resizeRightSidebar}
               size={RESIZE_HANDLE_SIZE}
               gapSize={ISLAND_GAP}
@@ -153,6 +161,7 @@ export function PageLayout({
               split={rightSplit}
               resizeHandleSize={RESIZE_HANDLE_SIZE}
               islandGap={ISLAND_GAP}
+              onResizeStart={startResizeRightSidebarSplit}
               onResizeSplit={resizeRightSidebarSplit}
             />
           </Box>
@@ -170,6 +179,7 @@ function PageSidebar({
   split,
   resizeHandleSize,
   islandGap,
+  onResizeStart,
   onResizeSplit,
 }: PageSidebarProps) {
   const hasTopContent = hasContent(topContent);
@@ -198,6 +208,7 @@ function PageSidebar({
 
         <ResizeHandle
           orientation="horizontal"
+          onResizeStart={onResizeStart}
           onResize={onResizeSplit}
           size={resizeHandleSize}
           gapSize={islandGap}

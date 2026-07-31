@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const DEFAULT_SIDEBAR_WIDTH = 300;
 const DEFAULT_SIDEBAR_SPLIT = 50;
@@ -28,6 +28,10 @@ export function useResize({
   const [leftSplit, setLeftSplit] = useState(DEFAULT_SIDEBAR_SPLIT);
   const [rightSplit, setRightSplit] = useState(DEFAULT_SIDEBAR_SPLIT);
   const [storageLoaded, setStorageLoaded] = useState(false);
+  const leftWidthAtDragStart = useRef(leftWidth);
+  const rightWidthAtDragStart = useRef(rightWidth);
+  const leftSplitAtDragStart = useRef(leftSplit);
+  const rightSplitAtDragStart = useRef(rightSplit);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -83,43 +87,45 @@ export function useResize({
   };
 
   const resizeLeftSidebar = (delta: number) => {
-    setLeftWidth((currentWidth) => {
-      const maximumWidth = getMaximumSidebarWidth(rightWidth, hasRightSidebar);
+    const maximumWidth = getMaximumSidebarWidth(rightWidth, hasRightSidebar);
 
-      return Math.min(
+    setLeftWidth(
+      clamp(
+        leftWidthAtDragStart.current + delta,
+        MIN_SIDEBAR_WIDTH,
         maximumWidth,
-        Math.max(MIN_SIDEBAR_WIDTH, currentWidth + delta),
-      );
-    });
+      ),
+    );
   };
 
   const resizeRightSidebar = (delta: number) => {
-    setRightWidth((currentWidth) => {
-      const maximumWidth = getMaximumSidebarWidth(leftWidth, hasLeftSidebar);
+    const maximumWidth = getMaximumSidebarWidth(leftWidth, hasLeftSidebar);
 
-      return Math.min(
+    setRightWidth(
+      clamp(
+        rightWidthAtDragStart.current + delta,
+        MIN_SIDEBAR_WIDTH,
         maximumWidth,
-        Math.max(MIN_SIDEBAR_WIDTH, currentWidth + delta),
-      );
-    });
+      ),
+    );
   };
 
-  const getResizedSplit = (currentSplit: number, delta: number) => {
+  const getResizedSplit = (splitAtDragStart: number, delta: number) => {
     const availableHeight = window.innerHeight - islandGap * 3;
 
     if (availableHeight <= 0) {
-      return currentSplit;
+      return splitAtDragStart;
     }
 
-    return clamp(currentSplit + (delta / availableHeight) * 100, 0, 100);
+    return clamp(splitAtDragStart + (delta / availableHeight) * 100, 0, 100);
   };
 
   const resizeLeftSidebarSplit = (delta: number) => {
-    setLeftSplit((currentSplit) => getResizedSplit(currentSplit, delta));
+    setLeftSplit(getResizedSplit(leftSplitAtDragStart.current, delta));
   };
 
   const resizeRightSidebarSplit = (delta: number) => {
-    setRightSplit((currentSplit) => getResizedSplit(currentSplit, delta));
+    setRightSplit(getResizedSplit(rightSplitAtDragStart.current, delta));
   };
 
   return {
@@ -127,6 +133,18 @@ export function useResize({
     rightWidth,
     leftSplit,
     rightSplit,
+    startResizeLeftSidebar: () => {
+      leftWidthAtDragStart.current = leftWidth;
+    },
+    startResizeRightSidebar: () => {
+      rightWidthAtDragStart.current = rightWidth;
+    },
+    startResizeLeftSidebarSplit: () => {
+      leftSplitAtDragStart.current = leftSplit;
+    },
+    startResizeRightSidebarSplit: () => {
+      rightSplitAtDragStart.current = rightSplit;
+    },
     resizeLeftSidebar,
     resizeRightSidebar,
     resizeLeftSidebarSplit,
