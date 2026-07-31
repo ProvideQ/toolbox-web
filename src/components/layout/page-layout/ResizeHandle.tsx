@@ -5,6 +5,8 @@ interface ResizeHandleProps {
   orientation: "horizontal" | "vertical";
   onResize: (delta: number) => void;
   size: number;
+  gapSize: number;
+  edge: "left" | "right" | "bottom";
   invertDelta?: boolean;
   ariaLabel: string;
 }
@@ -13,6 +15,8 @@ export function ResizeHandle({
   orientation,
   onResize,
   size,
+  gapSize,
+  edge,
   invertDelta = false,
   ariaLabel,
 }: ResizeHandleProps) {
@@ -53,6 +57,8 @@ export function ResizeHandle({
     document.body.style.userSelect = "";
   };
 
+  const overlayOffset = `-${(size + gapSize) / 2}px`;
+
   return (
     <Flex
       role="separator"
@@ -60,7 +66,18 @@ export function ResizeHandle({
       aria-label={ariaLabel}
       width={orientation === "vertical" ? `${size}px` : "100%"}
       height={orientation === "horizontal" ? `${size}px` : "100%"}
-      flexShrink={0}
+      position="absolute"
+      top={orientation === "vertical" ? 0 : undefined}
+      left={
+        orientation === "horizontal"
+          ? 0
+          : edge === "left"
+            ? overlayOffset
+            : undefined
+      }
+      right={edge === "right" ? overlayOffset : undefined}
+      bottom={edge === "bottom" ? overlayOffset : undefined}
+      zIndex={1}
       cursor={cursor}
       bg="transparent"
       onPointerDown={handlePointerDown}

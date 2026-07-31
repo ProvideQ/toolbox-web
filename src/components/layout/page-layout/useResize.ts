@@ -5,7 +5,6 @@ const DEFAULT_SIDEBAR_SPLIT = 50;
 const MIN_SIDEBAR_WIDTH = 300;
 const MIN_MAIN_WIDTH = 320;
 
-const LAYOUT_PADDING = 8;
 const RESIZE_HANDLE_SIZE = 8;
 
 const LEFT_WIDTH_STORAGE_KEY = "provideq.sidebar.left.width";
@@ -16,11 +15,13 @@ const RIGHT_SPLIT_STORAGE_KEY = "provideq.sidebar.right.split";
 interface UseResizeOptions {
   hasLeftSidebar: boolean;
   hasRightSidebar: boolean;
+  islandGap: number;
 }
 
 export function useResize({
   hasLeftSidebar,
   hasRightSidebar,
+  islandGap,
 }: UseResizeOptions) {
   const [leftWidth, setLeftWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
   const [rightWidth, setRightWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
@@ -69,15 +70,13 @@ export function useResize({
     otherSidebarWidth: number,
     hasOtherSidebar: boolean,
   ) => {
-    const ownHandleWidth = RESIZE_HANDLE_SIZE;
-    const otherSidebarAndHandleWidth = hasOtherSidebar
-      ? otherSidebarWidth + RESIZE_HANDLE_SIZE
-      : 0;
+    const sidebarGapCount = hasOtherSidebar ? 2 : 1;
+    const otherSidebarWidthInLayout = hasOtherSidebar ? otherSidebarWidth : 0;
     const availableWidth =
       window.innerWidth -
-      LAYOUT_PADDING * 2 -
-      ownHandleWidth -
-      otherSidebarAndHandleWidth -
+      islandGap * 2 -
+      islandGap * sidebarGapCount -
+      otherSidebarWidthInLayout -
       MIN_MAIN_WIDTH;
 
     return Math.max(MIN_SIDEBAR_WIDTH, availableWidth);
@@ -106,8 +105,7 @@ export function useResize({
   };
 
   const getResizedSplit = (currentSplit: number, delta: number) => {
-    const availableHeight =
-      window.innerHeight - LAYOUT_PADDING * 2 - RESIZE_HANDLE_SIZE;
+    const availableHeight = window.innerHeight - islandGap * 3;
 
     if (availableHeight <= 0) {
       return currentSplit;
@@ -134,7 +132,6 @@ export function useResize({
     resizeLeftSidebarSplit,
     resizeRightSidebarSplit,
     MIN_MAIN_WIDTH,
-    LAYOUT_PADDING,
     RESIZE_HANDLE_SIZE,
   };
 }
