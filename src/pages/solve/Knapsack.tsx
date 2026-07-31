@@ -1,22 +1,14 @@
-import {
-  Card,
-  CardBody,
-  Divider,
-  Flex,
-  Heading,
-  Link,
-  Text,
-} from "@chakra-ui/react";
+import { Divider, Link, Text } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { PageLayout } from "../../components/layout/page-layout/PageLayout";
+import { ProblemConfiguration } from "../../components/solvers/Graph/configuration/ProblemConfiguration";
 import { EquivalenceChecking } from "../../components/solvers/Graph/equivalence/EquivalenceChecking";
 import { ProblemDetails } from "../../components/solvers/Graph/ProblemDetails";
 import { NodeDetailsProvider } from "../../components/solvers/Graph/state/NodeDetailsProvider";
 import { NodeSelectorProvider } from "../../components/solvers/Graph/state/NodeSelectorProvider";
 import { useNodeDetails } from "../../components/solvers/Graph/state/useNodeDetails";
 import { SolverConfiguration } from "../../components/solvers/SolverConfiguration";
-import { TextInputMask } from "../../components/solvers/TextInputMask";
 
 const Knapsack: NextPage = () => {
   return (
@@ -30,6 +22,25 @@ const Knapsack: NextPage = () => {
 
 export default Knapsack;
 
+const Description = () => {
+  return (
+    <Text color="text" align="justify">
+      In the 0-1 knapsack problem, we are given a list of items, each with a
+      weight and a value, and the maximum weight that the knapsack can hold. The
+      goal is to find the subset of items that maximizes the total value while
+      keeping the total weight below the maximum weight. Example problems and an
+      explanation of the input format can be found{" "}
+      <Link
+        href="https://github.com/ProvideQ/knapsack-problems"
+        color={"blue.400"}
+      >
+        here
+      </Link>
+      .
+    </Text>
+  );
+};
+
 function KnapsackContent() {
   const [knapsackProblem, setKnapsackProblem] = useState("");
   const nodeDetails = useNodeDetails();
@@ -38,38 +49,11 @@ function KnapsackContent() {
   return (
     <PageLayout
       leftTopSidebarContent={
-        <Flex direction="column" width="100%" height="100%" gap="8px">
-          <Heading as="h4" size="md">
-            Knapsack Solver
-          </Heading>
-
-          <Card>
-            <CardBody>
-              <Text color="text" align="justify">
-                In the 0-1 knapsack problem, we are given a list of items, each
-                with a weight and a value, and the maximum weight that the
-                knapsack can hold. The goal is to find the subset of items that
-                maximizes the total value while keeping the total weight below
-                the maximum weight. Example problems and an explanation of the
-                input format can be found{" "}
-                <Link
-                  href="https://github.com/ProvideQ/knapsack-problems"
-                  color={"blue.400"}
-                >
-                  here
-                </Link>
-                .
-              </Text>
-            </CardBody>
-          </Card>
-
-          <TextInputMask
-            problemTypeId="Knapsack"
-            text={knapsackProblem}
-            setText={setKnapsackProblem}
-            textPlaceholder="Enter your knapsack problem"
-          />
-        </Flex>
+        <ProblemConfiguration
+          description={<Description />}
+          knapsackProblem={knapsackProblem}
+          setKnapsackProblem={setKnapsackProblem}
+        />
       }
       rightTopSidebarContent={nodeDetails.problemDtos.map((problemDto) => (
         <div key={problemDto.id}>

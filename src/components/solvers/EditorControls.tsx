@@ -1,10 +1,16 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  Button,
   ButtonGroup,
   HStack,
   IconButton,
   Select,
+  SimpleGrid,
   Text,
   Tooltip,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
@@ -47,6 +53,11 @@ export interface EditorControlsProps {
    * Problem type id.
    */
   problemTypeId: string;
+
+  /**
+   * Stacks controls for use in narrow sidebars.
+   */
+  compact?: boolean;
 }
 
 /**
@@ -93,28 +104,118 @@ export const EditorControls = (props: EditorControlsProps) => {
       .then((json) => setExamples(json));
   }, [props.problemTypeId]);
 
+  const exampleSelect = examples.length > 0 && (
+    <Select
+      size={props.compact ? "sm" : "md"}
+      placeholder="Load an example"
+      overflow="hidden"
+      textOverflow="ellipsis"
+      width={props.compact ? "100%" : "10rem"}
+      value={selectedExample}
+      bg={props.compact ? "white" : undefined}
+      _dark={props.compact ? { bg: "gray.800" } : undefined}
+      onChange={(event) => {
+        setSelectedExample(event.target.value);
+        props.setEditorContent(event.target.value);
+      }}
+    >
+      {examples.map((example) => (
+        <option key={example} value={example}>
+          {example.length > 100 ? example.slice(0, 100) + "..." : example}
+        </option>
+      ))}
+    </Select>
+  );
+
+  const resetEditor = () => {
+    setSelectedExample("");
+    props.setEditorContent("");
+  };
+
+  const restartEditor = () => {
+    props.setEditorContent("");
+    setTimeout(() => {
+      props.setEditorContent(props.editorContent);
+    });
+  };
+
+  if (props.compact) {
+    return (
+      <VStack width="100%" align="stretch" spacing="2">
+        {exampleSelect}
+
+        {props.errorText && (
+          <Alert status="error" variant="subtle" borderRadius="md" py="2">
+            <AlertIcon boxSize="1rem" />
+            <AlertDescription fontSize="xs">{props.errorText}</AlertDescription>
+          </Alert>
+        )}
+
+        {!props.errorText && props.idleText && (
+          <Text color="gray.500" fontSize="xs">
+            {props.idleText}
+          </Text>
+        )}
+
+        <SimpleGrid columns={2} gap="2">
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="blue"
+            justifyContent="flex-start"
+            leftIcon={<TbDownload />}
+            onClick={() => download(props.editorContent)}
+          >
+            Download
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="blue"
+            justifyContent="flex-start"
+            leftIcon={<TbUpload />}
+            onClick={() => upload(props.setEditorContent)}
+          >
+            Upload
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="red"
+            justifyContent="flex-start"
+            leftIcon={<TbTrash />}
+            onClick={resetEditor}
+          >
+            Clear
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            justifyContent="flex-start"
+            leftIcon={<TbRepeat />}
+            onClick={restartEditor}
+          >
+            Restart
+          </Button>
+          <Button
+            gridColumn="1 / -1"
+            size="sm"
+            variant="ghost"
+            colorScheme="blue"
+            leftIcon={<TbHelp />}
+            onClick={() => window.open(documentationLink, "_blank")}
+          >
+            Open documentation
+          </Button>
+        </SimpleGrid>
+      </VStack>
+    );
+  }
+
   return (
     <HStack justifyContent={"space-between"} width="100%">
       <HStack>
-        {examples.length > 0 && (
-          <Select
-            placeholder="Load example"
-            overflow="hidden"
-            textOverflow="ellipsis"
-            width="10rem"
-            value={selectedExample}
-            onChange={(e) => {
-              setSelectedExample(e.target.value);
-              props.setEditorContent(e.target.value);
-            }}
-          >
-            {examples.map((example) => (
-              <option key={example} value={example}>
-                {example.length > 100 ? example.slice(0, 100) + "..." : example}
-              </option>
-            ))}
-          </Select>
-        )}
+        {exampleSelect}
 
         {props.errorText ? (
           <Text textColor="tomato">{props.errorText}</Text>
@@ -142,22 +243,14 @@ export const EditorControls = (props: EditorControlsProps) => {
           <IconButton
             aria-label="Reset"
             icon={<TbTrash />}
-            onClick={() => {
-              setSelectedExample("");
-              props.setEditorContent("");
-            }}
+            onClick={resetEditor}
           />
         </Tooltip>
         <Tooltip label="Restart the problem">
           <IconButton
             aria-label="Restart"
             icon={<TbRepeat />}
-            onClick={() => {
-              props.setEditorContent("");
-              setTimeout(() => {
-                props.setEditorContent(props.editorContent);
-              });
-            }}
+            onClick={restartEditor}
           />
         </Tooltip>
         <Tooltip label="Open the documentation">

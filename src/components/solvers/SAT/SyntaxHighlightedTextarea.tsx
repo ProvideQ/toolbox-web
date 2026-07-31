@@ -9,6 +9,7 @@ interface SyntaxHighlightedTextareaProps {
   placeholder?: string;
   isInvalid?: boolean;
   grammar?: GrammarSettings;
+  compact?: boolean;
 }
 
 export interface GrammarSettings {
@@ -21,12 +22,27 @@ export const SyntaxHighlightedTextarea = (
 ) => {
   return (
     <Box
-      border="2px"
-      borderColor={props.isInvalid ? "tomato" : "#AAAAAA"}
-      borderRadius="10px"
+      borderWidth={props.compact ? "1px" : "2px"}
+      borderColor={
+        props.isInvalid
+          ? "red.400"
+          : props.compact
+            ? "blackAlpha.300"
+            : "#AAAAAA"
+      }
+      borderRadius={props.compact ? "md" : "10px"}
       width="100%"
       maxHeight="50rem"
       overflowX="hidden"
+      bg={props.compact ? "blackAlpha.50" : undefined}
+      _dark={
+        props.compact
+          ? {
+              bg: "whiteAlpha.50",
+              borderColor: props.isInvalid ? "red.300" : "whiteAlpha.300",
+            }
+          : undefined
+      }
     >
       <Editor
         placeholder={props.placeholder}
@@ -45,7 +61,8 @@ export const SyntaxHighlightedTextarea = (
         padding={10}
         style={{
           fontFamily: '"Fira code", "Fira Mono", monospace',
-          fontSize: 16,
+          fontSize: props.compact ? 14 : 16,
+          minHeight: props.compact ? "10rem" : undefined,
         }}
       />
     </Box>
