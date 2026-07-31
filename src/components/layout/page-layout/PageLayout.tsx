@@ -10,6 +10,7 @@ import { useResize } from "./useResize";
 const ISLAND_GAP = 4;
 
 interface Props {
+  topbarContent?: ReactNode;
   leftTopSidebarContent?: ReactNode;
   leftBottomSidebarContent?: ReactNode;
   rightTopSidebarContent?: ReactNode;
@@ -30,6 +31,7 @@ interface PageSidebarProps {
 }
 
 export function PageLayout({
+  topbarContent,
   leftTopSidebarContent,
   leftBottomSidebarContent,
   rightTopSidebarContent,
@@ -72,7 +74,7 @@ export function PageLayout({
       padding={`${ISLAND_GAP}px`}
       gap={`${ISLAND_GAP}px`}
     >
-      <Box>Hello World</Box>
+      <Box width="100%">{topbarContent}</Box>
 
       <Flex
         direction="row"
