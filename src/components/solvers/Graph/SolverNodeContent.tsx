@@ -16,6 +16,7 @@ import {
 import { ReactNode } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { SolverCharacteristicBadges } from "./SolverCharacteristicBadges";
 import { SolverCharacteristicIcons } from "./SolverCharacteristicIcons";
 
 export interface SolverNodeContentProps {
@@ -31,7 +32,7 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
     <VStack gap="0px">
       <HStack align="start" maxW="10rem" justifyContent="space-between">
         <SolverCharacteristicIcons
-          characteristics={props.solver.characteristics}
+          types={props.solver.characteristics?.types}
         />
         <Text paddingY=".25rem" fontWeight="semibold">
           {props.solver.name}
@@ -61,11 +62,9 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
         </Popover>
       </HStack>
 
-      {/*
-        <SolverCharacteristicBadges
-          characteristics={props.solver.characteristics}
-        />
-      */}
+      <SolverCharacteristicBadges
+        properties={props.solver.characteristics?.properties}
+      />
 
       <div
         style={{
