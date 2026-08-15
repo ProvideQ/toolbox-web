@@ -79,7 +79,7 @@ function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
   for (let problemDto of problemDtos) {
     switch (problemDto.state) {
       case ProblemState.NEEDS_CONFIGURATION:
-        return "ghostwhite";
+        return "blue.100";
       case ProblemState.SOLVED:
         switch (problemDto.solution.status) {
           case SolutionStatus.INVALID:
@@ -92,11 +92,11 @@ function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
 
   // If all dtos are solved, the whole node should have the solved color
   if (problemDtos.every((dto) => dto.state === ProblemState.SOLVED)) {
-    return "teal";
+    return "green.100";
   }
 
   // Otherwise if any dto is ready to solve or solving, the whole node should have the ready to solve color
-  return "cornflowerblue";
+  return "blue.100";
 }
 
 function getState(problemDtos: ProblemDto<any>[]): ProblemState {
@@ -257,6 +257,7 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             top="0"
             left="0"
             transform="translate(-50%, -50%)"
+            borderColor='blue.500'
             zIndex="11"
             isChecked={isSelected}
             isDisabled={!isSelectable}
