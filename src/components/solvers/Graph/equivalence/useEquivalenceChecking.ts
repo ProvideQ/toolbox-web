@@ -116,7 +116,7 @@ async function performCheck(
   qasmB: string,
 ): Promise<EquivalenceCheckResponse> {
   const strategy = "mqt-qcec";
-  const response = await fetch("http://localhost:8100/api/equivalence-check", {
+  const response = await fetch("http://localhost:8080/tools/equivalencechecking", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
