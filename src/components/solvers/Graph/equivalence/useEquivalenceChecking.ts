@@ -9,7 +9,7 @@ export type EquivalenceCheckStatus =
   | "error";
 
 export type EquivalenceCheckResponse = {
-  strategy: "mqt-qcec";
+  strategy: "mqt-qcec" | "pyzx";
   status: EquivalenceCheckStatus;
   globalPhaseIgnored: boolean | null;
   runtimeMs: number;
@@ -29,6 +29,9 @@ export function useEquivalenceChecking() {
   const previousSelectionLimitOptions = useRef(
     nodeSelector.nodeSelectionLimitOptions,
   );
+
+  const strategy = "mqt-qcec";
+  // const strategy = "pyzx";
 
   function finishSelection() {
     nodeSelector.updateIsInSelectionMode(false);
@@ -99,6 +102,40 @@ export function useEquivalenceChecking() {
     return nodeSelector.selectedNodes.length === 2;
   }
 
+  async function performCheck(
+    qasmA: string,
+    qasmB: string,
+  ): Promise<EquivalenceCheckResponse> {
+    const response = await fetch("http://localhost:8080/tools/equivalencechecking", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ strategy, qasmA, qasmB }),
+    });
+
+    return response.json();
+  }
+
+  function createErrorResult(error: unknown): EquivalenceCheckResponse {
+    const errorType = error instanceof Error ? error.name : "UnknownError";
+    const errorMessage =
+      error instanceof Error ? error.message : "An unknown error occurred.";
+
+    return {
+      strategy,
+      status: "error",
+      globalPhaseIgnored: null,
+      runtimeMs: 0,
+      rawEquivalence: null,
+      message: "The equivalence service could not complete the request.",
+      error: {
+        type: errorType,
+        message: errorMessage,
+      },
+    };
+  }
+
   return {
     activate,
     cancel,
@@ -108,40 +145,5 @@ export function useEquivalenceChecking() {
     isRunning,
     isChecking,
     selectedNodeCount: nodeSelector.selectedNodes.length,
-  };
-}
-
-async function performCheck(
-  qasmA: string,
-  qasmB: string,
-): Promise<EquivalenceCheckResponse> {
-  const strategy = "mqt-qcec";
-  const response = await fetch("http://localhost:8080/tools/equivalencechecking", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ strategy, qasmA, qasmB }),
-  });
-
-  return response.json();
-}
-
-function createErrorResult(error: unknown): EquivalenceCheckResponse {
-  const errorType = error instanceof Error ? error.name : "UnknownError";
-  const errorMessage =
-    error instanceof Error ? error.message : "An unknown error occurred.";
-
-  return {
-    strategy: "mqt-qcec",
-    status: "error",
-    globalPhaseIgnored: null,
-    runtimeMs: 0,
-    rawEquivalence: null,
-    message: "The equivalence service could not complete the request.",
-    error: {
-      type: errorType,
-      message: errorMessage,
-    },
   };
 }
