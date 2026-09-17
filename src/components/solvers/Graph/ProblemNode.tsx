@@ -29,6 +29,7 @@ import {
   ProblemDto,
 } from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
+import { getHumanReadableTypeId } from "../../../api/toolbox/data-model/ProblemTypeDto";
 import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
 import { solverSettingAnyRequiredIsUnfilled } from "../../../api/toolbox/data-model/SolverSettings";
 import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
@@ -74,10 +75,6 @@ function getNodeType(data: ProblemNodeData): {
     topHandle: topHandle,
     bottomHandle: bottomHandle,
   };
-}
-
-function getHumanReadableTypeId(typeId: string): string {
-  return typeId.replaceAll(/([a-z])([A-Z])/g, "$1 $2");
 }
 
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {

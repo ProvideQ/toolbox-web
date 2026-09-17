@@ -42,6 +42,7 @@ interface ProblemEdgeData {
 export interface ProblemGraphViewProps {
   problemTypeId: string;
   problemId: string;
+  onConfigurationChanged?: () => void;
 }
 
 export interface ProblemNodeIdentifier {
@@ -701,13 +702,17 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   ]);
 
   // Update node ids when nodes change
+  const onConfigurationChanged = props.onConfigurationChanged;
   useEffect(() => {
     let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
       // Defer node id update to avoid synchronous setState inside effect
-      setTimeout(() => setNodeIds(ids), 0);
+      setTimeout(() => {
+        setNodeIds(ids);
+        onConfigurationChanged?.();
+      }, 0);
     }
-  }, [graphInstance, nodeIds, nodes]);
+  }, [graphInstance, nodeIds, nodes, onConfigurationChanged]);
 
   // Fit view when nodes change
   useEffect(() => {
