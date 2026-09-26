@@ -22,7 +22,10 @@ import {
 import "reactflow/dist/style.css";
 import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
 import { strategyApi } from "../../../api/strategy/StrategyAPI";
-import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
+import {
+  isGuardRejected,
+  ProblemDto,
+} from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/toolbox/data-model/SubRoutineDefinitionDto";
@@ -42,11 +45,13 @@ interface ProblemEdgeData {
 export interface ProblemGraphViewProps {
   problemTypeId: string;
   problemId: string;
+  onConfigurationChanged?: () => void;
 }
 
 export interface ProblemNodeIdentifier {
   subRoutineDefinitionDto: SubRoutineDefinitionDto;
   solverId?: string;
+  guardRejected?: boolean;
 }
 
 /**
@@ -67,7 +72,8 @@ function getNodeId(
     "-" +
     identifier.subRoutineDefinitionDto.description +
     "-" +
-    identifier.solverId
+    identifier.solverId +
+    (identifier.guardRejected ? "-guard-rejected" : "")
   );
 }
 
@@ -116,17 +122,29 @@ function getNodePositionY(level: number): number {
   return level * 200;
 }
 
-function groupBySolver(problemDtos: ProblemDto<any>[]) {
-  let solvers = new Map<string | undefined, ProblemDto<any>[]>();
+interface ProblemGroup {
+  solverId?: string;
+  guardRejected: boolean;
+  problemDtos: ProblemDto<any>[];
+}
+
+function groupBySolver(problemDtos: ProblemDto<any>[]): ProblemGroup[] {
+  let groups = new Map<string, ProblemGroup>();
   for (let problemDto of problemDtos) {
-    const problems = solvers.get(problemDto.solverId);
-    if (problems) {
-      problems.push(problemDto);
+    const guardRejected = isGuardRejected(problemDto);
+    const key = `${problemDto.solverId}|${guardRejected}`;
+    const group = groups.get(key);
+    if (group) {
+      group.problemDtos.push(problemDto);
     } else {
-      solvers.set(problemDto.solverId, [problemDto]);
+      groups.set(key, {
+        solverId: problemDto.solverId,
+        guardRejected: guardRejected,
+        problemDtos: [problemDto],
+      });
     }
   }
-  return solvers;
+  return Array.from(groups.values());
 }
 
 const nodeTypes: NodeTypes = {
@@ -539,7 +557,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             ),
         ).then((subProblemDtos) => {
           // Create sub problem nodes per used solver
-          const problemsPerSolver = groupBySolver(subProblemDtos);
+          const groups = groupBySolver(subProblemDtos);
 
           // Keep a list of all existing child nodes to remove the ones that are not needed anymore
           let unusedChildNodes = getChildNodes(
@@ -548,9 +566,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             subRoutineReference.typeId,
           );
 
-          let entries = Array.from(problemsPerSolver.entries());
-          for (let j = 0; j < entries.length; j++) {
-            let [solverId, problemDtos] = entries[j];
+          for (let j = 0; j < groups.length; j++) {
+            let { solverId, guardRejected, problemDtos } = groups[j];
 
             // Schedule update for unsolved base node if all subproblems were solved
             if (
@@ -570,6 +587,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             const problemNodeIdentifier: ProblemNodeIdentifier = {
               subRoutineDefinitionDto: subRoutineReference,
               solverId: solverId,
+              guardRejected: guardRejected,
             };
 
             const subNodeId = getNodeId(problemNodeIdentifier, node);
@@ -587,7 +605,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
               level: node.data.level + 1,
               levelInfo: {
                 index: j,
-                count: entries.length,
+                count: groups.length,
               },
             };
 
@@ -701,13 +719,17 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   ]);
 
   // Update node ids when nodes change
+  const onConfigurationChanged = props.onConfigurationChanged;
   useEffect(() => {
     let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
       // Defer node id update to avoid synchronous setState inside effect
-      setTimeout(() => setNodeIds(ids), 0);
+      setTimeout(() => {
+        setNodeIds(ids);
+        onConfigurationChanged?.();
+      }, 0);
     }
-  }, [graphInstance, nodeIds, nodes]);
+  }, [graphInstance, nodeIds, nodes, onConfigurationChanged]);
 
   // Fit view when nodes change
   useEffect(() => {
