@@ -23,9 +23,11 @@ import {
   FaQuestionCircle,
 } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
+import { LuShieldX } from "react-icons/lu";
 import { Handle, NodeProps, Position } from "reactflow";
 import {
   canProblemSolverBeUpdated,
+  isGuardRejected,
   ProblemDto,
 } from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
@@ -33,6 +35,7 @@ import { getHumanReadableTypeId } from "../../../api/toolbox/data-model/ProblemT
 import { SolutionStatus } from "../../../api/toolbox/data-model/SolutionStatus";
 import { solverSettingAnyRequiredIsUnfilled } from "../../../api/toolbox/data-model/SolverSettings";
 import { toolboxApi } from "../../../api/toolbox/ToolboxAPI";
+import { GuardToggle } from "./GuardToggle";
 import { ProblemDetails } from "./ProblemDetails";
 import { useGraphUpdates } from "./ProblemGraphView";
 import { ProblemList } from "./ProblemList";
@@ -78,6 +81,10 @@ function getNodeType(data: ProblemNodeData): {
 }
 
 function getStatusColor(problemDtos: ProblemDto<any>[]): Color {
+  if (problemDtos.some(isGuardRejected)) {
+    return "orange";
+  }
+
   for (let problemDto of problemDtos) {
     switch (problemDto.state) {
       case ProblemState.NEEDS_CONFIGURATION:
@@ -147,6 +154,8 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
   getSolvers(typeId);
 
   const extended = solverId && solverName;
+  const guardRejection =
+    props.data.problemDtos.find(isGuardRejected)?.solution.guardRejection;
   const multiProblem = props.data.problemDtos.length > 1;
 
   /**
@@ -182,7 +191,9 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
             // Set state to solving manually so the ui updates instantly
             setNodeState(ProblemState.SOLVING);
 
-            for (let problemDto of props.data.problemDtos) {
+            for (let problemDto of props.data.problemDtos.filter(
+              canProblemSolverBeUpdated,
+            )) {
               toolboxApi
                 .patchProblem(problemDto.typeId, problemDto.id, {
                   state: ProblemState.SOLVING,
@@ -282,6 +293,17 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               <BsDatabaseFillGear size="1.5rem" />
             </div>
           </Tooltip>
+          {guardRejection && (
+            <Tooltip
+              hasArrow
+              label={"Rejected by guard: " + guardRejection}
+              placement="bottom"
+            >
+              <div>
+                <LuShieldX size="1.2rem" color="darkred" />
+              </div>
+            </Tooltip>
+          )}
           <Text fontWeight="semibold">
             {multiProblem ? props.data.problemDtos.length + "x " : ""}
             {getHumanReadableTypeId(props.data.problemDtos[0].typeId)}
@@ -372,6 +394,12 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
               characteristics: solver?.characteristics,
             }}
             button={problemButton()}
+            accessory={
+              <GuardToggle
+                problemDtos={props.data.problemDtos}
+                onChanged={updateProblem}
+              />
+            }
           />
         </Box>
       )}

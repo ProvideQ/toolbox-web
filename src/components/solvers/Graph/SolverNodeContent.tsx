@@ -25,6 +25,7 @@ export interface SolverNodeContentProps {
     label: ReactNode;
     callback?: () => void;
   };
+  accessory?: ReactNode;
 }
 
 export const SolverNodeContent = (props: SolverNodeContentProps) => {
@@ -70,10 +71,13 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
         style={{
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
+          gap: "0.4rem",
           marginTop: "0.5rem",
           width: "100%",
         }}
       >
+        {props.accessory}
         <Button
           bg="kitGreen"
           width="100%"
