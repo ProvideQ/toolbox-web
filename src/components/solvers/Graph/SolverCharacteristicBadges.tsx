@@ -1,10 +1,10 @@
 import { Box, Divider, HStack, Tooltip } from "@chakra-ui/react";
 import { ComponentType } from "react";
 import {
+  LuCheck,
   LuClipboardCheck,
   LuLock,
   LuLockOpen,
-  LuCheck,
   LuStar,
 } from "react-icons/lu";
 import { SolverRuleProperty } from "../../../api/toolbox/data-model/ProblemSolverInfo";
