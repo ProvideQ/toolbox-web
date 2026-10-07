@@ -174,6 +174,10 @@ export const StrategyView = (props: StrategyViewProps) => {
         .then((strategy) => {
           if (cancelled) return;
           setResult({ problemId: problemId, strategy: strategy });
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          console.error("Failed to load strategy", error);
         });
     }
 

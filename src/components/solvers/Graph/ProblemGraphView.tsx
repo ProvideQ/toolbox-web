@@ -555,101 +555,105 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             .map((subProblemId) =>
               toolboxApi.fetchProblem(subRoutineReference.typeId, subProblemId),
             ),
-        ).then((subProblemDtos) => {
-          // Create sub problem nodes per used solver
-          const groups = groupBySolver(subProblemDtos);
+        )
+          .then((subProblemDtos) => {
+            // Create sub problem nodes per used solver
+            const groups = groupBySolver(subProblemDtos);
 
-          // Keep a list of all existing child nodes to remove the ones that are not needed anymore
-          let unusedChildNodes = getChildNodes(
-            nodes,
-            node,
-            subRoutineReference.typeId,
-          );
-
-          for (let j = 0; j < groups.length; j++) {
-            let { solverId, guardRejected, problemDtos } = groups[j];
-
-            // Schedule update for unsolved base node if all subproblems were solved
-            if (
-              node.data.problemDtos.some(
-                (dto) => dto.state === ProblemState.SOLVING,
-              ) &&
-              problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
-            ) {
-              // Schedule update for parent node
-              setTimeout(() => {
-                for (let problemDto of node.data.problemDtos) {
-                  updateProblem(problemDto.id);
-                }
-              }, 500);
-            }
-
-            const problemNodeIdentifier: ProblemNodeIdentifier = {
-              subRoutineDefinitionDto: subRoutineReference,
-              solverId: solverId,
-              guardRejected: guardRejected,
-            };
-
-            const subNodeId = getNodeId(problemNodeIdentifier, node);
-            const edgeId = getEdgeId(problemNodeIdentifier, node);
-
-            // Remove child node from unused list
-            unusedChildNodes = unusedChildNodes.filter(
-              (n) => n.id !== subNodeId,
+            // Keep a list of all existing child nodes to remove the ones that are not needed anymore
+            let unusedChildNodes = getChildNodes(
+              nodes,
+              node,
+              subRoutineReference.typeId,
             );
 
-            const subNode = nodes.find((n) => n.id === subNodeId);
+            for (let j = 0; j < groups.length; j++) {
+              let { solverId, guardRejected, problemDtos } = groups[j];
 
-            const nodeData: ProblemNodeData = {
-              problemDtos: problemDtos,
-              level: node.data.level + 1,
-              levelInfo: {
-                index: j,
-                count: groups.length,
-              },
-            };
-
-            if (subNode) {
-              // Update existing node with new data if it exists
-              scheduleNodeUpdate({
-                ...subNode,
-                data: nodeData,
-              });
-
-              const edge = edges.find((edge) => edge.id === edgeId);
-              if (edge) {
-                updateEdge(edge);
-              }
-            } else {
-              // Otherwise create a new node
-              addEdge({
-                id: edgeId,
-                source: node.id,
-                target: subNodeId,
-                data: {
-                  sourceProblemDto: problemDtos,
-                },
-                animated: problemDtos.some(
+              // Schedule update for unsolved base node if all subproblems were solved
+              if (
+                node.data.problemDtos.some(
                   (dto) => dto.state === ProblemState.SOLVING,
-                ),
-              });
+                ) &&
+                problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
+              ) {
+                // Schedule update for parent node
+                setTimeout(() => {
+                  for (let problemDto of node.data.problemDtos) {
+                    updateProblem(problemDto.id);
+                  }
+                }, 500);
+              }
 
-              let subNode = createProblemNode(subNodeId, nodeData);
-              scheduleNodeUpdate(subNode);
+              const problemNodeIdentifier: ProblemNodeIdentifier = {
+                subRoutineDefinitionDto: subRoutineReference,
+                solverId: solverId,
+                guardRejected: guardRejected,
+              };
+
+              const subNodeId = getNodeId(problemNodeIdentifier, node);
+              const edgeId = getEdgeId(problemNodeIdentifier, node);
+
+              // Remove child node from unused list
+              unusedChildNodes = unusedChildNodes.filter(
+                (n) => n.id !== subNodeId,
+              );
+
+              const subNode = nodes.find((n) => n.id === subNodeId);
+
+              const nodeData: ProblemNodeData = {
+                problemDtos: problemDtos,
+                level: node.data.level + 1,
+                levelInfo: {
+                  index: j,
+                  count: groups.length,
+                },
+              };
+
+              if (subNode) {
+                // Update existing node with new data if it exists
+                scheduleNodeUpdate({
+                  ...subNode,
+                  data: nodeData,
+                });
+
+                const edge = edges.find((edge) => edge.id === edgeId);
+                if (edge) {
+                  updateEdge(edge);
+                }
+              } else {
+                // Otherwise create a new node
+                addEdge({
+                  id: edgeId,
+                  source: node.id,
+                  target: subNodeId,
+                  data: {
+                    sourceProblemDto: problemDtos,
+                  },
+                  animated: problemDtos.some(
+                    (dto) => dto.state === ProblemState.SOLVING,
+                  ),
+                });
+
+                let subNode = createProblemNode(subNodeId, nodeData);
+                scheduleNodeUpdate(subNode);
+              }
             }
-          }
 
-          // Remove all remaining child nodes that are not referenced anymore
-          for (let childNode of unusedChildNodes) {
-            removeSolverNodes(childNode);
-            setNodes((previousNodes) =>
-              previousNodes.filter((n) => n.id !== childNode.id),
-            );
-            setEdges((edges) =>
-              edges.filter((e) => !e.id.startsWith(childNode.id)),
-            );
-          }
-        });
+            // Remove all remaining child nodes that are not referenced anymore
+            for (let childNode of unusedChildNodes) {
+              removeSolverNodes(childNode);
+              setNodes((previousNodes) =>
+                previousNodes.filter((n) => n.id !== childNode.id),
+              );
+              setEdges((edges) =>
+                edges.filter((e) => !e.id.startsWith(childNode.id)),
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to fetch sub problems", error);
+          });
       }
     },
     [
