@@ -22,7 +22,10 @@ import {
 import "reactflow/dist/style.css";
 import { MetaSolverStrategyDto } from "../../../api/strategy/data-model/MetaSolverStrategyDto";
 import { strategyApi } from "../../../api/strategy/StrategyAPI";
-import { ProblemDto } from "../../../api/toolbox/data-model/ProblemDto";
+import {
+  isGuardRejected,
+  ProblemDto,
+} from "../../../api/toolbox/data-model/ProblemDto";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
 import { ProblemState } from "../../../api/toolbox/data-model/ProblemState";
 import { SubRoutineDefinitionDto } from "../../../api/toolbox/data-model/SubRoutineDefinitionDto";
@@ -42,11 +45,13 @@ interface ProblemEdgeData {
 export interface ProblemGraphViewProps {
   problemTypeId: string;
   problemId: string;
+  onConfigurationChanged?: () => void;
 }
 
 export interface ProblemNodeIdentifier {
   subRoutineDefinitionDto: SubRoutineDefinitionDto;
   solverId?: string;
+  guardRejected?: boolean;
 }
 
 /**
@@ -67,7 +72,8 @@ function getNodeId(
     "-" +
     identifier.subRoutineDefinitionDto.description +
     "-" +
-    identifier.solverId
+    identifier.solverId +
+    (identifier.guardRejected ? "-guard-rejected" : "")
   );
 }
 
@@ -116,17 +122,29 @@ function getNodePositionY(level: number): number {
   return level * 200;
 }
 
-function groupBySolver(problemDtos: ProblemDto<any>[]) {
-  let solvers = new Map<string | undefined, ProblemDto<any>[]>();
+interface ProblemGroup {
+  solverId?: string;
+  guardRejected: boolean;
+  problemDtos: ProblemDto<any>[];
+}
+
+function groupBySolver(problemDtos: ProblemDto<any>[]): ProblemGroup[] {
+  let groups = new Map<string, ProblemGroup>();
   for (let problemDto of problemDtos) {
-    const problems = solvers.get(problemDto.solverId);
-    if (problems) {
-      problems.push(problemDto);
+    const guardRejected = isGuardRejected(problemDto);
+    const key = `${problemDto.solverId}|${guardRejected}`;
+    const group = groups.get(key);
+    if (group) {
+      group.problemDtos.push(problemDto);
     } else {
-      solvers.set(problemDto.solverId, [problemDto]);
+      groups.set(key, {
+        solverId: problemDto.solverId,
+        guardRejected: guardRejected,
+        problemDtos: [problemDto],
+      });
     }
   }
-  return solvers;
+  return Array.from(groups.values());
 }
 
 const nodeTypes: NodeTypes = {
@@ -537,101 +555,105 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
             .map((subProblemId) =>
               toolboxApi.fetchProblem(subRoutineReference.typeId, subProblemId),
             ),
-        ).then((subProblemDtos) => {
-          // Create sub problem nodes per used solver
-          const problemsPerSolver = groupBySolver(subProblemDtos);
+        )
+          .then((subProblemDtos) => {
+            // Create sub problem nodes per used solver
+            const groups = groupBySolver(subProblemDtos);
 
-          // Keep a list of all existing child nodes to remove the ones that are not needed anymore
-          let unusedChildNodes = getChildNodes(
-            nodes,
-            node,
-            subRoutineReference.typeId,
-          );
-
-          let entries = Array.from(problemsPerSolver.entries());
-          for (let j = 0; j < entries.length; j++) {
-            let [solverId, problemDtos] = entries[j];
-
-            // Schedule update for unsolved base node if all subproblems were solved
-            if (
-              node.data.problemDtos.some(
-                (dto) => dto.state === ProblemState.SOLVING,
-              ) &&
-              problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
-            ) {
-              // Schedule update for parent node
-              setTimeout(() => {
-                for (let problemDto of node.data.problemDtos) {
-                  updateProblem(problemDto.id);
-                }
-              }, 500);
-            }
-
-            const problemNodeIdentifier: ProblemNodeIdentifier = {
-              subRoutineDefinitionDto: subRoutineReference,
-              solverId: solverId,
-            };
-
-            const subNodeId = getNodeId(problemNodeIdentifier, node);
-            const edgeId = getEdgeId(problemNodeIdentifier, node);
-
-            // Remove child node from unused list
-            unusedChildNodes = unusedChildNodes.filter(
-              (n) => n.id !== subNodeId,
+            // Keep a list of all existing child nodes to remove the ones that are not needed anymore
+            let unusedChildNodes = getChildNodes(
+              nodes,
+              node,
+              subRoutineReference.typeId,
             );
 
-            const subNode = nodes.find((n) => n.id === subNodeId);
+            for (let j = 0; j < groups.length; j++) {
+              let { solverId, guardRejected, problemDtos } = groups[j];
 
-            const nodeData: ProblemNodeData = {
-              problemDtos: problemDtos,
-              level: node.data.level + 1,
-              levelInfo: {
-                index: j,
-                count: entries.length,
-              },
-            };
-
-            if (subNode) {
-              // Update existing node with new data if it exists
-              scheduleNodeUpdate({
-                ...subNode,
-                data: nodeData,
-              });
-
-              const edge = edges.find((edge) => edge.id === edgeId);
-              if (edge) {
-                updateEdge(edge);
-              }
-            } else {
-              // Otherwise create a new node
-              addEdge({
-                id: edgeId,
-                source: node.id,
-                target: subNodeId,
-                data: {
-                  sourceProblemDto: problemDtos,
-                },
-                animated: problemDtos.some(
+              // Schedule update for unsolved base node if all subproblems were solved
+              if (
+                node.data.problemDtos.some(
                   (dto) => dto.state === ProblemState.SOLVING,
-                ),
-              });
+                ) &&
+                problemDtos.every((dto) => dto.state === ProblemState.SOLVED)
+              ) {
+                // Schedule update for parent node
+                setTimeout(() => {
+                  for (let problemDto of node.data.problemDtos) {
+                    updateProblem(problemDto.id);
+                  }
+                }, 500);
+              }
 
-              let subNode = createProblemNode(subNodeId, nodeData);
-              scheduleNodeUpdate(subNode);
+              const problemNodeIdentifier: ProblemNodeIdentifier = {
+                subRoutineDefinitionDto: subRoutineReference,
+                solverId: solverId,
+                guardRejected: guardRejected,
+              };
+
+              const subNodeId = getNodeId(problemNodeIdentifier, node);
+              const edgeId = getEdgeId(problemNodeIdentifier, node);
+
+              // Remove child node from unused list
+              unusedChildNodes = unusedChildNodes.filter(
+                (n) => n.id !== subNodeId,
+              );
+
+              const subNode = nodes.find((n) => n.id === subNodeId);
+
+              const nodeData: ProblemNodeData = {
+                problemDtos: problemDtos,
+                level: node.data.level + 1,
+                levelInfo: {
+                  index: j,
+                  count: groups.length,
+                },
+              };
+
+              if (subNode) {
+                // Update existing node with new data if it exists
+                scheduleNodeUpdate({
+                  ...subNode,
+                  data: nodeData,
+                });
+
+                const edge = edges.find((edge) => edge.id === edgeId);
+                if (edge) {
+                  updateEdge(edge);
+                }
+              } else {
+                // Otherwise create a new node
+                addEdge({
+                  id: edgeId,
+                  source: node.id,
+                  target: subNodeId,
+                  data: {
+                    sourceProblemDto: problemDtos,
+                  },
+                  animated: problemDtos.some(
+                    (dto) => dto.state === ProblemState.SOLVING,
+                  ),
+                });
+
+                let subNode = createProblemNode(subNodeId, nodeData);
+                scheduleNodeUpdate(subNode);
+              }
             }
-          }
 
-          // Remove all remaining child nodes that are not referenced anymore
-          for (let childNode of unusedChildNodes) {
-            removeSolverNodes(childNode);
-            setNodes((previousNodes) =>
-              previousNodes.filter((n) => n.id !== childNode.id),
-            );
-            setEdges((edges) =>
-              edges.filter((e) => !e.id.startsWith(childNode.id)),
-            );
-          }
-        });
+            // Remove all remaining child nodes that are not referenced anymore
+            for (let childNode of unusedChildNodes) {
+              removeSolverNodes(childNode);
+              setNodes((previousNodes) =>
+                previousNodes.filter((n) => n.id !== childNode.id),
+              );
+              setEdges((edges) =>
+                edges.filter((e) => !e.id.startsWith(childNode.id)),
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to fetch sub problems", error);
+          });
       }
     },
     [
@@ -701,13 +723,17 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
   ]);
 
   // Update node ids when nodes change
+  const onConfigurationChanged = props.onConfigurationChanged;
   useEffect(() => {
     let ids = nodes.map((n) => n.id).sort((a, b) => a.localeCompare(b));
     if (ids.join(",") !== nodeIds.join(",")) {
       // Defer node id update to avoid synchronous setState inside effect
-      setTimeout(() => setNodeIds(ids), 0);
+      setTimeout(() => {
+        setNodeIds(ids);
+        onConfigurationChanged?.();
+      }, 0);
     }
-  }, [graphInstance, nodeIds, nodes]);
+  }, [graphInstance, nodeIds, nodes, onConfigurationChanged]);
 
   // Fit view when nodes change
   useEffect(() => {

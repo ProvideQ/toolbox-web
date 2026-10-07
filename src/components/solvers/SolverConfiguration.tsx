@@ -1,9 +1,19 @@
-import { Button, Flex, HStack, Link, Tooltip } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Link,
+  Tooltip,
+  VStack,
+} from "@chakra-ui/react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BsArrowUpRight } from "react-icons/bs";
 import { FaPlay } from "react-icons/fa6";
 import { getInvalidProblemDto } from "../../api/toolbox/data-model/ProblemDto";
 import { toolboxApi } from "../../api/toolbox/ToolboxAPI";
+import { mainContentMaxWidth } from "../Main";
+import { StrategyView } from "./correctness/StrategyView";
 import { StrategyProvider } from "./Graph/MetaSolverStrategyProvider";
 import { ProblemGraphView } from "./Graph/ProblemGraphView";
 import { SolverProvider } from "./Graph/SolverProvider";
@@ -19,6 +29,12 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
   const [isEditorReachable, setIsEditorReachable] = useState(true);
   const [isMssApiAvailable, setIsMssApiAvailable] = useState(false);
   const problemGraphViewRef = useRef<HTMLDivElement>(null);
+
+  const [configurationVersion, setConfigurationVersion] = useState(0);
+  const onConfigurationChanged = useCallback(
+    () => setConfigurationVersion((version) => version + 1),
+    [],
+  );
 
   // Reset problemId when problemInput is empty
   useEffect(() => {
@@ -95,12 +111,23 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
       ) : (
         <SolverProvider>
           <StrategyProvider isMssApiAvailable={isMssApiAvailable}>
-            <div ref={problemGraphViewRef}>
-              <ProblemGraphView
-                problemTypeId={props.problemTypeId}
-                problemId={problemId}
-              />
-            </div>
+            <VStack width="100%" spacing="1rem">
+              <Box width="100%" maxWidth={mainContentMaxWidth}>
+                <StrategyView
+                  problemTypeId={props.problemTypeId}
+                  problemId={problemId}
+                  reloadToken={configurationVersion}
+                />
+              </Box>
+
+              <div ref={problemGraphViewRef}>
+                <ProblemGraphView
+                  problemTypeId={props.problemTypeId}
+                  problemId={problemId}
+                  onConfigurationChanged={onConfigurationChanged}
+                />
+              </div>
+            </VStack>
           </StrategyProvider>
         </SolverProvider>
       )}
