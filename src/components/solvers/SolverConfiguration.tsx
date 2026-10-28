@@ -86,7 +86,8 @@ export const SolverConfiguration = (props: SolverConfigurationProps) => {
                   })
                   .then((problem) => {
                     setProblemId(problem.id);
-                  });
+                  })
+                  .catch(console.error);
               }}
             >
               <FaPlay />

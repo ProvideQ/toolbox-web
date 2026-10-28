@@ -190,6 +190,50 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
     );
   }, []);
 
+  const setNodeProblemDtos = useCallback(
+    (nodeId: string, problemDtos: ProblemDto<any>[]) => {
+      setNodes((previousNodes) =>
+        previousNodes.map((n) => {
+          if (n.id !== nodeId) return n;
+
+          let updatedNode: Node<ProblemNodeData> = {
+            ...n,
+            data: {
+              ...n.data,
+              problemDtos: problemDtos,
+            },
+          };
+          scheduleNodeUpdate(updatedNode);
+
+          return updatedNode;
+        }),
+      );
+    },
+    [scheduleNodeUpdate, setNodes],
+  );
+
+  const refreshNode = useCallback(
+    (node: Node<ProblemNodeData>) => {
+      toolboxApi
+        .fetchProblem(
+          node.data.problemDtos[0].typeId,
+          node.data.problemDtos[0].id,
+        )
+        .then((updatedDto) => {
+          let updatedNode: Node<ProblemNodeData> = {
+            ...node,
+            data: {
+              ...node.data,
+              problemDtos: [updatedDto],
+            },
+          };
+          scheduleNodeUpdate(updatedNode);
+        })
+        .catch(console.error);
+    },
+    [scheduleNodeUpdate],
+  );
+
   const addNode = useCallback(
     (newNode: Node) => {
       setNodes((previousNodes) => {
@@ -274,23 +318,7 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                 // Update graph every second while solving
                 // This is needed because we don't send the requests to update the graph
                 // and instead call the interpreter which handles all in one request
-                const updateTimer = setInterval(() => {
-                  toolboxApi
-                    .fetchProblem(
-                      node.data.problemDtos[0].typeId,
-                      node.data.problemDtos[0].id,
-                    )
-                    .then((updatedDto) => {
-                      let updatedNode: Node<ProblemNodeData> = {
-                        ...node,
-                        data: {
-                          ...node.data,
-                          problemDtos: [updatedDto],
-                        },
-                      };
-                      scheduleNodeUpdate(updatedNode);
-                    });
-                }, 1000);
+                const updateTimer = setInterval(() => refreshNode(node), 1000);
                 Promise.all(
                   node.data.problemDtos.map((problemDto) =>
                     strategyApi.executeStrategy(strategy.id, problemDto.id),
@@ -298,26 +326,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                 )
                   .then((results) => {
                     clearInterval(updateTimer);
-                    setNodes((previousNodes) =>
-                      previousNodes.map((n) => {
-                        if (n.id !== node.id) return n;
-
-                        let updatedNode: Node<ProblemNodeData> = {
-                          ...n,
-                          data: {
-                            ...n.data,
-                            problemDtos: results
-                              .map((r) => r.result)
-                              .filter(
-                                (dto): dto is ProblemDto<any> =>
-                                  dto !== undefined,
-                              ),
-                          },
-                        };
-                        scheduleNodeUpdate(updatedNode);
-
-                        return updatedNode;
-                      }),
+                    setNodeProblemDtos(
+                      node.id,
+                      results.flatMap((r) => r.result ?? []),
                     );
                   })
                   .catch(() => clearInterval(updateTimer));
@@ -365,24 +376,9 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
                       solverId: problemSolver.id,
                     }),
                   ),
-                ).then((dtos) => {
-                  setNodes((previousNodes) =>
-                    previousNodes.map((n) => {
-                      if (n.id !== node.id) return n;
-
-                      let updatedNode: Node<ProblemNodeData> = {
-                        ...n,
-                        data: {
-                          ...n.data,
-                          problemDtos: dtos,
-                        },
-                      };
-                      scheduleNodeUpdate(updatedNode);
-
-                      return updatedNode;
-                    }),
-                  );
-                });
+                )
+                  .then((dtos) => setNodeProblemDtos(node.id, dtos))
+                  .catch(console.error);
               },
             },
             position: {
@@ -411,8 +407,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
       edges,
       getSolvers,
       getStrategies,
-      scheduleNodeUpdate,
-      setNodes,
+      refreshNode,
+      setNodeProblemDtos,
       updateEdge,
     ],
   );
@@ -501,7 +497,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           .then((dto) => {
             node.data.problemDtos = [dto];
             scheduleNodeUpdate(node);
-          });
+          })
+          .catch(console.error);
       }
     },
     [nodes, scheduleNodeUpdate],
@@ -712,7 +709,8 @@ export const ProblemGraphView = (props: ProblemGraphViewProps) => {
           },
         });
         scheduleNodeUpdate(rootNode);
-      });
+      })
+      .catch(console.error);
   }, [
     createProblemNode,
     props.problemId,

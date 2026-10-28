@@ -169,7 +169,8 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
         })
         .then((dto) => {
           updateProblem(dto.id);
-        });
+        })
+        .catch(console.error);
     }
   }
 
@@ -200,7 +201,8 @@ export function ProblemNode(props: NodeProps<ProblemNodeData>) {
                 })
                 .then((dto) => {
                   updateProblem(dto.id);
-                });
+                })
+                .catch(console.error);
             }
 
             // Update the state again after a delay to attempt
