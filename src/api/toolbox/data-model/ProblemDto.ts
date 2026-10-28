@@ -35,3 +35,7 @@ export function canProblemSolverBeUpdated(problem: ProblemDto<any>): boolean {
     problem.state === ProblemState.READY_TO_SOLVE
   );
 }
+
+export function isGuardRejected(problem: ProblemDto<any>): boolean {
+  return !!problem.solution?.guardRejection;
+}

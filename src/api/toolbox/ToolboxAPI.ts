@@ -1,6 +1,7 @@
 import { getInvalidProblemDto, ProblemDto } from "./data-model/ProblemDto";
 import { ProblemSolverInfo } from "./data-model/ProblemSolverInfo";
 import { ProblemState } from "./data-model/ProblemState";
+import { ProblemStrategyDto } from "./data-model/ProblemStrategyDto";
 import { ProblemTypeDto } from "./data-model/ProblemTypeDto";
 import { SolverSetting } from "./data-model/SolverSettings";
 import { SubRoutineDefinitionDto } from "./data-model/SubRoutineDefinitionDto";
@@ -172,6 +173,35 @@ export class ToolboxApi {
           ...getInvalidProblemDto(),
           error: `${error}`,
         };
+      });
+  }
+
+  async fetchProblemStrategy(
+    problemTypeId: string,
+    problemId: string,
+  ): Promise<ProblemStrategyDto | undefined> {
+    return fetch(
+      `${this.baseUrl}/problems/${problemTypeId}/${problemId}/strategy`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Unexpected status code ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => json as ProblemStrategyDto)
+      .catch((error) => {
+        console.error(
+          `Could not retrieve the strategy of problem ${problemId}`,
+          error,
+        );
+        return undefined;
       });
   }
 

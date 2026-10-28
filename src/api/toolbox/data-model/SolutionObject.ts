@@ -11,6 +11,7 @@ export interface SolutionObject {
   debugData: string;
   solverName: string;
   executionMilliseconds: number;
+  guardRejection?: string;
 }
 
 export function getInvalidSolutionObject(): SolutionObject {

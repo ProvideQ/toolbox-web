@@ -66,6 +66,11 @@ export const ProblemDetails = (props: { problemDto: ProblemDto<any> }) => {
       <Text>
         <b>Solver:</b> {solver?.name ?? "-"}
       </Text>
+      {props.problemDto.solution?.guardRejection && (
+        <Text color="darkred">
+          <b>Rejected by guard:</b> {props.problemDto.solution.guardRejection}
+        </Text>
+      )}
       {solver && (
         <VStack width="100%" align="stretch">
           <Text fontWeight="bold">Solver Settings:</Text>

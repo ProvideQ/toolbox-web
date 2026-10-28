@@ -35,6 +35,8 @@ export interface SelectSetting extends SolverSetting {
   selectedOption: string;
 }
 
+export const GUARD_SETTING_NAME = "Guarded";
+
 export async function solverSettingAnyRequiredIsUnfilled(
   problemDtos: ProblemDto<any>[],
 ): Promise<boolean> {
