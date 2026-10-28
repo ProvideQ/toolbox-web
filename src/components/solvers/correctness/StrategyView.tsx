@@ -14,10 +14,16 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ComponentType, useEffect, useState } from "react";
-import { LuCircleAlert, LuCircleCheck, LuCircleHelp } from "react-icons/lu";
+import {
+  LuCircleAlert,
+  LuCircleCheck,
+  LuCircleHelp,
+  LuShieldCheck,
+} from "react-icons/lu";
 import { CorrectnessVerdict } from "../../../api/toolbox/data-model/CorrectnessVerdict";
 import {
   getCorrectnessExplanation,
+  getGuardNote,
   getUnknownRuleCount,
   getUnknownStepLabel,
   getViolationMessage,
@@ -47,12 +53,19 @@ const verdictPresentation: Record<
     tooltip:
       "Correct: every rule of this strategy is known and satisfies the properties its rule type requires.",
   },
+  [CorrectnessVerdict.GUARDED_CORRECT]: {
+    label: "Guarded correct",
+    color: "green.500",
+    icon: LuShieldCheck,
+    tooltip:
+      "Guarded correct: each rule that lacks the property its rule type requires is covered by an enabled guard, so invalid results are rejected instead of returned.",
+  },
   [CorrectnessVerdict.INCORRECT]: {
     label: "Incorrect",
     color: "red.500",
     icon: LuCircleAlert,
     tooltip:
-      "Incorrect: at least one rule of this strategy does not have the property its rule type requires.",
+      "Incorrect: at least one rule of this strategy does not have the property its rule type requires and is not covered by a guard.",
   },
   [CorrectnessVerdict.UNDETERMINED]: {
     label: "Undetermined",
@@ -100,6 +113,17 @@ const StepEntry = (props: { step: StrategyStepDto; index: number }) => {
           <Text fontWeight="semibold" fontSize="sm">
             {getHumanReadableTypeId(step.problemTypeId)}
           </Text>
+          {step.guarded && (
+            <Tooltip
+              hasArrow
+              label="Guard active: results of this rule and all rules below it are checked"
+              placement="bottom"
+            >
+              <Box as="span" color="green.500" display="inline-flex">
+                <LuShieldCheck size="1rem" />
+              </Box>
+            </Tooltip>
+          )}
           {unknownLabel !== undefined && (
             <Text fontSize="xs" color="gray.500" fontStyle="italic">
               ({unknownLabel})
@@ -141,11 +165,22 @@ const StepEntry = (props: { step: StrategyStepDto; index: number }) => {
   );
 };
 
-const ViolationEntry = (props: { message: string; problemId: string }) => (
-  <Alert status="error" fontSize="sm" borderRadius="0.25rem">
+const ViolationEntry = (props: {
+  message: string;
+  problemId: string;
+  guardNote?: string;
+}) => (
+  <Alert
+    status={props.guardNote === undefined ? "error" : "warning"}
+    fontSize="sm"
+    borderRadius="0.25rem"
+  >
     <AlertIcon />
     <VStack align="start" spacing="0px">
       <Text>{props.message}</Text>
+      {props.guardNote !== undefined && (
+        <Text fontSize="xs">{props.guardNote}</Text>
+      )}
       <Text fontSize="xs" color="gray.600">
         {props.problemId}
       </Text>
@@ -241,6 +276,7 @@ export const StrategyView = (props: StrategyViewProps) => {
                   <ViolationEntry
                     key={`${violation.problemId}-${violation.requiredProperty}-${index}`}
                     message={getViolationMessage(strategy, violation)}
+                    guardNote={getGuardNote(strategy, violation)}
                     problemId={violation.problemId}
                   />
                 ))}
