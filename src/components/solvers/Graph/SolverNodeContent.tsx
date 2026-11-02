@@ -11,13 +11,13 @@ import {
   PopoverTrigger,
   Portal,
   Text,
-  Tooltip,
   VStack,
 } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import { FaQuestionCircle } from "react-icons/fa";
-import { FaGears } from "react-icons/fa6";
 import { ProblemSolverInfo } from "../../../api/toolbox/data-model/ProblemSolverInfo";
+import { SolverCharacteristicBadges } from "./SolverCharacteristicBadges";
+import { SolverCharacteristicIcons } from "./SolverCharacteristicIcons";
 
 export interface SolverNodeContentProps {
   solver: ProblemSolverInfo;
@@ -25,24 +25,23 @@ export interface SolverNodeContentProps {
     label: ReactNode;
     callback?: () => void;
   };
+  accessory?: ReactNode;
 }
 
 export const SolverNodeContent = (props: SolverNodeContentProps) => {
   return (
     <VStack gap="0px">
-      <HStack align="start" maxW="10rem" justifyContent="space-between" gap="0">
-        <Tooltip hasArrow label="Solver" placement="bottom">
-          <div>
-            <FaGears size="2rem" />
-          </div>
-        </Tooltip>
-        <Text padding=".25rem" fontWeight="semibold">
+      <HStack align="start" maxW="10rem" justifyContent="space-between">
+        <SolverCharacteristicIcons
+          types={props.solver.characteristics?.types}
+        />
+        <Text paddingY=".25rem" fontWeight="semibold">
           {props.solver.name}
         </Text>
 
         <Popover>
           <PopoverTrigger>
-            <div>
+            <div style={{ marginTop: "0.5rem" }}>
               <FaQuestionCircle size="1rem" />
             </div>
           </PopoverTrigger>
@@ -64,14 +63,21 @@ export const SolverNodeContent = (props: SolverNodeContentProps) => {
         </Popover>
       </HStack>
 
+      <SolverCharacteristicBadges
+        properties={props.solver.characteristics?.properties}
+      />
+
       <div
         style={{
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
+          gap: "0.4rem",
           marginTop: "0.5rem",
           width: "100%",
         }}
       >
+        {props.accessory}
         <Button
           bg="kitGreen"
           width="100%"
