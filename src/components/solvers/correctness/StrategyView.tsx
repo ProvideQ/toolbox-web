@@ -14,11 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ComponentType, useEffect, useState } from "react";
-import {
-  LuCircleCheck,
-  LuCircleHelp,
-  LuShieldCheck,
-} from "react-icons/lu";
+import { LuCircleCheck, LuCircleHelp, LuShieldCheck } from "react-icons/lu";
 import { CorrectnessVerdict } from "../../../api/toolbox/data-model/CorrectnessVerdict";
 import {
   getCorrectnessExplanation,
