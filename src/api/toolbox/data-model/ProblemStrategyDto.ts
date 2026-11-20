@@ -80,7 +80,7 @@ export function getCorrectnessExplanation(
 ): string {
   switch (strategy.correctness.verdict) {
     case CorrectnessVerdict.INCORRECT:
-      return `This strategy is not correct, so it may produce an invalid solution: ${strategy.correctness.violations.filter((violation) => violation.guardedBy === null).length} of its rules do not have the required property and are not covered by a guard.`;
+      return "This strategy cannot guarantee a valid solution: at least one of its rules does not have the required property and is not covered by a guard. Choosing a different sub-routine or enabling a guard for the affected rules makes the result reliable.";
     case CorrectnessVerdict.UNDETERMINED:
       return `No rule of this strategy violates correctness so far, but ${getUnknownRuleCount(strategy)} of its rules are not known yet. Configure the remaining sub-routines to decide.`;
     case CorrectnessVerdict.GUARDED_CORRECT:
