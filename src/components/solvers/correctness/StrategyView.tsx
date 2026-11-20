@@ -14,12 +14,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { ComponentType, useEffect, useState } from "react";
-import {
-  LuCircleAlert,
-  LuCircleCheck,
-  LuCircleHelp,
-  LuShieldCheck,
-} from "react-icons/lu";
+import { LuCircleCheck, LuCircleHelp, LuShieldCheck } from "react-icons/lu";
 import { CorrectnessVerdict } from "../../../api/toolbox/data-model/CorrectnessVerdict";
 import {
   getCorrectnessExplanation,
@@ -42,7 +37,7 @@ const verdictPresentation: Record<
   {
     label: string;
     color: string;
-    icon: ComponentType<{ size?: string }>;
+    icon?: ComponentType<{ size?: string }>;
     tooltip: string;
   }
 > = {
@@ -61,11 +56,10 @@ const verdictPresentation: Record<
       "Guarded correct: each rule that lacks the property its rule type requires is covered by an enabled guard, so invalid results are rejected instead of returned.",
   },
   [CorrectnessVerdict.INCORRECT]: {
-    label: "Incorrect",
-    color: "red.500",
-    icon: LuCircleAlert,
+    label: "Not guaranteed",
+    color: "orange.500",
     tooltip:
-      "Incorrect: at least one rule of this strategy does not have the property its rule type requires and is not covered by a guard.",
+      "Not guaranteed: at least one rule of this strategy does not have the property its rule type requires and is not covered by a guard, so a valid result cannot be guaranteed.",
   },
   [CorrectnessVerdict.UNDETERMINED]: {
     label: "Undetermined",
@@ -243,20 +237,26 @@ export const StrategyView = (props: StrategyViewProps) => {
         <h2>
           <AccordionButton>
             <HStack flex="1" align="start" textAlign="left" spacing="0.5rem">
-              <Box paddingTop="0.15rem">
-                <Tooltip hasArrow label={verdict.tooltip} placement="bottom">
-                  <Box
-                    as="span"
-                    aria-label={`Strategy correctness: ${verdict.label}`}
-                    color={verdict.color}
-                    display="inline-flex"
-                  >
-                    <VerdictIcon size="1.25rem" />
-                  </Box>
-                </Tooltip>
-              </Box>
+              {VerdictIcon && (
+                <Box paddingTop="0.15rem">
+                  <Tooltip hasArrow label={verdict.tooltip} placement="bottom">
+                    <Box
+                      as="span"
+                      aria-label={`Strategy correctness: ${verdict.label}`}
+                      color={verdict.color}
+                      display="inline-flex"
+                    >
+                      <VerdictIcon size="1.25rem" />
+                    </Box>
+                  </Tooltip>
+                </Box>
+              )}
               <VStack align="start" spacing="0px">
-                <Text fontWeight="semibold" fontSize="sm">
+                <Text
+                  fontWeight="semibold"
+                  fontSize="sm"
+                  color={VerdictIcon ? undefined : verdict.color}
+                >
                   Strategy correctness: {verdict.label}
                 </Text>
                 <Text fontSize="sm" color="gray.600">
